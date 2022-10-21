@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import SignUp from "./Components/Pages/Signup.js/Signup";
 import Login from "./Components/Pages/LoginPage/LoginPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 
 function App() {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ function App() {
       return;
     }
     const userId = localStorage.getItem("userId");
-    // const remainingMilliseconds =
-    //   new Date(expiryDate).getTime() - new Date().getTime();
+    const remainingMilliseconds =
+      new Date(expiryDate).getTime() - new Date().getTime();
     setAuthState((prevState) => {
       return {
         ...prevState,
@@ -31,8 +32,30 @@ function App() {
         userId: userId,
       };
     });
-    // setAutoLogout(remainingMilliseconds);
+    setAutoLogout(remainingMilliseconds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authState.isAuth, authState.token, authState.userId]);
+
+  const logoutHandler = () => {
+    setAuthState((prevState) => {
+      return {
+        ...prevState,
+        isAuth: false,
+        token: null,
+        userId: null,
+      };
+    });
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("expiryDate");
+    navigate("/login");
+  };
+
+  const setAutoLogout = (remainingTime) => {
+    setTimeout(() => {
+      logoutHandler();
+    }, remainingTime);
+  };
 
   const handleUserCredentialsSubmission = (
     userData,
@@ -143,7 +166,7 @@ function App() {
         throw new Error(err);
       });
   };
-
+  console.log(authState.isAuth);
   return (
     <div className="App">
       <Routes>
@@ -160,7 +183,12 @@ function App() {
           path="/login"
           element={<Login loading={isLoading} onSingIn={handleUserlogin} />}
         />
-        <Route path="/dashboard" element={<Dashboard />} />
+        {authState.isAuth && (
+          <Route path="/dashboard" element={<Dashboard />} />
+        )}
+        {/* <Route path="/" element={<PrivateRoute isAuth={authState.isAuth} />}> */}
+        {/* </Route> */}
+        {/* <Route path="*" element={<Navigate to="/" />} /> */}
       </Routes>
     </div>
   );
