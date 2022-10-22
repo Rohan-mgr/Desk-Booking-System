@@ -4,7 +4,7 @@ const userController = require("../controller/user");
 const { body } = require("express-validator");
 
 router.post(
-  "/",
+  "/signup",
   [
     body("fname")
       .trim()

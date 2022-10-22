@@ -9,6 +9,7 @@ exports.createUser = async (req, res, next) => {
   const lname = req.body.lname;
   const email = req.body.email;
   const pass = req.body.password;
+  console.log(fname, lname, email, pass);
   let dupUser;
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed!");
