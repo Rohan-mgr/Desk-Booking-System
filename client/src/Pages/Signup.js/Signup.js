@@ -3,11 +3,15 @@ import "./Signup.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../Components/UI/Loader/Loader";
 import { ROUTES } from "../../helper/routes";
+import { toast } from "react-toastify";
+import { handleUserSignup } from "../../services/auth";
+import { useFormik } from "formik";
 
 function SignUp(props) {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [userCredentials, setUserCredentials] = useState({
     fname: "",
@@ -17,42 +21,41 @@ function SignUp(props) {
   });
   const [errors, setErrors] = useState({});
 
+  const formik = useFormik({
+    initialValues: {
+      fname: "",
+      lname: "",
+      email: "",
+      password: "",
+    },
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        const data = await handleUserSignup(values);
+        if (!data) {
+          console.log(data);
+          return;
+        }
+        console.log(data);
+
+        navigate(ROUTES.LOGIN);
+      } catch (e) {
+        toast.error(e);
+        console.log("error", e);
+      }
+    },
+  });
+
   const togglePassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  const handleInputChangeHandler = (e) => {
-    setUserCredentials((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name]: e.target.value,
-      };
-    });
-    if (!!errors[e.target.name]) {
-      setErrors((prevState) => {
-        return {
-          ...prevState,
-          [e.target.name]: null,
-        };
-      });
-    }
-  };
-
-  const handleUserCredentialsSubmission = (e, userData) => {
-    e.preventDefault();
-
-    props.onSignUp(userData, setErrors, setUserCredentials);
   };
 
   return (
     <div className="signup-wrapper">
       <div className="signup-form card">
-        <Form
-          className="card-body"
-          onSubmit={(e) => handleUserCredentialsSubmission(e, userCredentials)}
-        >
+        <Form className="card-body" onSubmit={formik.handleSubmit}>
           <div>
-            <h3>Sign up</h3>
+            <h3 className="text-center">Sign up</h3>
           </div>
           {!!errors.signupError && (
             <p className="login-errors my-3 text-center">
@@ -64,8 +67,8 @@ function SignUp(props) {
             <Form.Control
               type="text"
               name="fname"
-              value={userCredentials.fname}
-              onChange={(e) => handleInputChangeHandler(e)}
+              value={formik.values.fname}
+              onChange={formik.handleChange}
               placeholder="Enter First Name"
               isInvalid={!!errors.fname}
             />
@@ -78,8 +81,8 @@ function SignUp(props) {
             <Form.Control
               type="text"
               name="lname"
-              value={userCredentials.lname}
-              onChange={(e) => handleInputChangeHandler(e)}
+              value={formik.values.lname}
+              onChange={formik.handleChange}
               placeholder="Enter Last Name"
               isInvalid={!!errors.lname}
             />
@@ -89,8 +92,8 @@ function SignUp(props) {
             <Form.Control
               type="email"
               name="email"
-              value={userCredentials.email}
-              onChange={(e) => handleInputChangeHandler(e)}
+              value={formik.values.email}
+              onChange={formik.handleChange}
               placeholder="Enter Email"
               isInvalid={!!errors.email}
             />
@@ -104,8 +107,8 @@ function SignUp(props) {
             <Form.Control
               type={showPassword ? "text" : "password"}
               name="password"
-              value={userCredentials.password}
-              onChange={(e) => handleInputChangeHandler(e)}
+              value={formik.values.password}
+              onChange={formik.handleChange}
               placeholder="Password"
               isInvalid={!!errors.password}
             />
