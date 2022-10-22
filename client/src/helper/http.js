@@ -17,7 +17,7 @@ http.interceptors.response.use(
     return res.data;
   },
   (err) => {
-    return err?.response?.data?.error;
+    return err?.response?.error;
   }
 );
 
@@ -29,6 +29,15 @@ export const httpAuth = axios.create({
 httpAuth.interceptors.request.use((req) => {
   return req;
 });
+
+httpAuth.interceptors.response.use(
+  (res) => {
+    return res.data;
+  },
+  (err) => {
+    return Promise.reject(err?.response?.data?.message);
+  }
+);
 
 export function get(url, params) {
   return http({

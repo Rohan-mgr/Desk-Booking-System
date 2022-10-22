@@ -1,13 +1,13 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-// import Dashboard from "./Dashboard";
-// import UI from "./UI";
+import Button from "react-bootstrap/esm/Button";
+import { Outlet, useNavigate } from "react-router-dom";
+import { _removeAllLs, _setSecureLs } from "../../../helper/storage";
 
 function Main() {
+  const navigate = useNavigate();
   return (
     <div className="content-wrapper">
-      {/* Content Header (Page header) */}
-      {/* <div className="content-header">
+      <div className="content-header">
         <div className="container-fluid">
           <div className="row mb-2">
             <div className="col-sm-6">
@@ -15,16 +15,26 @@ function Main() {
             </div>
           </div>
         </div>
-      </div> */}
-      {/* Main content */}
-      {/* <section className="content"> */}
-      {/* <div className="container-fluid">
-          <div className="row"> */}
-      <Outlet />
-      {/* </div> */}
-      {/* <div className="row"></div> */}
-      {/* </div> */}
-      {/* </section> */}
+      </div>
+
+      <section className="content">
+        <div className="container-fluid">
+          <div>
+            <Button
+              onClick={() => {
+                _removeAllLs();
+                navigate("/login");
+              }}
+            >
+              Logout
+            </Button>
+          </div>
+          <div className="row">
+            <Outlet />
+          </div>
+          <div className="row"></div>
+        </div>
+      </section>
     </div>
   );
 }

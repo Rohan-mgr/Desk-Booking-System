@@ -1,80 +1,78 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import { ToastContainer, toast } from "react-toastify";
+
+import { useFormik } from "formik";
 import "./LoginPage.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import Loader from "../../UI/Loader/Loader";
-import { validateForm } from "../../../shared/utility";
 import { handleUserLogin } from "../../../services/auth";
+import { _getSecureLs, _setSecureLs } from "../../../helper/storage";
+import { useNavigate } from "react-router-dom";
 
 function Login(props) {
+  const navigate = useNavigate();
+  const { isLoggedIn } = _getSecureLs("auth");
   const [showPassword, setShowPassword] = useState(false);
-  const [userCredentials, setUserCredentials] = useState({
-    email: "",
-    password: "",
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  }, [isLoggedIn, navigate]);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async (values) => {
+      try {
+        const data = await handleUserLogin(values);
+        if (!data.userId) {
+          console.log(data);
+          return;
+        }
+
+        _setSecureLs("auth", {
+          isLoggedIn: true,
+          token: data.token,
+          user: data.userId,
+        });
+
+        navigate("/dashboard");
+      } catch (e) {
+        toast.error(e);
+        console.log("error", e);
+      }
+    },
   });
-  const [errors, setErrors] = useState({});
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleInputChangeHandler = (e) => {
-    setUserCredentials((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name]: e.target.value,
-      };
-    });
-    if (!!errors[e.target.name]) {
-      setErrors((prevState) => {
-        return {
-          ...prevState,
-          [e.target.name]: null,
-        };
-      });
-    }
-  };
-
-  const handleLogin = (e, userData) => {
-    e.preventDefault();
-
-    handleUserLogin(userData);
-
-    console.log(userData);
-  };
-
   return (
     <Form
       className="col-9 col-md-8 col-lg-4 mx-auto mt-2"
-      onSubmit={(e) => handleLogin(e, userCredentials)}
+      onSubmit={formik.handleSubmit}
     >
       <div className="SignUp__logo__wrapper">
-        <div className="logo col-lg-2 col-3 col-md-2">
-          <Image
-            fluid
-            src={require("../../../Assets/Images/desk-logo.png")}
-            alt="desk-logo.png"
-          />
-        </div>
         <h1>Welcome</h1>
       </div>
-      {!!errors.loginError && (
-        <p className="login-errors my-3 text-center">{errors.loginError}</p>
-      )}
+
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control
           type="email"
           name="email"
-          value={userCredentials.email}
-          onChange={(e) => handleInputChangeHandler(e)}
+          value={formik.values.email}
+          onChange={formik.handleChange}
           placeholder="Enter Email"
-          isInvalid={!!errors.email}
+          isInvalid={formik.errors.email}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.email}
-        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -82,14 +80,11 @@ function Login(props) {
         <Form.Control
           type={showPassword ? "text" : "password"}
           name="password"
-          value={userCredentials.password}
-          onChange={(e) => handleInputChangeHandler(e)}
+          value={formik.values.password}
+          onChange={formik.handleChange}
           placeholder="Password"
-          isInvalid={!!errors.password}
+          isInvalid={formik.errors.password}
         />
-        <Form.Control.Feedback type="invalid">
-          {errors.password}
-        </Form.Control.Feedback>
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicCheckbox">
         <Form.Check
