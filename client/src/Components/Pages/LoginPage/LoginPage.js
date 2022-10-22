@@ -11,6 +11,7 @@ import Loader from "../../UI/Loader/Loader";
 import { handleUserLogin } from "../../../services/auth";
 import { _getSecureLs, _setSecureLs } from "../../../helper/storage";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../helper/routes";
 
 function Login(props) {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ function Login(props) {
 
   useEffect(() => {
     if (isLoggedIn) {
-      navigate("/dashboard");
+      navigate(ROUTES.ROOT);
     }
   }, [isLoggedIn, navigate]);
 
@@ -42,7 +43,7 @@ function Login(props) {
           user: data.userId,
         });
 
-        navigate("/dashboard");
+        navigate(ROUTES.ROOT);
       } catch (e) {
         toast.error(e);
         console.log("error", e);

@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { ROUTES } from "../../helper/routes";
 import { _getSecureLs } from "../../helper/storage";
 
 function PrivateRoute({ children }) {
@@ -6,7 +7,7 @@ function PrivateRoute({ children }) {
   console.log(isLoggedIn);
 
   if (!isLoggedIn) {
-    return <Navigate to="/login" />;
+    return <Navigate to={ROUTES.LOGIN} />;
   }
 
   return children;

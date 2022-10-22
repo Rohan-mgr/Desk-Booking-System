@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import { Link } from "react-router-dom";
 import Loader from "../../UI/Loader/Loader";
-import { validateForm } from "../../../shared/utility";
+import { ROUTES } from "../../../helper/routes";
 
 function SignUp(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,12 +40,8 @@ function SignUp(props) {
 
   const handleUserCredentialsSubmission = (e, userData) => {
     e.preventDefault();
-    const formError = validateForm(userData, "signup");
-    if (Object.keys(formError).length > 0) {
-      setErrors(formError);
-    } else {
-      props.onSignUp(userData, setErrors, setUserCredentials);
-    }
+
+    props.onSignUp(userData, setErrors, setUserCredentials);
   };
 
   return (
@@ -137,7 +133,7 @@ function SignUp(props) {
       <div className="text-center my-2">
         <Form.Text>
           Already have an account?{" "}
-          <Link to="/login" style={{ fontWeight: "bold" }}>
+          <Link to={ROUTES.LOGIN} style={{ fontWeight: "bold" }}>
             Sign In
           </Link>
         </Form.Text>

@@ -10,15 +10,16 @@ import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import { ROUTES } from "./helper/routes";
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<SignUp />} />
-        <Route index path="/login" element={<Login />} />
+        <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
+        <Route index path={ROUTES.LOGIN} element={<Login />} />
         <Route
-          path="dashboard"
+          path={ROUTES.ROOT}
           element={
             <PrivateRoute>
               <Dashboard />

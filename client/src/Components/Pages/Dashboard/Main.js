@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "react-bootstrap/esm/Button";
 import { Outlet, useNavigate } from "react-router-dom";
+import { ROUTES } from "../../../helper/routes";
 import { _removeAllLs, _setSecureLs } from "../../../helper/storage";
 
 function Main() {
@@ -23,7 +24,7 @@ function Main() {
             <Button
               onClick={() => {
                 _removeAllLs();
-                navigate("/login");
+                navigate(ROUTES.LOGIN);
               }}
             >
               Logout
