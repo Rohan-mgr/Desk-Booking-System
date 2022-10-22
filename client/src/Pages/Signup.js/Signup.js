@@ -29,15 +29,12 @@ function SignUp(props) {
       password: "",
     },
     onSubmit: async (values) => {
-      console.log(values);
       try {
         const data = await handleUserSignup(values);
         if (!data) {
           console.log(data);
           return;
         }
-        console.log(data);
-
         navigate(ROUTES.LOGIN);
       } catch (e) {
         toast.error(e);
@@ -67,6 +64,7 @@ function SignUp(props) {
             <Form.Control
               type="text"
               name="fname"
+              required
               value={formik.values.fname}
               onChange={formik.handleChange}
               placeholder="Enter First Name"
@@ -81,6 +79,7 @@ function SignUp(props) {
             <Form.Control
               type="text"
               name="lname"
+              required
               value={formik.values.lname}
               onChange={formik.handleChange}
               placeholder="Enter Last Name"
@@ -92,6 +91,7 @@ function SignUp(props) {
             <Form.Control
               type="email"
               name="email"
+              required
               value={formik.values.email}
               onChange={formik.handleChange}
               placeholder="Enter Email"
@@ -107,6 +107,7 @@ function SignUp(props) {
             <Form.Control
               type={showPassword ? "text" : "password"}
               name="password"
+              required
               value={formik.values.password}
               onChange={formik.handleChange}
               placeholder="Password"
