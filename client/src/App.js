@@ -5,6 +5,8 @@ import SignUp from "./Components/Pages/Signup.js/Signup";
 import Login from "./Components/Pages/LoginPage/LoginPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
+import UI from "./Components/Pages/Dashboard/UI";
+import UI2 from "./Components/Pages/Dashboard/UI2";
 
 function App() {
   const navigate = useNavigate();
@@ -183,9 +185,15 @@ function App() {
           path="/login"
           element={<Login loading={isLoading} onSingIn={handleUserlogin} />}
         />
-        {authState.isAuth && (
-          <Route path="/dashboard" element={<Dashboard />} />
-        )}
+        {/* {authState.isAuth && ( */}
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        {/* <Routes> */}
+        <Route path="/dashboard/*" element={<Dashboard />}>
+          <Route path="ui" element={<UI />} />
+          <Route path="ui2" element={<UI2 />} />
+        </Route>
+        {/* </Routes> */}
+        {/* )} */}
         {/* <Route path="/" element={<PrivateRoute isAuth={authState.isAuth} />}> */}
         {/* </Route> */}
         {/* <Route path="*" element={<Navigate to="/" />} /> */}
