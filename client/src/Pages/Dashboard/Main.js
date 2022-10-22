@@ -1,8 +1,8 @@
 import React from "react";
 import Button from "react-bootstrap/esm/Button";
 import { Outlet, useNavigate } from "react-router-dom";
-import { ROUTES } from "../../../helper/routes";
-import { _removeAllLs, _setSecureLs } from "../../../helper/storage";
+import { ROUTES } from "../../helper/routes";
+import { _removeAllLs, _setSecureLs } from "../../helper/storage";
 
 function Main() {
   const navigate = useNavigate();

@@ -50,13 +50,6 @@ function SignUp(props) {
       onSubmit={(e) => handleUserCredentialsSubmission(e, userCredentials)}
     >
       <div className="SignUp__logo__wrapper">
-        <div className="logo col-lg-2 col-3 col-md-2">
-          <Image
-            fluid
-            src={require("../../../Assets/Images/desk-logo.png")}
-            alt="desk-logo.png"
-          />
-        </div>
         <h1>Welcome</h1>
       </div>
       {!!errors.signupError && (
