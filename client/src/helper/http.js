@@ -1,8 +1,5 @@
-import axios, { AxiosResponse } from "axios";
-import { getAccessToken } from "helper/storage";
-
-import config from "../config/config";
-import { withData, withError } from "./api";
+import axios from "axios";
+import { config } from "../config";
 
 export const http = axios.create({
   baseURL: config.baseUrl,
@@ -10,23 +7,23 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use((req) => {
-  req.headers.authorization = `Bearer ${getAccessToken()}`;
+  req.headers.authorization = `Bearer `;
 
   return req;
 });
 
 http.interceptors.response.use(
   (res) => {
-    return withData(res.data);
+    return res.data;
   },
   (err) => {
-    return withError(err?.response?.data?.error);
+    return err?.response?.data?.error;
   }
 );
 
 export const httpAuth = axios.create({
-  baseURL: config.loginUrl,
-  headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  baseURL: config.baseURL,
+  headers: { "Content-Type": "application/json" },
 });
 
 httpAuth.interceptors.request.use((req) => {

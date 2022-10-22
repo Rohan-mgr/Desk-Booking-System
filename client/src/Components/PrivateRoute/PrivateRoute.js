@@ -1,14 +1,11 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-// import Loader from "../UI/Loader/Loader";
+import { Navigate } from "react-router-dom";
 
-const PrivateRoute = (props) => {
-  // if (props.isAuth === undefined) {
-  //   return null;
-  // }
-  console.log(props.isAuth);
+function PrivateRoute({ children }) {
+  if (true) {
+    return <Navigate to="/login" />;
+  }
 
-  return props?.isAuth ? <Outlet /> : <Navigate to="/login" />;
-};
+  return children;
+}
 
 export default PrivateRoute;

@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Image from "react-bootstrap/Image";
 import Loader from "../../UI/Loader/Loader";
 import { validateForm } from "../../../shared/utility";
+import { handleUserLogin } from "../../../services/auth";
 
 function Login(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,12 +38,10 @@ function Login(props) {
 
   const handleLogin = (e, userData) => {
     e.preventDefault();
-    const formError = validateForm(userCredentials, "signin");
-    if (Object.keys(formError).length > 0) {
-      setErrors(formError);
-    } else {
-      props.onSingIn(userData, setErrors, setUserCredentials);
-    }
+
+    handleUserLogin(userData);
+
+    console.log(userData);
   };
 
   return (

@@ -4,8 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import SignUp from "./Components/Pages/Signup.js/Signup";
 import Login from "./Components/Pages/LoginPage/LoginPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
-import UI from "./Components/Pages/Dashboard/UI";
-import UI2 from "./Components/Pages/Dashboard/UI2";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 
 function App() {
   return (
@@ -13,10 +12,12 @@ function App() {
       <Routes>
         <Route path="/" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard/*" element={<Dashboard />}>
-          <Route path="ui" element={<UI />} />
-          <Route path="ui2" element={<UI2 />} />
+        <Route element={<PrivateRoute />}>
+          <Route index path="/dashboard/*" element={<Dashboard />}></Route>
         </Route>
+
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<p>404!</p>} />
       </Routes>
     </div>
   );
