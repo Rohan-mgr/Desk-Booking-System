@@ -3,6 +3,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const userRoutes = require("./routes/user");
+const companyRoutes = require("./routes/company");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 });
 
 app.use(userRoutes);
+app.use(companyRoutes);
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
