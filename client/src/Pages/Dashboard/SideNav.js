@@ -5,7 +5,7 @@ import { ROUTES } from "../../helper/routes";
 function SideNav() {
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
-      <a href={ROUTES.REGISTER_COMPANY} className="brand-link">
+      <a href={ROUTES.CREATE_COMPANY} className="brand-link">
         <img
           src="/dist/img/desk-logo.png"
           alt="AdminLTE Logo"
@@ -30,7 +30,7 @@ function SideNav() {
          with font-awesome or any other icon font library */}
             <li className="nav-item">
               <a href="/registercompany" className="nav-link">
-                <i class="nav-icon fa fa-building" aria-hidden="true"></i>
+                <i className="nav-icon fa fa-building" aria-hidden="true"></i>
                 <p>Create Company</p>
               </a>
             </li>

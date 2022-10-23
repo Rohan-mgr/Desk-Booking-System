@@ -6,7 +6,7 @@
 }
 .dashboard__create__company .form-label {
     font-weight: normal !important;
-    width: 150px !important;
+    margin-right: 1rem !important;
 }
 .dashboard__create__company .form-label span {
     color: crimson;

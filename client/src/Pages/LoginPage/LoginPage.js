@@ -43,7 +43,7 @@ function Login(props) {
           user: data.userId,
         });
 
-        navigate(ROUTES.REGISTER_COMPANY);
+        navigate(ROUTES.CREATE_COMPANY);
       } catch (e) {
         toast.error(e);
         console.log("error", e);
@@ -95,7 +95,7 @@ function Login(props) {
           <div className="row">
             <div className="col d-grid">
               <Button
-                class="btn btn-primary"
+                className="btn btn-primary"
                 size="lg"
                 variant="primary"
                 type="submit"
