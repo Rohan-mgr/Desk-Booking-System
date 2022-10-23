@@ -7,10 +7,10 @@ import SignUp from "./Pages/Signup.js/Signup";
 import Login from "./Pages/LoginPage/LoginPage";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
-
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { ROUTES } from "./helper/routes";
+import CreateCompany from "./Pages/Dashboard/Dashboard Pages/CreateCompany";
 
 function App() {
   return (
@@ -25,7 +25,9 @@ function App() {
               <Dashboard />
             </PrivateRoute>
           }
-        ></Route>
+        >
+          <Route path="/registercompany" element={<CreateCompany />} />
+        </Route>
 
         <Route path="*" element={<p>404!</p>} />
       </Routes>

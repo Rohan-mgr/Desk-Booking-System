@@ -43,7 +43,7 @@ function Login(props) {
           user: data.userId,
         });
 
-        navigate(ROUTES.ROOT);
+        navigate(ROUTES.REGISTER_COMPANY);
       } catch (e) {
         toast.error(e);
         console.log("error", e);

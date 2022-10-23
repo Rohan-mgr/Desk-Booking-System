@@ -1,10 +1,11 @@
 import React from "react";
 import "./SideNav.css";
+import { ROUTES } from "../../helper/routes";
 
 function SideNav() {
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
-      <a href="/dashboard/ui" className="brand-link">
+      <a href={ROUTES.REGISTER_COMPANY} className="brand-link">
         <img
           src="/dist/img/desk-logo.png"
           alt="AdminLTE Logo"
@@ -28,9 +29,9 @@ function SideNav() {
             {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
             <li className="nav-item">
-              <a href="/dashboard/ui" className="nav-link">
-                <i className="nav-icon fas fa-tree" />
-                <p>UI Elements</p>
+              <a href="/registercompany" className="nav-link">
+                <i class="nav-icon fa fa-building" aria-hidden="true"></i>
+                <p>Create Company</p>
               </a>
             </li>
             <li className="nav-item">

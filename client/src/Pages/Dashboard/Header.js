@@ -1,10 +1,15 @@
 import React from "react";
-import { BsBell } from "react-icons/bs";
 import "./Header.css";
+import { BsBell } from "react-icons/bs";
+import Button from "react-bootstrap/esm/Button";
+import { ROUTES } from "../../helper/routes";
+import { _removeAllLs } from "../../helper/storage";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate();
   return (
-    <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav className="main-header navbar navbar-expand navbar-white navbar-light mr-1">
       <ul className="navbar-nav">
         <li className="nav-item">
           <a className="nav-link" data-widget="pushmenu" href="#" role="button">
@@ -54,6 +59,17 @@ function Header() {
             <i className="fas fa-expand-arrows-alt" />
           </a>
         </li>
+        <div>
+          <Button
+            className="col-12"
+            onClick={() => {
+              _removeAllLs();
+              navigate(ROUTES.LOGIN);
+            }}
+          >
+            Logout
+          </Button>
+        </div>
       </ul>
     </nav>
   );
