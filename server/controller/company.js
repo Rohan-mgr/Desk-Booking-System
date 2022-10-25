@@ -48,12 +48,10 @@ exports.postCompanyInfo = async (req, res, next) => {
       workEmail: workEmail,
     });
     const result = await company.save();
-    res
-      .status(200)
-      .json({
-        message: "company Info register successfully",
-        registerId: result._id,
-      });
+    res.status(200).json({
+      message: "company Info register successfully",
+      registerId: result._id,
+    });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
