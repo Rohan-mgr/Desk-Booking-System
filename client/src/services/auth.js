@@ -1,3 +1,4 @@
+import emailjs from "@emailjs/browser";
 const { AUTH_ENDPOINT } = require("../helper/endpoints");
 const { httpAuth } = require("../helper/http");
 
@@ -27,4 +28,13 @@ export const handleRegisterCompany = (companyInfo, id) => {
   console.log(companyInfo, id);
   // const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
   // return response;
+};
+export const handleUserMessage = async (visitorInfo) => {
+  const response = await emailjs.send(
+    "service_4j7iift",
+    "template_9mrpqt5",
+    visitorInfo,
+    "PLCqtnflXkQA_889q"
+  );
+  return response;
 };

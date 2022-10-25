@@ -5,7 +5,10 @@ import { ROUTES } from "../../helper/routes";
 function SideNav() {
   return (
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
-      <a href={ROUTES.CREATE_COMPANY} className="brand-link">
+      <a
+        href={ROUTES.DASHBOARD + "/" + ROUTES.CREATE_COMPANY}
+        className="brand-link"
+      >
         <img
           src="/dist/img/desk-logo.png"
           alt="AdminLTE Logo"
@@ -29,15 +32,9 @@ function SideNav() {
             {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
             <li className="nav-item">
-              <a href="/registercompany" className="nav-link">
+              <a href="/dashboard/registercompany" className="nav-link">
                 <i className="nav-icon fa fa-building" aria-hidden="true"></i>
                 <p>Create Company</p>
-              </a>
-            </li>
-            <li className="nav-item">
-              <a href="/dashboard/ui2 " className="nav-link">
-                <i className="nav-icon fas fa-tree" />
-                <p>UI Elements2</p>
               </a>
             </li>
           </ul>

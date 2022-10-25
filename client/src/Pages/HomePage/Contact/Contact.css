@@ -1,0 +1,16 @@
+#contact form {
+    display: inline-block !important;
+    position: absolute !important;
+    right: 50%;
+    top: 12rem;
+    transform: translateX(50%);
+    border: 2px solid #E6E6E6;
+    background-color: #E6E6E6;
+    box-shadow: 0 0 15px #ccc;
+}
+
+@media (max-width: 480px) {
+    .contact form{
+        top: 6rem;
+    }
+}

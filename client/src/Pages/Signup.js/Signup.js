@@ -49,7 +49,7 @@ function SignUp(props) {
 
   return (
     <div className="signup-wrapper">
-      <div className="signup-form card">
+      <div className="signup-form card col-9 col-lg-4 col-md-8">
         <Form className="card-body" onSubmit={formik.handleSubmit}>
           <div>
             <h3 className="text-center">Sign up</h3>

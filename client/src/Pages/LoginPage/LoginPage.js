@@ -43,7 +43,7 @@ function Login(props) {
           user: data.userId,
         });
 
-        navigate(ROUTES.CREATE_COMPANY);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.CREATE_COMPANY}`);
       } catch (e) {
         toast.error(e);
         console.log("error", e);
@@ -57,7 +57,10 @@ function Login(props) {
 
   return (
     <div className="login-wrapper">
-      <Form className="login-form card" onSubmit={formik.handleSubmit}>
+      <Form
+        className="login-form card col-9 col-lg-4 col-md-8"
+        onSubmit={formik.handleSubmit}
+      >
         <div className="card-body">
           <div className="card-title-wrapper">
             <h3 className="text-center mb-3">Login</h3>

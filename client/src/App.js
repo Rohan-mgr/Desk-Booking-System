@@ -7,6 +7,7 @@ import SignUp from "./Pages/Signup.js/Signup";
 import Login from "./Pages/LoginPage/LoginPage";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
+import Homepage from "./Pages/HomePage/Homepage";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { ROUTES } from "./helper/routes";
@@ -20,7 +21,7 @@ function App() {
         <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
         <Route index path={ROUTES.LOGIN} element={<Login />} />
         <Route
-          path={ROUTES.ROOT}
+          path={ROUTES.DASHBOARD}
           element={
             <PrivateRoute>
               <Dashboard />
@@ -30,7 +31,7 @@ function App() {
           <Route path={ROUTES.CREATE_COMPANY} element={<CreateCompany />} />
           <Route path={ROUTES.REGISTER_COMPANY} element={<RegisterCompany />} />
         </Route>
-
+        <Route path={ROUTES.ROOT} element={<Homepage />} />
         <Route path="*" element={<p>404!</p>} />
       </Routes>
 
