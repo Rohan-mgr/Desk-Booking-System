@@ -35,5 +35,6 @@ router.post(
   userController.createUser
 );
 router.post("/login", userController.postLogin);
+router.get("/get-user/:id", userController.getUserById);
 
 module.exports = router;

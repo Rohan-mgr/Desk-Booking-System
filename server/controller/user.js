@@ -3,6 +3,28 @@ const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
+exports.getUserById = async (req, res, next) => {
+  const userId = req.params.id;
+  const user = await User.findOne({ _id: userId });
+
+  try {
+    res.status(200).json({
+      message: "Success",
+      user: {
+        userId: user._id.toString(),
+        fname: user.fname,
+        lname: user.lname,
+        email: user.email,
+      },
+    });
+  } catch (e) {
+    if (!error.statusCode) {
+      error.statusCode = 401;
+    }
+    next(error);
+  }
+};
+
 exports.createUser = async (req, res, next) => {
   const errors = validationResult(req);
   const fname = req.body.fname;
