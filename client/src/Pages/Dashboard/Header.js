@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 function Header() {
   const navigate = useNavigate();
   return (
-    <nav className="main-header navbar navbar-expand navbar-white navbar-light mr-1">
+    <nav className="main-header navbar navbar-expand  mr-1">
       <ul className="navbar-nav">
         <li className="nav-item">
           <a className="nav-link" data-widget="pushmenu" href="#" role="button">

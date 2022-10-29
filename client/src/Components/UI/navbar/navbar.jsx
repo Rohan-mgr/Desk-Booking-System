@@ -25,7 +25,7 @@ export default function Navbar() {
         </a>
 
         <a className="nav-link custom-btn btn d-lg-none" href="#">
-          Buy Tickets
+          Login
         </a>
 
         <div className="collapse navbar-collapse" id="navbarNav">
