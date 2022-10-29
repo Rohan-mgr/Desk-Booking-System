@@ -1,7 +1,11 @@
 .signup-wrapper {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
 
+.signup-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
