@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Header.css";
 import { BsBell } from "react-icons/bs";
 import Button from "react-bootstrap/esm/Button";
 import { ROUTES } from "../../helper/routes";
 import { _removeAllLs } from "../../helper/storage";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../../services/auth";
 
 function Header() {
   const navigate = useNavigate();
+
+  useEffect(() => {}, []);
+
+  getCurrentUser();
   return (
     <nav className="main-header navbar navbar-expand  mr-1">
       <ul className="navbar-nav">

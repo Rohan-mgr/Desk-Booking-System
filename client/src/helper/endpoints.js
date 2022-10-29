@@ -3,6 +3,7 @@ import { config } from "../config";
 export const AUTH_ENDPOINT = {
   login: config.baseURL + "/login",
   signup: config.baseURL + "/signup",
+  getUser: config.baseURL + "/get-user",
 };
 
 export const COMPANY_ENDPOINTS = {

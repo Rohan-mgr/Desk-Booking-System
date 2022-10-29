@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
 import { toast } from "react-toastify";
+
+import nameInitials from "name-initials";
 
 function Company() {
   const navigate = useNavigate();
@@ -26,15 +27,24 @@ function Company() {
 
   return (
     <div>
-      <h3>Workspaces </h3>
+      <div className="content-header">
+        <h1 className="m-0">Workspace</h1>
+      </div>
+
       <table className="table">
         <thead>
-          <th>Name</th>
+          <th>Workspace Name</th>
+          <th>Created by</th>
         </thead>
         <tbody>
           {companies?.map((company) => (
             <tr>
               <td>{company?.companyName || ""}</td>
+              <td>
+                {nameInitials(
+                  `${company?.companyOwner?.fname} ${company?.companyOwner?.lname}`
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
