@@ -13,6 +13,7 @@ import "./App.css";
 import { ROUTES } from "./helper/routes";
 import CreateCompany from "./Pages/Dashboard/CreateCompany/CreateCompany";
 import RegisterCompany from "./Pages/Dashboard/RegisterCompany/RegisterCompany";
+import Company from "./Pages/Dashboard/Company/Company";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             </PrivateRoute>
           }
         >
+          <Route path={ROUTES.COMPANY} element={<Company />} />
           <Route path={ROUTES.CREATE_COMPANY} element={<CreateCompany />} />
           <Route path={ROUTES.REGISTER_COMPANY} element={<RegisterCompany />} />
         </Route>

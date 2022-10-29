@@ -50,7 +50,9 @@ function CreateCompany() {
         _setSecureLs("Registration", {
           registerId: data.registerId,
         });
-        navigate(`${ROUTES.CREATE_COMPANY}/${data?.registerId}`);
+        navigate(
+          `${ROUTES.DASHBOARD}/${ROUTES.CREATE_COMPANY}/${data?.registerId}`
+        );
       } catch (e) {
         // toast.error(e);
         console.log("error", e);
@@ -150,9 +152,6 @@ function CreateCompany() {
                 </option>
               );
             })}
-            {/* <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option> */}
           </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3">

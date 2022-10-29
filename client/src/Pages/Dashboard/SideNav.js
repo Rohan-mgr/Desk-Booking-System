@@ -34,7 +34,7 @@ function SideNav() {
             <li className="nav-item">
               <a href="/dashboard/registercompany" className="nav-link">
                 <i className="nav-icon fa fa-building" aria-hidden="true"></i>
-                <p>Create Company</p>
+                <p>Company</p>
               </a>
             </li>
           </ul>

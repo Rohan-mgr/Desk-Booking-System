@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 function NavBar(props) {
   const location = useLocation();
   return (
-    <Navbar bg="Navbar" expand="lg">
+    <Navbar bg="Navbar home_navbar" expand="lg">
       <Container fluid>
         <Navbar.Brand href="/">
           <img

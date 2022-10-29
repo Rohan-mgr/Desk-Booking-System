@@ -22,13 +22,15 @@ export const handleCreateCompany = async (companyInfo) => {
   const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
   return response;
 };
-export const handleRegisterCompany = (companyInfo, id) => {
+export const handleRegisterCompany = async (companyInfo, id) => {
   const URL = AUTH_ENDPOINT.registercompany + "/" + id;
   console.log(URL, "registercompany");
-  console.log(companyInfo, id);
-  // const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
-  // return response;
+  const info = { ...companyInfo, registerId: id };
+  console.log(info);
+  const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
+  return response;
 };
+
 export const handleUserMessage = async (visitorInfo) => {
   const response = await emailjs.send(
     "service_4j7iift",
@@ -36,5 +38,11 @@ export const handleUserMessage = async (visitorInfo) => {
     visitorInfo,
     "PLCqtnflXkQA_889q"
   );
+  return response;
+};
+
+export const handleFetchCompany = async () => {
+  const URL = AUTH_ENDPOINT.registercompany;
+  const response = await httpAuth.get(URL);
   return response;
 };

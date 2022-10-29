@@ -6,6 +6,7 @@ import { _getSecureLs } from "../../../helper/storage";
 import { ROUTES } from "../../../helper/routes";
 import { useFormik } from "formik";
 import { handleRegisterCompany } from "../../../services/auth";
+import { toast } from "react-toastify";
 
 function RegisterCompany() {
   const navigate = useNavigate();
@@ -21,21 +22,21 @@ function RegisterCompany() {
   const formik = useFormik({
     initialValues: {
       floorName: "",
-      totalEmployees: "",
-      totalRooms: "",
+      bookStatus: "false",
     },
-    onSubmit: (values) => {
-      //   try {
-      const data = handleRegisterCompany(values, registerId);
-      if (!data) {
-        return;
+    onSubmit: async (values) => {
+      try {
+        const data = await handleRegisterCompany(values, registerId);
+        if (!data) {
+          return;
+        }
+        console.log(data);
+        toast("Company registered successfully");
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.COMPANY}`);
+      } catch (e) {
+        toast.error(e);
+        console.log("error", e);
       }
-      console.log(data);
-      // navigate(`${ROUTES.CREATE_COMPANY}/${data?.registerId}`);
-      //   } catch (e) {
-      // toast.error(e);
-      //   console.log("error", e);
-      //   }
     },
   });
 
@@ -60,7 +61,7 @@ function RegisterCompany() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3">
+        {/* <Form.Group className="mb-3">
           <Form.Label>
             Number Of Employees<span>*</span>:
           </Form.Label>
@@ -70,8 +71,19 @@ function RegisterCompany() {
             value={formik.values.totalEmployees}
             onChange={formik.handleChange}
           />
-        </Form.Group>
+        </Form.Group> */}
         <Form.Group className="mb-3">
+          <Form.Label>Book Status: </Form.Label>
+          <Form.Select
+            name="bookStatus"
+            value={formik.values.bookStatus}
+            onChange={formik.handleChange}
+          >
+            <option value="false">False</option>
+            <option value="true">True</option>
+          </Form.Select>
+        </Form.Group>
+        {/* <Form.Group className="mb-3">
           <Form.Label>
             Number Of Rooms<span>*</span>:
           </Form.Label>
@@ -81,7 +93,7 @@ function RegisterCompany() {
             value={formik.values.totalRooms}
             onChange={formik.handleChange}
           />
-        </Form.Group>
+        </Form.Group> */}
         <Button variant="primary" type="submit">
           Register Now
         </Button>
