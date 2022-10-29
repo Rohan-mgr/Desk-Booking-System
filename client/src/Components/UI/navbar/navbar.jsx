@@ -17,7 +17,7 @@ export default function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <a href={ROUTES.ROOT} className="navbar-brand mx-auto mx-lg-0">
+        <a href={ROUTES.LANDING} className="navbar-brand mx-auto mx-lg-0">
           <i className="bi-bullseye brand-logo mr-2"></i>
           <span className="brand-text">
             Desk <br /> Booking system{" "}
