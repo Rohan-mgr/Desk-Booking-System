@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
+import { toast } from "react-toastify";
 
 function Company() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ function Company() {
       const response = await getAllCompanies();
       setCompanies(response?.result);
     } catch (e) {
+      toast(e);
       console.log(e);
     }
   };

@@ -7,6 +7,7 @@ import { handleCreateCompany } from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../helper/routes";
 import { _setSecureLs } from "../../../helper/storage";
+import { toast } from "react-toastify";
 
 function CreateCompany() {
   const navigate = useNavigate();
