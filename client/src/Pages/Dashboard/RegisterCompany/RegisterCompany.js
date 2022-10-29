@@ -15,7 +15,7 @@ function RegisterCompany() {
 
   useEffect(() => {
     if (queryRegisterId !== registerId) {
-      navigate(ROUTES.CREATE_COMPANY);
+      navigate(`${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`);
     }
   }, [queryRegisterId, registerId, navigate]);
 
@@ -32,7 +32,7 @@ function RegisterCompany() {
         }
         console.log(data);
         toast("Company registered successfully");
-        navigate(`${ROUTES.DASHBOARD}/${ROUTES.COMPANY}`);
+        navigate(`/${ROUTES.COMPANY}`);
       } catch (e) {
         toast.error(e);
         console.log("error", e);

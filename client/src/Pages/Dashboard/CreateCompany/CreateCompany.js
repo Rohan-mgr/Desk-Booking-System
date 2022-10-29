@@ -7,7 +7,6 @@ import { handleCreateCompany } from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../helper/routes";
 import { _setSecureLs } from "../../../helper/storage";
-import { toast } from "react-toastify";
 
 function CreateCompany() {
   const navigate = useNavigate();
@@ -51,9 +50,7 @@ function CreateCompany() {
         _setSecureLs("Registration", {
           registerId: data.registerId,
         });
-        navigate(
-          `${ROUTES.DASHBOARD}/${ROUTES.CREATE_COMPANY}/${data?.registerId}`
-        );
+        navigate(`${data?.registerId}`);
       } catch (e) {
         // toast.error(e);
         console.log("error", e);

@@ -56,7 +56,6 @@ function SideNav() {
 
             <li className="nav-item">
               <NavLink
-                exact
                 to="manage"
                 className={({ isActive }) =>
                   isActive ? "nav-link active" : "nav-link"

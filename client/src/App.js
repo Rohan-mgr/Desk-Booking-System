@@ -34,9 +34,15 @@ function App() {
         >
           <Route path={ROUTES.DASHBOARD} element={<DashboardHome />} />
           <Route path={ROUTES.COMPANY} element={<Company />} />
-          <Route path={ROUTES.CREATE_COMPANY} element={<CreateCompany />} />
-          <Route path={ROUTES.REGISTER_COMPANY} element={<RegisterCompany />} />
-          <Route path={ROUTES.MANAGE} element={<RegisterCompany />} />
+          <Route
+            path={`${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`}
+            element={<CreateCompany />}
+          />
+          <Route
+            path={`${ROUTES.COMPANY}/${ROUTES.REGISTER_COMPANY}`}
+            element={<RegisterCompany />}
+          />
+          <Route path={ROUTES.MANAGE} element={<p>Manage</p>} />
         </Route>
         <Route path="*" element={<p>404!</p>} />
       </Routes>

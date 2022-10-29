@@ -1,7 +1,7 @@
 import emailjs from "@emailjs/browser";
 import { ROUTES } from "../helper/routes";
 import { _getSecureLs } from "../helper/storage";
-const { AUTH_ENDPOINT } = require("../helper/endpoints");
+const { AUTH_ENDPOINT, COMPANY_ENDPOINTS } = require("../helper/endpoints");
 const { httpAuth, http } = require("../helper/http");
 
 export const handleUserLogin = async (userData) => {
@@ -17,13 +17,14 @@ export const handleUserSignup = async (userData) => {
 };
 
 export const handleCreateCompany = async (companyInfo) => {
-  const URL = AUTH_ENDPOINT.registercompany;
+  const URL = COMPANY_ENDPOINTS.company;
+  console.log(URL);
   const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
   return response;
 };
 export const handleRegisterCompany = async (companyInfo, id) => {
-  const URL = AUTH_ENDPOINT.registercompany + "/" + id;
-  const info = { ...companyInfo, registerId: id };
+  const URL = COMPANY_ENDPOINTS.company + "/" + id;
+
   const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
   return response;
 };

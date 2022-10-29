@@ -26,7 +26,7 @@ function LandingPage() {
                   <p class="text-white mb-4">Work from anywhere </p>
 
                   <a
-                    href="#section_2"
+                    href="#section_4"
                     class="custom-link bi-arrow-down arrow-icon"
                   ></a>
                 </div>
@@ -170,7 +170,7 @@ function LandingPage() {
               </div>
 
               <div class="col-lg-3 col-12 ms-lg-auto mt-4 mt-lg-0">
-                <a href="#section_5" class="custom-btn btn">
+                <a href="/signup" class="custom-btn btn">
                   Register Today
                 </a>
               </div>
@@ -233,7 +233,7 @@ function LandingPage() {
           </div>
         </section>
 
-        <section class="contact section-padding" id="section_7">
+        <section class="contact section-padding" id="contact-section">
           <div class="container">
             <div class="row">
               <div class="col-lg-8 col-12 mx-auto">

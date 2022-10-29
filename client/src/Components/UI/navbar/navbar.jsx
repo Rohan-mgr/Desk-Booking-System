@@ -31,25 +31,25 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a className="nav-link click-scroll" href="#section_1">
+              <a className="nav-link click-scroll" href="/landing">
                 Home
               </a>
             </li>
 
             <li className="nav-item">
-              <a className="nav-link click-scroll" href="#section_2">
+              <a className="nav-link click-scroll" href="#section_6">
                 About
               </a>
             </li>
 
             <li className="nav-item">
-              <a className="nav-link click-scroll" href="#section_6">
+              <a className="nav-link click-scroll" href="#section_4">
                 Workspace
               </a>
             </li>
 
             <li className="nav-item">
-              <a className="nav-link click-scroll" href="#section_7">
+              <a className="nav-link click-scroll" href="#contact-section">
                 Contact
               </a>
             </li>
