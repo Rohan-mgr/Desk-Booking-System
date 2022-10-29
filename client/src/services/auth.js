@@ -41,7 +41,12 @@ export const handleUserMessage = async (visitorInfo) => {
 export const getCurrentUser = async () => {
   const userId = _getSecureLs("auth")?.user;
   if (userId) {
-    const response = await http.get(AUTH_ENDPOINT.getUser + `/${userId}`);
-    console.log("current user data", response);
+    try {
+      const response = await http.get(AUTH_ENDPOINT.getUser + `/${userId}`);
+      return response?.user;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 };

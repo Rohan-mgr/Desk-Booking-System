@@ -1,8 +1,12 @@
 import React from "react";
 import "./SideNav.css";
 import { ROUTES } from "../../helper/routes";
+import { _removeAllLs } from "../../helper/storage";
+import { useNavigate } from "react-router-dom";
 
 function SideNav() {
+  const navigate = useNavigate();
+
   return (
     <aside className="main-sidebar sidebar-dark-primary ">
       <a
@@ -12,11 +16,11 @@ function SideNav() {
         <i className="bi-bullseye brand-logo mr-2"></i>
         <span className="brand-text font-weight-light">Book Your Desk</span>
       </a>
-      <div className="sidebar">
-        <nav className="mt-2">
+
+      <div className="sidebar ">
+        <nav className="mt-2 mb-2 d-flex flex-column justify-content-between align-items-between">
           <ul
-            className="nav nav-pills nav-sidebar flex-column"
-            data-widget="treeview"
+            className="nav nav-flat nav-sidebar flex-column"
             role="menu"
             data-accordion="false"
           >
@@ -42,6 +46,18 @@ function SideNav() {
             </li>
           </ul>
         </nav>
+
+        <div class="sidebar-custom">
+          <button
+            onClick={() => {
+              _removeAllLs();
+              navigate(ROUTES.LOGIN);
+            }}
+            class="mt-2 btn btn-secondary hide-on-collapse pos-right"
+          >
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
       </div>
     </aside>
   );

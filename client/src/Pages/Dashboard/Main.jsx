@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { getCurrentUser } from "../../services/auth";
 
-function Main() {
+function Main({ currentUser }) {
   return (
     <div className="content-wrapper">
       <section className="content">
         <div className="container-fluid">
           <div className="row">
             <div className="col m-3">
-              <Outlet />
+              <Outlet context={[currentUser]} />
             </div>
           </div>
         </div>
