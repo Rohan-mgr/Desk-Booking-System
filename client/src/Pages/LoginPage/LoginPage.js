@@ -39,7 +39,7 @@ function Login(props) {
           user: data.userId,
         });
 
-        navigate(`${ROUTES.DASHBOARD}/${ROUTES.CREATE_COMPANY}`);
+        navigate(`${ROUTES.DASHBOARD}`);
       } catch (e) {
         toast.error(e);
         console.log("error", e);

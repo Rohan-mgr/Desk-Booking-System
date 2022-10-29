@@ -4,21 +4,12 @@ import { ROUTES } from "../../helper/routes";
 
 function SideNav() {
   return (
-    <aside className="main-sidebar sidebar-dark-primary elevation-4">
+    <aside className="main-sidebar sidebar-dark-primary ">
       <a
         href={ROUTES.DASHBOARD + "/" + ROUTES.CREATE_COMPANY}
-        className="brand-link"
+        className="brand-link d-flex align-items-center"
       >
-        <img
-          src="/dist/img/desk-logo.png"
-          alt="AdminLTE Logo"
-          className="brand-image img-circle elevation-3"
-          style={{
-            opacity: ".8",
-            boxShadow: "none",
-            borderRadius: "0",
-          }}
-        />
+        <i className="bi-bullseye brand-logo mr-2"></i>
         <span className="brand-text font-weight-light">Book Your Desk</span>
       </a>
       <div className="sidebar">
@@ -29,12 +20,24 @@ function SideNav() {
             role="menu"
             data-accordion="false"
           >
-            {/* Add icons to the links using the .nav-icon class
-         with font-awesome or any other icon font library */}
             <li className="nav-item">
-              <a href="/dashboard/registercompany" className="nav-link">
+              <a href="/dashboard" className="nav-link">
+                <i className="nav-icon fa fa-house-user" aria-hidden="true"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <li className="nav-item">
+              <a href="/dashboard/company" className="nav-link">
                 <i className="nav-icon fa fa-building" aria-hidden="true"></i>
-                <p>Company</p>
+                <p>Workspaces</p>
+              </a>
+            </li>
+
+            <li className="nav-item">
+              <a href="/dashboard" className="nav-link">
+                <i className="nav-icon fas fa-toolbox"></i>
+                <p>Manage</p>
               </a>
             </li>
           </ul>

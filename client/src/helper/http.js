@@ -1,5 +1,6 @@
 import axios from "axios";
 import { config } from "../config";
+import { getUserToken } from "./storage";
 
 export const http = axios.create({
   baseURL: config.baseUrl,
@@ -7,7 +8,7 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use((req) => {
-  req.headers.authorization = `Bearer `;
+  req.headers.authorization = `Bearer ${getUserToken()}`;
 
   return req;
 });
@@ -17,7 +18,7 @@ http.interceptors.response.use(
     return res.data;
   },
   (err) => {
-    return err?.response?.error;
+    return Promise.reject(err?.response?.data?.message);
   }
 );
 

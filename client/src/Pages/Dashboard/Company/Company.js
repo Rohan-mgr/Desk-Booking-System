@@ -2,48 +2,49 @@ import React, { useState, useEffect } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
+import { getAllCompanies } from "../../../services/company";
+import { ROUTES } from "../../../helper/routes";
 
 function Company() {
   const navigate = useNavigate();
   const [companies, setCompanies] = useState([]);
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await getAllCompanies();
+      setCompanies(response?.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:3080/registercompany")
-      .then((res) => res.json())
-      .then((resData) => {
-        console.log(resData);
-        setCompanies(resData?.result);
-      })
-      .catch((err) => {
-        throw new Error(err);
-      });
+    fetchCompanies();
   }, []);
+
   return (
     <div>
-      <h1>List of Companies: </h1>
-      {companies?.length > 0 ? (
-        <ListGroup as="ol" numbered>
-          {companies.map((c) => {
-            return (
-              <ListGroup.Item
-                key={c._id}
-                action
-                variant="primary"
-                className="my-1"
-              >
-                {c.companyName}
-              </ListGroup.Item>
-            );
-          })}
-        </ListGroup>
-      ) : (
-        <h5>No any companies is created yet. Create one now !</h5>
-      )}
+      <h3>Workspaces </h3>
+      <table className="table">
+        <thead>
+          <th>Name</th>
+        </thead>
+        <tbody>
+          {companies?.map((company) => (
+            <tr>
+              <td>{company?.companyName || ""}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
       <Button
         variant="primary"
         className="my-3"
-        onClick={() => navigate("/dashboard/registercompany")}
+        onClick={() => navigate(ROUTES.CREATE_COMPANY)}
       >
-        Create Company
+        <i className="fa fa-plus"></i>
+        {""} Create your own workspace
       </Button>
     </div>
   );
