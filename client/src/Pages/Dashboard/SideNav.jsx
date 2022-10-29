@@ -2,7 +2,15 @@ import React from "react";
 import "./SideNav.css";
 import { ROUTES } from "../../helper/routes";
 import { _removeAllLs } from "../../helper/storage";
-import { useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  useLocation,
+  useNavigate,
+  useParams,
+  useRoutes,
+} from "react-router-dom";
+
+import className from "classnames";
 
 function SideNav() {
   const navigate = useNavigate();
@@ -10,7 +18,7 @@ function SideNav() {
   return (
     <aside className="main-sidebar sidebar-dark-primary ">
       <a
-        href={ROUTES.DASHBOARD + "/" + ROUTES.CREATE_COMPANY}
+        href={ROUTES.DASHBOARD}
         className="brand-link d-flex align-items-center"
       >
         <i className="bi-bullseye brand-logo mr-2"></i>
@@ -19,30 +27,44 @@ function SideNav() {
 
       <div className="sidebar ">
         <nav className="mt-2 mb-2 d-flex flex-column justify-content-between align-items-between">
-          <ul
-            className="nav nav-flat nav-sidebar flex-column"
-            role="menu"
-            data-accordion="false"
-          >
+          <ul className="nav nav-pills nav-sidebar flex-column" role="menu">
             <li className="nav-item">
-              <a href="/dashboard" className="nav-link">
+              <NavLink
+                exact
+                to="dashboard"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
                 <i className="nav-icon fa fa-house-user" aria-hidden="true"></i>
-                <p>Dashboard</p>
-              </a>
+                Dashboard
+              </NavLink>
             </li>
 
             <li className="nav-item">
-              <a href="/dashboard/company" className="nav-link">
+              <NavLink
+                exact
+                to="company"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
                 <i className="nav-icon fa fa-building" aria-hidden="true"></i>
-                <p>Workspaces</p>
-              </a>
+                Workspaces
+              </NavLink>
             </li>
 
             <li className="nav-item">
-              <a href="/dashboard" className="nav-link">
+              <NavLink
+                exact
+                to="manage"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active" : "nav-link"
+                }
+              >
                 <i className="nav-icon fas fa-toolbox"></i>
-                <p>Manage</p>
-              </a>
+                Manage
+              </NavLink>
             </li>
           </ul>
         </nav>

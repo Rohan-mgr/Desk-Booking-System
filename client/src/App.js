@@ -20,10 +20,12 @@ function App() {
   return (
     <div className="App">
       <Routes>
+        <Route index path={ROUTES.LANDING} element={<Landing />} />
+
         <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
-        <Route index path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route
-          path={ROUTES.DASHBOARD}
+          path={ROUTES.ROOT}
           element={
             <PrivateRoute>
               <Dashboard />
@@ -34,8 +36,8 @@ function App() {
           <Route path={ROUTES.COMPANY} element={<Company />} />
           <Route path={ROUTES.CREATE_COMPANY} element={<CreateCompany />} />
           <Route path={ROUTES.REGISTER_COMPANY} element={<RegisterCompany />} />
+          <Route path={ROUTES.MANAGE} element={<RegisterCompany />} />
         </Route>
-        <Route path={ROUTES.ROOT} element={<Landing />} />
         <Route path="*" element={<p>404!</p>} />
       </Routes>
 
