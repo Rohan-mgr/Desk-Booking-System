@@ -1,0 +1,9 @@
+.dashboard__create__company svg {
+    color: blue; 
+    width: 30px; 
+    height: 30px;
+}
+
+.dashboard__create__company .addfield {
+    margin-left: 7rem !important;
+}

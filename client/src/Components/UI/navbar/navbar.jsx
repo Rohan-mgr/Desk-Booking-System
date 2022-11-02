@@ -37,13 +37,13 @@ export default function Navbar() {
             </li>
 
             <li className="nav-item">
-              <a className="nav-link click-scroll" href="#section_6">
+              <a className="nav-link click-scroll" href="#about">
                 About
               </a>
             </li>
 
             <li className="nav-item">
-              <a className="nav-link click-scroll" href="#section_4">
+              <a className="nav-link click-scroll" href="#workspace">
                 Workspace
               </a>
             </li>
@@ -60,6 +60,14 @@ export default function Navbar() {
                 href={ROUTES.LOGIN}
               >
                 Login
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className="nav-link custom-btn btn d-none d-lg-block"
+                href={ROUTES.COMPANY_LOGIN}
+              >
+                Company Login
               </a>
             </li>
           </ul>

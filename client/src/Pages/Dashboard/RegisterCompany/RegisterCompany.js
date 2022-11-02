@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import "./RegisterCompany.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useParams, useNavigate } from "react-router-dom";
@@ -7,9 +8,11 @@ import { ROUTES } from "../../../helper/routes";
 import { useFormik } from "formik";
 import { handleRegisterCompany } from "../../../services/auth";
 import { toast } from "react-toastify";
+import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 
 function RegisterCompany() {
   const navigate = useNavigate();
+  // const [fields, setFields] = useState([]);
   const queryRegisterId = useParams().registerId;
   const { registerId } = _getSecureLs("Registration");
 
@@ -39,6 +42,25 @@ function RegisterCompany() {
       }
     },
   });
+  // console.log(fields);
+
+  // const handleAddFieldClick = () => {
+  //   const ifiedls = [...fields];
+  //   ifiedls.push(
+  //     <Form.Control
+  //       type="text"
+  //       name="floorName"
+  //       value={formik.values.floorName}
+  //       onChange={formik.handleChange}
+  //     />
+  //   );
+  //   setFields(ifiedls);
+  // };
+  // const handleSubFieldClick = () => {
+  //   const ifiedls = [...fields];
+  //   ifiedls.pop();
+  //   setFields(ifiedls);
+  // };
 
   return (
     <div className="dashboard__create__company">
@@ -59,7 +81,24 @@ function RegisterCompany() {
             value={formik.values.floorName}
             onChange={formik.handleChange}
           />
+
+          {/* <AiFillPlusCircle onClick={handleAddFieldClick} /> */}
         </Form.Group>
+        {/* {fields.length > 0 &&
+          fields.map((i, index) => {
+            console.log(i, index);
+            return (
+              <Form.Group className="mb-3 addfield">
+                <Form.Control
+                  type="text"
+                  name={index}
+                  value={formik.values.index}
+                  onChange={formik.handleChange}
+                />
+                <AiFillMinusCircle onClick={handleSubFieldClick} />
+              </Form.Group>
+            );
+          })} */}
 
         {/* <Form.Group className="mb-3">
           <Form.Label>

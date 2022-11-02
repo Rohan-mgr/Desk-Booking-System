@@ -1,6 +1,5 @@
 import emailjs from "@emailjs/browser";
-import { ROUTES } from "../helper/routes";
-import { _getSecureLs } from "../helper/storage";
+import { _getSecureLs, getUserToken } from "../helper/storage";
 const { AUTH_ENDPOINT, COMPANY_ENDPOINTS } = require("../helper/endpoints");
 const { httpAuth, http } = require("../helper/http");
 
@@ -19,7 +18,9 @@ export const handleUserSignup = async (userData) => {
 export const handleCreateCompany = async (companyInfo) => {
   const URL = COMPANY_ENDPOINTS.company;
   console.log(URL);
-  const response = await httpAuth.post(URL, JSON.stringify(companyInfo));
+  const Token = getUserToken();
+  console.log(Token);
+  const response = await http.post(URL, JSON.stringify(companyInfo));
   return response;
 };
 export const handleRegisterCompany = async (companyInfo, id) => {
@@ -41,9 +42,13 @@ export const handleUserMessage = async (visitorInfo) => {
 
 export const getCurrentUser = async () => {
   const userId = _getSecureLs("auth")?.user;
+  const userMode = _getSecureLs("auth")?.mode;
+  console.log(userId, userMode);
   if (userId) {
     try {
-      const response = await http.get(AUTH_ENDPOINT.getUser + `/${userId}`);
+      const response = await http.get(
+        AUTH_ENDPOINT.getUser + `/${userId}/${userMode}`
+      );
       return response?.user;
     } catch (e) {
       console.log(e);

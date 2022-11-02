@@ -5,18 +5,17 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Loader from "../../Components/UI/Loader/Loader";
-import { handleUserLogin } from "../../services/auth";
-import { _getSecureLs, _setSecureLs } from "../../helper/storage";
+import Loader from "../../../Components/UI/Loader/Loader";
+import { handleCompanyLogin } from "../../../services/company";
+import { _getSecureLs, _setSecureLs } from "../../../helper/storage";
 import { Link, useNavigate } from "react-router-dom";
-import { ROUTES } from "../../helper/routes";
+import { ROUTES } from "../../../helper/routes";
 
-import "./LoginPage.css";
-import Navbar from "../../Components/UI/navbar/navbar";
+// import "./LoginPage.css";
+import Navbar from "../../../Components/UI/navbar/navbar";
+import loginImage from "../../../Assets/Images/login-vector.jpg";
 
-import loginImage from "../../Assets/Images/login-vector.jpg";
-
-function Login(props) {
+function CompanyLogin(props) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,7 +26,7 @@ function Login(props) {
     },
     onSubmit: async (values) => {
       try {
-        const data = await handleUserLogin(values);
+        const data = await handleCompanyLogin(values);
         if (!data.userId) {
           console.log(data);
           return;
@@ -37,7 +36,7 @@ function Login(props) {
           isLoggedIn: true,
           token: data.token,
           user: data.userId,
-          mode: "user",
+          mode: "company",
         });
 
         navigate(`${ROUTES.DASHBOARD}`);
@@ -63,7 +62,7 @@ function Login(props) {
           <Form className="card w-50" onSubmit={formik.handleSubmit}>
             <div className="card-body">
               <div className="card-title-wrapper">
-                <h3 className="text-center mb-3">Login</h3>
+                <h3 className="text-center mb-3">Company Login</h3>
               </div>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
@@ -111,7 +110,7 @@ function Login(props) {
             <div className="text-center mb-2">
               <Form.Text>
                 Don't have account?
-                <Link to={ROUTES.SIGN_UP} style={{ fontWeight: "bold" }}>
+                <Link to={ROUTES.COMPANY_SIGNUP} style={{ fontWeight: "bold" }}>
                   {" "}
                   Sign Up
                 </Link>
@@ -124,4 +123,4 @@ function Login(props) {
   );
 }
 
-export default Login;
+export default CompanyLogin;

@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import { Routes, Route, redirect } from "react-router-dom";
 import SignUp from "./Pages/Signup.js/Signup";
 import Login from "./Pages/LoginPage/LoginPage";
+import CompanyLogin from "./Pages/LoginPage/CompanyLogin/CompanyLogin";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 import Landing from "./Pages/landing/landing";
@@ -15,6 +16,7 @@ import CreateCompany from "./Pages/Dashboard/CreateCompany/CreateCompany";
 import RegisterCompany from "./Pages/Dashboard/RegisterCompany/RegisterCompany";
 import Company from "./Pages/Dashboard/Company/Company";
 import DashboardHome from "./Pages/Dashboard/dashboard/dashboard";
+import CompanySignUp from "./Pages/Signup.js/CompanySignup/CompanySignup";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
 
         <Route path={ROUTES.SIGN_UP} element={<SignUp />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.COMPANY_LOGIN} element={<CompanyLogin />} />
+        <Route path={ROUTES.COMPANY_SIGNUP} element={<CompanySignUp />} />
         <Route
           path={ROUTES.ROOT}
           element={

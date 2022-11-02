@@ -1,18 +1,43 @@
 import React from "react";
 
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Navbar from "../../Components/UI/navbar/navbar";
 
 import video from "../../Assets/Images/view.mp4";
+import { useFormik } from "formik";
+import { handleUserMessage } from "../../services/auth";
 import image1 from "../../Assets/Images/schedule/business-woman-making-presentation-office.jpg";
 import image2 from "../../Assets/Images/schedule/clayton-cardinalli-JMoFpdqL3XM-unsplash.jpg";
 
 import avatar1 from "../../Assets/Images/avatar/happy-asian-man-standing-with-arms-crossed-grey-wall.jpg";
 import avatar2 from "../../Assets/Images/avatar/portrait-good-looking-brunette-young-asian-woman.jpg";
+import { toast } from "react-toastify";
 
 function LandingPage() {
-  const navigate = useNavigate();
-
+  // const navigate = useNavigate();
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    },
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const data = await handleUserMessage(values);
+        console.log(data);
+        if (!data) {
+          throw new Error("Message can't be send");
+        }
+        resetForm({ values: "" });
+        toast("Message Sent Successfully");
+        window.scrollTo(0, 0);
+      } catch (e) {
+        toast.error(e);
+        console.log("error", e);
+      }
+    },
+  });
   return (
     <div>
       <Navbar />
@@ -42,7 +67,7 @@ function LandingPage() {
           </div>
         </section>
 
-        <section class="schedule section-padding" id="section_4">
+        <section class="schedule section-padding" id="workspace">
           <div class="container">
             <div class="row">
               <div class="col-lg-12 col-12">
@@ -178,7 +203,7 @@ function LandingPage() {
           </div>
         </section>
 
-        <section class="venue section-padding" id="section_6">
+        <section class="venue section-padding" id="about">
           <div class="container">
             <div class="row">
               <div class="col-lg-12 col-12">
@@ -239,8 +264,7 @@ function LandingPage() {
               <div class="col-lg-8 col-12 mx-auto">
                 <form
                   class="custom-form contact-form bg-white shadow-lg"
-                  action="#"
-                  method="post"
+                  onSubmit={formik.handleSubmit}
                 >
                   <h2>Please Say Hi</h2>
 
@@ -251,6 +275,8 @@ function LandingPage() {
                         name="name"
                         id="name"
                         class="form-control"
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
                         placeholder="Name"
                         required=""
                       />
@@ -261,6 +287,8 @@ function LandingPage() {
                         type="email"
                         name="email"
                         id="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
                         pattern="[^ @]*@[^ @]*"
                         class="form-control"
                         placeholder="Email"
@@ -273,6 +301,8 @@ function LandingPage() {
                         type="text"
                         name="subject"
                         id="subject"
+                        value={formik.values.subject}
+                        onChange={formik.handleChange}
                         class="form-control"
                         placeholder="Subject"
                       />
@@ -284,6 +314,8 @@ function LandingPage() {
                         rows="5"
                         id="message"
                         name="message"
+                        value={formik.values.message}
+                        onChange={formik.handleChange}
                         placeholder="Message"
                       ></textarea>
 

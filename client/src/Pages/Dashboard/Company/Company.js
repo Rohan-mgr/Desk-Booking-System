@@ -4,13 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
 import { toast } from "react-toastify";
+import Modal from "../../../Components/UI/Modal/Modal";
 
 import nameInitials from "name-initials";
 import Avatar from "../../../Components/UI/avatar/avatar";
+import { _getSecureLs } from "../../../helper/storage";
 
 function Company() {
   const navigate = useNavigate();
+  const [userMode, setUserMode] = useState("");
   const [companies, setCompanies] = useState([]);
+  const [show, setShow] = useState(false);
 
   const fetchCompanies = async () => {
     try {
@@ -21,25 +25,33 @@ function Company() {
       console.log(e);
     }
   };
+  console.log(companies);
 
   useEffect(() => {
     fetchCompanies();
+    const userType = _getSecureLs("auth")?.mode;
+    setUserMode(userType);
   }, []);
+  console.log(userMode);
 
-  console.log(companies);
+  const closeModal = () => {
+    setShow(false);
+  };
 
   return (
     <div>
       <div className="content-header d-flex justify-content-between align-items-center">
         <h1 className="m-0">Workspace</h1>
-        <Button
-          variant="primary"
-          className="my-3"
-          onClick={() => navigate(ROUTES.CREATE_COMPANY)}
-        >
-          <i className="fa fa-plus"></i>
-          {""} Create your own workspace
-        </Button>
+        {userMode === "company" && (
+          <Button
+            variant="primary"
+            className="my-3"
+            onClick={() => navigate(ROUTES.CREATE_COMPANY)}
+          >
+            <i className="fa fa-plus"></i>
+            {""} Create your own workspace
+          </Button>
+        )}
       </div>
 
       <table className="table">
@@ -47,11 +59,12 @@ function Company() {
           <th>Workspace Name</th>
           <th>Available Space</th>
           <th>Created by</th>
+          <th>Created on</th>
           <th>Address</th>
         </thead>
         <tbody>
           {companies?.map((company) => (
-            <tr>
+            <tr onClick={() => setShow(true)}>
               <td>{company?.companyName || ""}</td>
               <td>0/5</td>
               <td>
@@ -62,11 +75,15 @@ function Company() {
                   name={`${company?.companyOwner?.fname} ${company?.companyOwner?.lname}`}
                 />
               </td>
+              <td>
+                {new Date(company?.createdAt).toLocaleDateString("en-US")}
+              </td>
               <td>{`${company?.address?.street}, ${company?.address?.state}`}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      <Modal Show={show} handleClose={closeModal} Companies={companies} />
     </div>
   );
 }

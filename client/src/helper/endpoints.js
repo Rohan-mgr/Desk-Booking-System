@@ -8,4 +8,6 @@ export const AUTH_ENDPOINT = {
 
 export const COMPANY_ENDPOINTS = {
   company: `${config.baseURL}/registercompany`,
+  companySignUp: `${config.baseURL}/companysignup`,
+  companyLogin: `${config.baseURL}/companylogin`,
 };
