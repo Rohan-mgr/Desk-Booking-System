@@ -1,8 +1,16 @@
 const Company = require("../model/company");
+const CompanyUser = require("../model/companyUser");
 
 exports.getCompanies = async (req, res, next) => {
+  const userMode = req.params.mode;
+  console.log(userMode, req.userId, "backend");
+  let companies;
   try {
-    const companies = await Company.find();
+    if (userMode === "user") {
+      companies = await Company.find();
+    } else {
+      companies = await Company.find({ owner: req.userId });
+    }
     if (!companies) {
       const error = new Error("No companies is created");
       throw error;
@@ -28,17 +36,17 @@ exports.postCompanyInfo = async (req, res, next) => {
   const state = req.body.state;
   const country = req.body.country;
   const workEmail = req.body.email;
-  console.log(
-    companyName,
-    ownerFirstName,
-    ownerLastName,
-    contactNumber,
-    street,
-    city,
-    state,
-    country,
-    workEmail
-  );
+  // console.log(
+  //   companyName,
+  //   ownerFirstName,
+  //   ownerLastName,
+  //   contactNumber,
+  //   street,
+  //   city,
+  //   state,
+  //   country,
+  //   workEmail
+  // );
   let dupCompany;
   try {
     dupCompany = await Company.findOne({
@@ -64,9 +72,13 @@ exports.postCompanyInfo = async (req, res, next) => {
         country: country,
       },
       workEmail: workEmail,
+      owner: req.userId,
       floorPlan: { floors: [] },
     });
     const result = await company.save();
+    const companyuser = await CompanyUser.findById(req.userId);
+    companyuser.companies.push(company);
+    await companyuser.save();
     res.status(200).json({
       message: "company Info register successfully",
       registerId: result._id,

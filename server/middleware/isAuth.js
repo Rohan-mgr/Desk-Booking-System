@@ -12,9 +12,9 @@ module.exports = (req, res, next) => {
       throw error;
     }
     const token = authHeader.split(" ")[1];
-    console.log(token);
+    // console.log(token);
     decodedToken = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
-    console.log(decodedToken, "decoded");
+    // console.log(decodedToken, "decoded");
   } catch (error) {
     error.statusCode = 500;
     throw error;

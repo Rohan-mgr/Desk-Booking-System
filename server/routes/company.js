@@ -3,8 +3,8 @@ const router = express.Router();
 const companyController = require("../controller/company");
 const isAuth = require("../middleware/isAuth");
 
-router.get("/registercompany", isAuth, companyController.getCompanies);
-router.post("/registercompany", companyController.postCompanyInfo);
+router.get("/registercompany/:mode", isAuth, companyController.getCompanies);
+router.post("/registercompany", isAuth, companyController.postCompanyInfo);
 router.post("/registercompany/:id", companyController.postCompanyFloorPlan);
 
 module.exports = router;

@@ -35,6 +35,9 @@ router.post(
   userController.createUser
 );
 router.post("/login", userController.postLogin);
-router.get("/get-user/:id", userController.getUserById);
+router.get("/get-user/:id/:mode", userController.getUserById);
+
+router.post("/companylogin", userController.postCompanyLogin);
+router.post("/companysignup", userController.postCompanyUser);
 
 module.exports = router;
