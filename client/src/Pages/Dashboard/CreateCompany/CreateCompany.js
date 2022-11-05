@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../helper/routes";
 import { _setSecureLs, _getSecureLs } from "../../../helper/storage";
 import { connect } from "react-redux";
+import { toast } from "react-toastify";
+import * as actions from "../../../store/action/index";
 
 function CreateCompany(props) {
   const navigate = useNavigate();
@@ -29,6 +31,7 @@ function CreateCompany(props) {
         throw new Error(err);
       });
   }, []);
+
   const formik = useFormik({
     initialValues: {
       companyName: props.isEditing ? props.selectedCompany.companyName : "",
@@ -57,15 +60,15 @@ function CreateCompany(props) {
           return;
         }
         console.log(data);
-        _setSecureLs("Registration", {
-          registerId: data.registerId,
-        });
-
+        props.onFinishEditing();
         props.isEditing
           ? (window.location.href = `/${ROUTES.MANAGE}`)
           : navigate(`/${ROUTES.COMPANY}`);
+        toast(
+          `Company ${props.isEditing ? "updated" : "registered"} successfully`
+        );
       } catch (e) {
-        // toast.error(e);
+        toast.error(e);
         console.log("error", e);
       }
     },
@@ -191,4 +194,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(CreateCompany);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onInitEditing: () => dispatch(actions.editCompany()),
+    onFinishEditing: () => dispatch(actions.finishEditCompany()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateCompany);

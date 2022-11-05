@@ -93,7 +93,6 @@ function Manage(props) {
     props.onEditing(company);
     navigate(`/${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`);
   };
-  console.log(props.isEditing, "redux");
 
   return (
     <div className="dashboard__manage__company">

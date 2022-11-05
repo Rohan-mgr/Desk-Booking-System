@@ -1,1 +1,1 @@
-export { editCompany, selectCompany } from "./company";
+export { editCompany, finishEditCompany, selectCompany } from "./company";

@@ -57,17 +57,19 @@ function SideNav() {
               </NavLink>
             </li>
 
-            <li className="nav-item">
-              <NavLink
-                to="manage"
-                className={({ isActive }) =>
-                  isActive ? "nav-link active" : "nav-link"
-                }
-              >
-                <i className="nav-icon fas fa-toolbox"></i>
-                Manage
-              </NavLink>
-            </li>
+            {userMode === "company" && (
+              <li className="nav-item">
+                <NavLink
+                  to="manage"
+                  className={({ isActive }) =>
+                    isActive ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <i className="nav-icon fas fa-toolbox"></i>
+                  Manage
+                </NavLink>
+              </li>
+            )}
           </ul>
         </nav>
 
