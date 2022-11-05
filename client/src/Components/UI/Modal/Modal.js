@@ -8,7 +8,7 @@ function BookModal(props) {
       <Modal show={props.Show} onHide={props.handleClose}>
         <Modal.Body>
           <h3>Floor:</h3>
-          {props.Companies?.map((c) => c.floorPlan.floors[0].floorName)}
+          {/* {props.Companies?.map((c) => c.floorPlan.floors[0].floorName)} */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleClose}>

@@ -25,14 +25,12 @@ function Company() {
       console.log(e);
     }
   };
-  console.log(companies);
 
   useEffect(() => {
     fetchCompanies();
     const userType = _getSecureLs("auth")?.mode;
     setUserMode(userType);
   }, []);
-  console.log(userMode);
 
   const closeModal = () => {
     setShow(false);
@@ -57,16 +55,19 @@ function Company() {
       <table className="table">
         <thead>
           <th>Workspace Name</th>
-          <th>Available Space</th>
+          {/* <th>Available Space</th> */}
           <th>Created by</th>
           <th>Created on</th>
           <th>Address</th>
+          {/* {userMode === "company" && <th>Actions</th>} */}
         </thead>
         <tbody>
           {companies?.map((company) => (
-            <tr onClick={() => setShow(true)}>
-              <td>{company?.companyName || ""}</td>
-              <td>0/5</td>
+            <tr>
+              <td onClick={() => setShow(true)}>
+                {company?.companyName || ""}
+              </td>
+              {/* <td>0/5</td> */}
               <td>
                 <Avatar
                   initial={nameInitials(
@@ -79,6 +80,18 @@ function Company() {
                 {new Date(company?.createdAt).toLocaleDateString("en-US")}
               </td>
               <td>{`${company?.address?.street}, ${company?.address?.state}`}</td>
+              {/* {userMode === "company" && (
+                <>
+                  <td>
+                    <Button
+                      variant="danger"
+                      onClick={() => handledeleteCompany(company?._id)}
+                    >
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </Button>
+                  </td>
+                </>
+              )} */}
             </tr>
           ))}
         </tbody>

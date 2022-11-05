@@ -23,6 +23,15 @@ export const handleCreateCompany = async (companyInfo) => {
   const response = await http.post(URL, JSON.stringify(companyInfo));
   return response;
 };
+
+export const handleEditCompany = async (cid, editedInfo) => {
+  const URL = COMPANY_ENDPOINTS.editCompany + "/" + cid;
+  console.log(cid, URL, "edit company");
+  getUserToken();
+  const response = await http.put(URL, JSON.stringify(editedInfo));
+  return response;
+};
+
 export const handleRegisterCompany = async (companyInfo, id) => {
   const URL = COMPANY_ENDPOINTS.company + "/" + id;
 

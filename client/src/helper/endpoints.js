@@ -10,4 +10,6 @@ export const COMPANY_ENDPOINTS = {
   company: `${config.baseURL}/registercompany`,
   companySignUp: `${config.baseURL}/companysignup`,
   companyLogin: `${config.baseURL}/companylogin`,
+  deleteCompany: `${config.baseURL}/deletecompany`,
+  editCompany: `${config.baseURL}/edit`,
 };

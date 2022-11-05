@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { ROUTES } from "./helper/routes";
 import CreateCompany from "./Pages/Dashboard/CreateCompany/CreateCompany";
-import RegisterCompany from "./Pages/Dashboard/RegisterCompany/RegisterCompany";
+import Manage from "./Pages/Dashboard/Manage/Manage";
 import Company from "./Pages/Dashboard/Company/Company";
 import DashboardHome from "./Pages/Dashboard/dashboard/dashboard";
 import CompanySignUp from "./Pages/Signup.js/CompanySignup/CompanySignup";
@@ -42,11 +42,7 @@ function App() {
             path={`${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`}
             element={<CreateCompany />}
           />
-          <Route
-            path={`${ROUTES.COMPANY}/${ROUTES.REGISTER_COMPANY}`}
-            element={<RegisterCompany />}
-          />
-          <Route path={ROUTES.MANAGE} element={<p>Manage</p>} />
+          <Route path={ROUTES.MANAGE} element={<Manage />} />
         </Route>
         <Route path="*" element={<p>404!</p>} />
       </Routes>

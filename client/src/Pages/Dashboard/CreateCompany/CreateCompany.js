@@ -3,12 +3,13 @@ import "./CreateCompany.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
-import { handleCreateCompany } from "../../../services/auth";
+import { handleCreateCompany, handleEditCompany } from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../helper/routes";
-import { _setSecureLs } from "../../../helper/storage";
+import { _setSecureLs, _getSecureLs } from "../../../helper/storage";
+import { connect } from "react-redux";
 
-function CreateCompany() {
+function CreateCompany(props) {
   const navigate = useNavigate();
   const [countries, setCountries] = useState([]);
   useEffect(() => {
@@ -30,19 +31,28 @@ function CreateCompany() {
   }, []);
   const formik = useFormik({
     initialValues: {
-      companyName: "",
-      ownerFirstName: "",
-      ownerLastName: "",
-      contactNumber: "",
-      street: "",
-      city: "",
-      state: "",
-      country: "",
-      email: "",
+      companyName: props.isEditing ? props.selectedCompany.companyName : "",
+      ownerFirstName: props.isEditing
+        ? props.selectedCompany.companyOwner.fname
+        : "",
+      ownerLastName: props.isEditing
+        ? props.selectedCompany.companyOwner.lname
+        : "",
+      contactNumber: props.isEditing ? props.selectedCompany.contactNumber : "",
+      street: props.isEditing ? props.selectedCompany.address.street : "",
+      city: props.isEditing ? props.selectedCompany.address.city : "",
+      state: props.isEditing ? props.selectedCompany.address.state : "",
+      country: props.isEditing ? props.selectedCompany.address.country : "",
+      email: props.isEditing ? props.selectedCompany.workEmail : "",
     },
     onSubmit: async (values) => {
       try {
-        const data = await handleCreateCompany(values);
+        let data;
+        if (props.isEditing) {
+          data = handleEditCompany(props.selectedCompany._id, values);
+        } else {
+          data = await handleCreateCompany(values);
+        }
         if (!data) {
           return;
         }
@@ -50,7 +60,10 @@ function CreateCompany() {
         _setSecureLs("Registration", {
           registerId: data.registerId,
         });
-        navigate(`${data?.registerId}`);
+
+        props.isEditing
+          ? (window.location.href = `/${ROUTES.MANAGE}`)
+          : navigate(`/${ROUTES.COMPANY}`);
       } catch (e) {
         // toast.error(e);
         console.log("error", e);
@@ -61,7 +74,7 @@ function CreateCompany() {
   return (
     <div className="dashboard__create__company">
       <div className="dashboard__create__company__header">
-        <h2>Register Your Company</h2>
+        <h2>{props.isEditing ? "Update" : "Register"} Your Company</h2>
         <p>
           Please provide the required details to register your company with us
         </p>
@@ -164,11 +177,18 @@ function CreateCompany() {
           />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Continue Registration
+          {props.isEditing ? "Update Company" : "Register Now"}
         </Button>
       </Form>
     </div>
   );
 }
 
-export default CreateCompany;
+const mapStateToProps = (state) => {
+  return {
+    isEditing: state.isEditing,
+    selectedCompany: state.selectedCompany,
+  };
+};
+
+export default connect(mapStateToProps)(CreateCompany);

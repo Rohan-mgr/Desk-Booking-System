@@ -24,3 +24,11 @@ export const handleCompanyLogin = async (userData) => {
   const response = await httpAuth.post(URL, JSON.stringify(userData));
   return response;
 };
+
+export const deleteCompany = async (cid) => {
+  const URL = COMPANY_ENDPOINTS.deleteCompany + `/${cid}`;
+  const Token = getUserToken();
+  console.log(cid, Token, URL, "deleteCompanyId");
+  const response = await http.delete(URL);
+  return response;
+};

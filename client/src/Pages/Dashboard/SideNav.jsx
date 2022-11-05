@@ -1,9 +1,10 @@
 import React from "react";
 import "./SideNav.css";
 import { ROUTES } from "../../helper/routes";
-import { _removeAllLs } from "../../helper/storage";
+import { _removeAllLs, _getSecureLs } from "../../helper/storage";
 import {
   NavLink,
+  Routes,
   useLocation,
   useNavigate,
   useParams,
@@ -14,6 +15,8 @@ import className from "classnames";
 
 function SideNav() {
   const navigate = useNavigate();
+  const userMode = _getSecureLs("auth")?.mode;
+  console.log(userMode);
 
   return (
     <aside className="main-sidebar sidebar-dark-primary ">
@@ -72,7 +75,9 @@ function SideNav() {
           <button
             onClick={() => {
               _removeAllLs();
-              navigate(ROUTES.LOGIN);
+              navigate(
+                userMode === "company" ? ROUTES.COMPANY_LOGIN : ROUTES.LOGIN
+              );
             }}
             class="mt-2 btn btn-secondary hide-on-collapse pos-right"
           >
