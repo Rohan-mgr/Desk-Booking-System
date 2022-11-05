@@ -39,7 +39,6 @@ exports.createUser = async (req, res, next) => {
   const lname = req.body.lname;
   const email = req.body.email;
   const pass = req.body.password;
-  console.log(fname, lname, email, pass);
   let dupUser;
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed!");
@@ -93,7 +92,6 @@ exports.createUser = async (req, res, next) => {
 exports.postLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email, password);
 
   try {
     const user = await User.findOne({ email: email });
@@ -137,7 +135,6 @@ exports.postCompanyUser = async (req, res, next) => {
   const lname = req.body.lname;
   const email = req.body.email;
   const pass = req.body.password;
-  console.log(fname, lname, email, pass);
   let dupUser;
   if (!errors.isEmpty()) {
     const error = new Error("Validation failed!");
@@ -174,7 +171,6 @@ exports.postCompanyUser = async (req, res, next) => {
 exports.postCompanyLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email, password);
 
   try {
     const user = await CompanyUser.findOne({ email: email });
