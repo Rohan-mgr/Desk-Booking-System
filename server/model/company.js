@@ -48,6 +48,12 @@ const companySchema = new Schema(
       ref: "CompanyUser",
       required: true,
     },
+    floors: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Floor",
+      },
+    ],
   },
   { timestamps: true }
 );

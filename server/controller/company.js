@@ -1,5 +1,7 @@
+const { default: mongoose } = require("mongoose");
 const Company = require("../model/company");
 const CompanyUser = require("../model/companyUser");
+const Floor = require("../model/floor");
 
 exports.getCompanies = async (req, res, next) => {
   const userMode = req.params.mode;
@@ -91,28 +93,28 @@ exports.postCompanyInfo = async (req, res, next) => {
   }
 };
 
-exports.postCompanyFloorPlan = async (req, res, next) => {
-  const floorName = req.body.floorName;
-  const bookStatus = req.body.bookStatus;
-  const registerId = req.params.id;
-  // console.log(floorName, bookStatus, registerId);
+// exports.postCompanyFloorPlan = async (req, res, next) => {
+//   const floorName = req.body.floorName;
+//   const bookStatus = req.body.bookStatus;
+//   const registerId = req.params.id;
+//   // console.log(floorName, bookStatus, registerId);
 
-  try {
-    const company = await Company.findById(registerId);
-    if (!company) {
-      const err = new Error("Company not found");
-      err.statusCode = 404;
-      throw err;
-    }
-    await company.addFloorPlan(floorName, bookStatus);
-    res.status(200).json({ message: "company details added successfully" });
-  } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
-  }
-};
+//   try {
+//     const company = await Company.findById(registerId);
+//     if (!company) {
+//       const err = new Error("Company not found");
+//       err.statusCode = 404;
+//       throw err;
+//     }
+//     await company.addFloorPlan(floorName, bookStatus);
+//     res.status(200).json({ message: "company details added successfully" });
+//   } catch (error) {
+//     if (!error.statusCode) {
+//       error.statusCode = 500;
+//     }
+//     next(error);
+//   }
+// };
 
 exports.deleteCompany = async (req, res, next) => {
   const companyId = req.params.cid;
@@ -189,6 +191,40 @@ exports.updateCompany = async (req, res, next) => {
     res.status(200).json({
       message: "Company updated successfully",
     });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.postAddFloor = async (req, res, next) => {
+  const companyId = req.params.cid;
+  const floorName = req.body.floorName;
+  const capacity = req.body.roomCapacity;
+  console.log(floorName, capacity, companyId, "add floor");
+  let dupFloor;
+  try {
+    dupFloor = await Floor.findOne({
+      floorName: floorName,
+    });
+    if (dupFloor) {
+      const error = new Error("Floor Name Already Exists!");
+      error.statusCode = 409;
+      throw error;
+    }
+    const floor = new Floor({
+      floorName: floorName,
+      roomCapacity: capacity,
+      company: mongoose.Types.ObjectId(companyId),
+    });
+    await floor.save();
+    const company = await Company.findById(companyId);
+    company.floors.push(floor);
+    await company.save();
+
+    res.status(200).json({ message: "Floor added successfully" });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

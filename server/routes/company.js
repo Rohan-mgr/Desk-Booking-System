@@ -8,5 +8,6 @@ router.post("/registercompany", isAuth, companyController.postCompanyInfo);
 router.put("/edit/:cid", isAuth, companyController.updateCompany);
 // router.post("/registercompany/:id", companyController.postCompanyFloorPlan);
 router.delete("/deletecompany/:cid", isAuth, companyController.deleteCompany);
+router.post("/manage/addfloor/:cid", isAuth, companyController.postAddFloor);
 
 module.exports = router;
