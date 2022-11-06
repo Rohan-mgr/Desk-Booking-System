@@ -12,4 +12,5 @@ export const COMPANY_ENDPOINTS = {
   companyLogin: `${config.baseURL}/companylogin`,
   deleteCompany: `${config.baseURL}/deletecompany`,
   editCompany: `${config.baseURL}/edit`,
+  addFloor: `${config.baseURL}/manage/addfloor`,
 };

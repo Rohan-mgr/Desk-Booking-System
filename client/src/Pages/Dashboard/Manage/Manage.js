@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "./Manage.css";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+// import Form from "react-bootstrap/Form";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { _getSecureLs, _setSecureLs } from "../../../helper/storage";
 import { ROUTES } from "../../../helper/routes";
-import { useFormik } from "formik";
-import { handleRegisterCompany } from "../../../services/auth";
+// import { useFormik } from "formik";
+// import { handleRegisterCompany } from "../../../services/auth";
 import { toast } from "react-toastify";
 import { getAllCompanies } from "../../../services/company";
 import ListGroup from "react-bootstrap/ListGroup";
 import { BsFillTrashFill, BsPencilSquare } from "react-icons/bs";
-import {
-  AiOutlineMail,
-  AiOutlineUser,
-  AiOutlinePhone,
-  AiOutlineEdit,
-} from "react-icons/ai";
-import { MdOutlineLocationOn } from "react-icons/md";
+import { SiGoogleclassroom } from "react-icons/si";
+import { AiOutlineMail, AiOutlineUser, AiOutlinePhone } from "react-icons/ai";
+import { MdOutlineLocationOn, MdMeetingRoom } from "react-icons/md";
+import { GiDesk } from "react-icons/gi";
 import { deleteCompany } from "../../../services/company";
 import { connect } from "react-redux";
 import * as actions from "../../../store/action/index";
+import Modal from "../../../Components/UI/Modal/AddFloor/AddModal";
+import RoomModal from "../../../Components/UI/Modal/AddRoom/AddRoom";
+import DeskModal from "../../../Components/UI/Modal/AddDesk/AddDesk";
 
 function Manage(props) {
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
   const [companies, setCompanies] = useState([]);
-  const { registerId } = _getSecureLs("Registration");
+  const [modal, setModal] = useState("");
 
   const fetchCompanies = async () => {
     try {
@@ -41,7 +42,10 @@ function Manage(props) {
   useEffect(() => {
     fetchCompanies();
   }, []);
-  console.log(companies);
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const handledeleteCompany = async (cid) => {
     try {
@@ -66,33 +70,33 @@ function Manage(props) {
   //   }
   // }, [queryRegisterId, registerId, navigate]);
 
-  const formik = useFormik({
-    initialValues: {
-      floorName: "",
-      bookStatus: "false",
-    },
-    onSubmit: async (values) => {
-      try {
-        const data = await handleRegisterCompany(values, registerId);
-        if (!data) {
-          return;
-        }
-        console.log(data);
-        toast("Company registered successfully");
-        navigate(`/${ROUTES.COMPANY}`);
-      } catch (e) {
-        toast.error(e);
-        console.log("error", e);
-      }
-    },
-  });
+  // const formik = useFormik({
+  //   initialValues: {
+  //     floorName: "",
+  //     bookStatus: "false",
+  //   },
+  //   onSubmit: async (values) => {
+  //     try {
+  //       const data = await handleRegisterCompany(values, registerId);
+  //       if (!data) {
+  //         return;
+  //       }
+  //       console.log(data);
+  //       toast("Company registered successfully");
+  //       navigate(`/${ROUTES.COMPANY}`);
+  //     } catch (e) {
+  //       toast.error(e);
+  //       console.log("error", e);
+  //     }
+  //   },
+  // });
 
   const handleEditCompany = (cid, company) => {
-    console.log(cid, "edit");
     props.onInitEditing();
     props.onEditing(company);
     navigate(`/${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`);
   };
+  console.log(modal);
 
   return (
     <div className="dashboard__manage__company">
@@ -123,19 +127,69 @@ function Manage(props) {
                   </Col>
                 </Row>
                 <div className="manage__actions__buttons">
-                  <Button
-                    variant="danger"
-                    onClick={() => handledeleteCompany(c?._id)}
-                  >
-                    <BsFillTrashFill /> Delete
-                  </Button>
-                  <Button
-                    variant="info"
-                    onClick={() => handleEditCompany(c?._id, c)}
-                  >
-                    <BsPencilSquare /> Edit
-                  </Button>
+                  <div>
+                    <Button
+                      variant="success"
+                      onClick={() => {
+                        setModal("floorModal");
+                        return setShowModal(true);
+                      }}
+                    >
+                      <SiGoogleclassroom /> Add Floor
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() => {
+                        setModal("roomModal");
+                        return setShowModal(true);
+                      }}
+                    >
+                      <MdMeetingRoom /> Add Room
+                    </Button>
+                    <Button
+                      variant="success"
+                      onClick={() => {
+                        setModal("deskModal");
+                        return setShowModal(true);
+                      }}
+                    >
+                      <GiDesk /> Add Desk
+                    </Button>
+                  </div>
+                  <div>
+                    <Button
+                      variant="danger"
+                      onClick={() => handledeleteCompany(c?._id)}
+                    >
+                      <BsFillTrashFill /> Delete
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() => handleEditCompany(c?._id, c)}
+                    >
+                      <BsPencilSquare /> Edit
+                    </Button>
+                  </div>
                 </div>
+                {modal === "floorModal" ? (
+                  <Modal
+                    Show={showModal}
+                    handleClose={closeModal}
+                    companyId={c?._id}
+                  />
+                ) : modal === "roomModal" ? (
+                  <RoomModal
+                    Show={showModal}
+                    handleClose={closeModal}
+                    companyId={c?._id}
+                  />
+                ) : (
+                  <DeskModal
+                    Show={showModal}
+                    handleClose={closeModal}
+                    companyId={c?._id}
+                  />
+                )}
               </Container>
             );
           })

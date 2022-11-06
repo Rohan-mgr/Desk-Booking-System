@@ -32,3 +32,11 @@ export const deleteCompany = async (cid) => {
   const response = await http.delete(URL);
   return response;
 };
+
+export const handleAddFloor = async (cid, floorInfo) => {
+  const URL = COMPANY_ENDPOINTS.addFloor + "/" + cid;
+  getUserToken();
+  console.log(URL);
+  const response = await http.post(URL, JSON.stringify(floorInfo));
+  return response;
+};

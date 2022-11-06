@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
 import { toast } from "react-toastify";
-import Modal from "../../../Components/UI/Modal/Modal";
+import Modal from "../../../Components/UI/Modal/AddFloor/AddModal";
 
 import nameInitials from "name-initials";
 import Avatar from "../../../Components/UI/avatar/avatar";

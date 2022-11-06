@@ -13,7 +13,7 @@
 }
 .manage__actions__buttons {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin: .5rem auto;
     gap: 10px;
 }
@@ -23,4 +23,8 @@
     width: 18px; 
     height: 22px;
     margin-top: -3px;
+}
+.manage__actions__buttons > div {
+ display: flex;
+ gap: 10px;   
 }
