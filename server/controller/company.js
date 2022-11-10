@@ -2,6 +2,8 @@ const { default: mongoose } = require("mongoose");
 const Company = require("../model/company");
 const CompanyUser = require("../model/companyUser");
 const Floor = require("../model/floor");
+const Room = require("../model/room");
+const Desk = require("../model/desk");
 
 exports.getCompanies = async (req, res, next) => {
   const userMode = req.params.mode;
@@ -20,6 +22,51 @@ exports.getCompanies = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "companies fetched successfully", result: companies });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.getCompanyFloors = async (req, res, next) => {
+  const companyId = req.params.cId;
+  try {
+    const company = await Company.findById(companyId);
+    if (!company) {
+      const error = new Error("Company not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const { floors } = await company.populate("floors");
+    res.status(200).json({
+      message: "floors fetched successfully",
+      results: floors,
+    });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.getFloorRooms = async (req, res, next) => {
+  const floorId = req.params.fId;
+  console.log(floorId, "floorId");
+  try {
+    const floor = await Floor.findById(floorId);
+    if (!floor) {
+      const error = new Error("floor not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    const { rooms } = await floor.populate("rooms");
+    res.status(200).json({
+      message: "rooms fetched successfully",
+      results: rooms,
+    });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -131,6 +178,9 @@ exports.deleteCompany = async (req, res, next) => {
       throw error;
     }
     await Company.findByIdAndRemove(companyId);
+    await Floor.deleteMany({ company: companyId });
+    await Room.deleteMany({ company: companyId });
+    await Desk.deleteMany({ company: companyId });
     const companyUser = await CompanyUser.findById(req.userId);
     companyUser.companies.pull(companyId);
     await companyUser.save();
@@ -203,7 +253,6 @@ exports.postAddFloor = async (req, res, next) => {
   const companyId = req.params.cid;
   const floorName = req.body.floorName;
   const capacity = req.body.roomCapacity;
-  console.log(floorName, capacity, companyId, "add floor");
   let dupFloor;
   try {
     dupFloor = await Floor.findOne({
@@ -225,6 +274,93 @@ exports.postAddFloor = async (req, res, next) => {
     await company.save();
 
     res.status(200).json({ message: "Floor added successfully" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.postCompanyRooms = async (req, res, next) => {
+  const companyId = req.params.cId;
+  const floorId = req.body.floor;
+  const roomName = req.body.roomName;
+  const deskCapacity = req.body.deskCapacity;
+  console.log(floorId, roomName, deskCapacity, "add room");
+
+  let dupRoom;
+  try {
+    dupRoom = await Room.findOne({
+      roomName: roomName,
+    });
+    if (dupRoom) {
+      const error = new Error("Room Name Already Exists!");
+      error.statusCode = 409;
+      throw error;
+    }
+    const totalRooms = await Room.find({ floor: floorId }).countDocuments();
+    const floor = await Floor.findById(floorId);
+    console.log(totalRooms, floor?.roomCapacity);
+    if (+totalRooms >= +floor?.roomCapacity) {
+      const error = new Error("Room Space not available");
+      error.statusCode = 507;
+      throw error;
+    }
+    const room = new Room({
+      roomName: roomName,
+      roomCapacity: deskCapacity,
+      company: mongoose.Types.ObjectId(companyId),
+      floor: mongoose.Types.ObjectId(floorId),
+    });
+    await room.save();
+
+    floor.rooms.push(room);
+    await floor.save();
+
+    res.status(200).json({ message: "room added successfully" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.postAddDesk = async (req, res, next) => {
+  const companyId = req.params.cId;
+  const floorId = req.body.floor;
+  const roomId = req.body.room;
+  const deskName = req.body.deskName;
+  console.log(floorId, roomId, deskName);
+  let dupDesk;
+  try {
+    dupDesk = await Desk.findOne({
+      deskName: deskName,
+    });
+    if (dupDesk) {
+      const error = new Error("Desk Name Already Exists!");
+      error.statusCode = 409;
+      throw error;
+    }
+    const totalDesk = await Desk.find({ room: roomId }).countDocuments();
+    const room = await Room.findById(roomId);
+    console.log(+room?.roomCapacity, +totalDesk);
+    if (+totalDesk >= +room?.roomCapacity) {
+      const error = new Error("Desk Space not available");
+      error.statusCode = 507;
+      throw error;
+    }
+    const desk = new Desk({
+      floor: mongoose.Types.ObjectId(floorId),
+      room: mongoose.Types.ObjectId(roomId),
+      company: mongoose.Types.ObjectId(companyId),
+      deskName: deskName,
+    });
+    await desk.save();
+    room.desks.push(desk);
+    await room.save();
+    res.status(200).json({ message: "Desk added successfully" });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

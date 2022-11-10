@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const floorSchema = new Schema(
+const roomSchema = new Schema(
   {
-    floorName: {
+    roomName: {
       type: String,
       required: true,
     },
@@ -16,13 +16,18 @@ const floorSchema = new Schema(
       ref: "Company",
       required: true,
     },
-    rooms: [
+    floor: {
+      type: Schema.Types.ObjectId,
+      ref: "Floor",
+      required: true,
+    },
+    desks: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Room",
+        ref: "Desk",
       },
     ],
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("Floor", floorSchema);
+module.exports = mongoose.model("Room", roomSchema);
