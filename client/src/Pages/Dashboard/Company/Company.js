@@ -31,7 +31,7 @@ function Company(props) {
     fetchCompanies();
     const userType = _getSecureLs("auth")?.mode;
     setUserMode(userType);
-  }, [companies]);
+  }, []);
 
   console.log(companies);
 
