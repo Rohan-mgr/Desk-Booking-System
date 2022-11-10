@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
 import { toast } from "react-toastify";
-import Modal from "../../../Components/UI/Modal/AddFloor/AddModal";
 
 import nameInitials from "name-initials";
 import Avatar from "../../../Components/UI/avatar/avatar";
 import { _getSecureLs } from "../../../helper/storage";
+import * as actions from "../../../store/action/index";
+import { connect } from "react-redux";
 
-function Company() {
+function Company(props) {
   const navigate = useNavigate();
   const [userMode, setUserMode] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -30,11 +31,9 @@ function Company() {
     fetchCompanies();
     const userType = _getSecureLs("auth")?.mode;
     setUserMode(userType);
-  }, []);
+  }, [companies]);
 
-  const closeModal = () => {
-    setShow(false);
-  };
+  console.log(companies);
 
   return (
     <div>
@@ -63,10 +62,14 @@ function Company() {
         </thead>
         <tbody>
           {companies?.map((company) => (
-            <tr>
-              <td onClick={() => setShow(true)}>
-                {company?.companyName || ""}
-              </td>
+            <tr
+              key={company._id}
+              onClick={() => {
+                props.onSelectCompany(company);
+                navigate(`${ROUTES.COMPANY_INFO}`);
+              }}
+            >
+              <td>{company?.companyName || ""}</td>
               {/* <td>0/5</td> */}
               <td>
                 <Avatar
@@ -96,9 +99,14 @@ function Company() {
           ))}
         </tbody>
       </table>
-      <Modal Show={show} handleClose={closeModal} Companies={companies} />
     </div>
   );
 }
 
-export default Company;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSelectCompany: (company) => dispatch(actions.selectCompany(company)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Company);

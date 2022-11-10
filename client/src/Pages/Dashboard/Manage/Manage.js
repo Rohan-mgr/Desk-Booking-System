@@ -29,17 +29,16 @@ function Manage(props) {
   const [companies, setCompanies] = useState([]);
   const [modal, setModal] = useState("");
 
-  const fetchCompanies = async () => {
-    try {
-      const response = await getAllCompanies();
-      setCompanies(response?.result);
-    } catch (e) {
-      toast.error(e);
-      console.log(e);
-    }
-  };
-
   useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await getAllCompanies();
+        setCompanies(response?.result);
+      } catch (e) {
+        toast.error(e);
+        console.log(e);
+      }
+    };
     fetchCompanies();
   }, []);
 
@@ -96,14 +95,28 @@ function Manage(props) {
     props.onEditing(company);
     navigate(`/${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`);
   };
-  console.log(modal);
+  const handleAddFloor = (company) => {
+    props.onEditing(company);
+    setModal("floorModal");
+    setShowModal(true);
+  };
+  const handleAddRoom = (company) => {
+    props.onEditing(company);
+    setModal("roomModal");
+    setShowModal(true);
+  };
+  const handleAddDesk = (company) => {
+    props.onEditing(company);
+    setModal("deskModal");
+    setShowModal(true);
+  };
 
   return (
     <div className="dashboard__manage__company">
       {companies?.length > 0
         ? companies?.map((c) => {
             return (
-              <Container fluid className="manage__hotel">
+              <Container key={c?._id} fluid className="manage__hotel">
                 <Row>
                   <Col>
                     <h6 className="text-center">{c.companyName}</h6>
@@ -128,20 +141,13 @@ function Manage(props) {
                 </Row>
                 <div className="manage__actions__buttons">
                   <div>
-                    <Button
-                      variant="success"
-                      onClick={() => {
-                        setModal("floorModal");
-                        return setShowModal(true);
-                      }}
-                    >
+                    <Button variant="success" onClick={() => handleAddFloor(c)}>
                       <SiGoogleclassroom /> Add Floor
                     </Button>
                     <Button
                       variant="success"
                       onClick={() => {
-                        setModal("roomModal");
-                        return setShowModal(true);
+                        handleAddRoom(c);
                       }}
                     >
                       <MdMeetingRoom /> Add Room
@@ -149,8 +155,7 @@ function Manage(props) {
                     <Button
                       variant="success"
                       onClick={() => {
-                        setModal("deskModal");
-                        return setShowModal(true);
+                        handleAddDesk(c);
                       }}
                     >
                       <GiDesk /> Add Desk

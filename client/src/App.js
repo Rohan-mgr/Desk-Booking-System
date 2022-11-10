@@ -17,6 +17,7 @@ import Manage from "./Pages/Dashboard/Manage/Manage";
 import Company from "./Pages/Dashboard/Company/Company";
 import DashboardHome from "./Pages/Dashboard/dashboard/dashboard";
 import CompanySignUp from "./Pages/Signup.js/CompanySignup/CompanySignup";
+import CompanyInfo from "./Pages/Dashboard/CompanyInfo/CompanyInfo";
 
 function App() {
   return (
@@ -38,6 +39,10 @@ function App() {
         >
           <Route path={ROUTES.DASHBOARD} element={<DashboardHome />} />
           <Route path={ROUTES.COMPANY} element={<Company />} />
+          <Route
+            path={`${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}`}
+            element={<CompanyInfo />}
+          />
           <Route
             path={`${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`}
             element={<CreateCompany />}

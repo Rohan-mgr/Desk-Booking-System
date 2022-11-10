@@ -1,74 +1,116 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import { handleAddFloor } from "../../../../services/company";
+import { getCompanyFloors, handleAddRoom } from "../../../../services/company";
+import { connect } from "react-redux";
 
 function RoomModal(props) {
-  //   const formik = useFormik({
-  //     initialValues: {
-  //       floorName: "",
-  //       roomCapacity: 0,
-  //     },
-  //     onSubmit: async (values, { resetForm }) => {
-  //       try {
-  //         const data = await handleAddFloor(props.companyId, values);
-  //         if (!data) {
-  //           throw new Error("Failed to add the floor");
-  //         }
-  //         props.handleClose();
-  //         resetForm({ values: "" });
-  //         // console.log(data);
-  //         toast("Floor added successfully");
-  //         // navigate(`/${ROUTES.COMPANY}`);
-  //       } catch (e) {
-  //         toast.error(e);
-  //         console.log("error", e);
-  //       }
-  //     },
-  //   });
+  console.log(props.selectedCompany._id);
+
+  const [floors, setFloors] = useState([]);
+
+  const fetchCompanyFloors = async () => {
+    try {
+      const response = await getCompanyFloors(props.selectedCompany?._id);
+      setFloors((prevState) => {
+        return [...prevState, ...response?.results];
+      });
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+  useEffect(() => {
+    fetchCompanyFloors();
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      floor: "",
+      roomName: "",
+      deskCapacity: 0,
+    },
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const data = await handleAddRoom(props.selectedCompany?._id, values);
+        if (!data) {
+          throw new Error("Failed to add the room");
+        }
+        props.handleClose();
+        resetForm({ values: "" });
+        // console.log(data);
+        toast("room added successfully");
+        // navigate(`/${ROUTES.COMPANY}`);
+      } catch (e) {
+        toast.error(e);
+        console.log("error", e);
+      }
+    },
+  });
   return (
     <>
-      <Modal
-        fluid
-        show={props.Show}
-        onHide={props.handleClose}
-        className="addModal"
-      >
+      <Modal show={props.Show} onHide={props.handleClose} className="addModal">
         <Modal.Body>
-          <h5 className="text-center">Add Room</h5>
-          {/* <Form onSubmit={formik.handleSubmit} className="text-right">
+          <h5 className="text-center m-3">Add Room</h5>
+          <Form onSubmit={formik.handleSubmit} className="text-right">
+            <Form.Group className="mb-3 text-left">
+              <Form.Label className="mr-2">
+                Floor<span>*</span>:{" "}
+              </Form.Label>
+              <Form.Select
+                name="floor"
+                value={formik.values.floor}
+                onChange={formik.handleChange}
+              >
+                <option>Select Floor</option>
+                {floors?.map((f) => {
+                  return (
+                    <option key={f._id} value={f._id}>
+                      Floor {f.floorName}
+                    </option>
+                  );
+                })}
+              </Form.Select>
+            </Form.Group>
             <Form.Group className="mb-3 text-left">
               <Form.Label>
-                Floor Name<span>*</span>:{" "}
+                Room Name<span>*</span>:{" "}
               </Form.Label>
               <Form.Control
                 type="text"
-                name="floorName"
-                value={formik.values.floorName}
+                name="roomName"
+                value={formik.values.roomName}
                 onChange={formik.handleChange}
               />
             </Form.Group>
             <Form.Group className="mb-3 text-left">
               <Form.Label>
-                Total Rooms Capacity<span>*</span>:{" "}
+                Total Desk Capacity<span>*</span>:{" "}
               </Form.Label>
               <Form.Control
                 type="number"
-                name="roomCapacity"
-                value={formik.values.roomCapacity}
+                name="deskCapacity"
+                value={formik.values.deskCapacity}
                 onChange={formik.handleChange}
               />
             </Form.Group>
             <Button variant="success" type="submit" className="text-right">
               Add Now
             </Button>
-          </Form> */}
+          </Form>
         </Modal.Body>
       </Modal>
     </>
   );
 }
-export default RoomModal;
+
+const mapStateToProps = (state) => {
+  return {
+    selectedCompany: state.selectedCompany,
+  };
+};
+
+export default connect(mapStateToProps)(RoomModal);

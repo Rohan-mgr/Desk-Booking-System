@@ -18,9 +18,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Assets/css/index.css";
 
 const composeEnhancers =
-  process.env.NODE_ENV === "development"
+  (process.env.NODE_ENV === "development"
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : null || compose;
+    : null) || compose;
 
 const rootReducer = companyReducer;
 const store = createStore(

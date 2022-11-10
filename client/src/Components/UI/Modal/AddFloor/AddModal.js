@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import { handleAddFloor } from "../../../../services/company";
+import { connect } from "react-redux";
 
 function BookModal(props) {
   const formik = useFormik({
@@ -15,7 +16,7 @@ function BookModal(props) {
     },
     onSubmit: async (values, { resetForm }) => {
       try {
-        const data = await handleAddFloor(props.companyId, values);
+        const data = await handleAddFloor(props.selectedCompany?._id, values);
         if (!data) {
           throw new Error("Failed to add the floor");
         }
@@ -32,14 +33,9 @@ function BookModal(props) {
   });
   return (
     <>
-      <Modal
-        fluid
-        show={props.Show}
-        onHide={props.handleClose}
-        className="addModal"
-      >
+      <Modal show={props.Show} onHide={props.handleClose} className="addModal">
         <Modal.Body>
-          <h5 className="text-center">Add Floor</h5>
+          <h5 className="text-center m-3">Add Floor</h5>
           <Form onSubmit={formik.handleSubmit} className="text-right">
             <Form.Group className="mb-3 text-left">
               <Form.Label>
@@ -72,4 +68,11 @@ function BookModal(props) {
     </>
   );
 }
-export default BookModal;
+
+const mapStateToProps = (state) => {
+  return {
+    selectedCompany: state.selectedCompany,
+  };
+};
+
+export default connect(mapStateToProps)(BookModal);
