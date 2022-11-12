@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
+
+import { MdDelete, MdMoreVert } from "react-icons/md";
 import Button from "react-bootstrap/Button";
+import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
 import { getAllCompanies } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
@@ -10,6 +13,10 @@ import Avatar from "../../../Components/UI/avatar/avatar";
 import { _getSecureLs } from "../../../helper/storage";
 import * as actions from "../../../store/action/index";
 import { connect } from "react-redux";
+import {
+  CustomMenu,
+  CustomToggle,
+} from "../../../Components/UI/Dropdown/DropdownMenu";
 
 function Company(props) {
   const navigate = useNavigate();
@@ -53,7 +60,8 @@ function Company(props) {
 
       <table className="table">
         <thead>
-          <th>Workspace Name</th>
+          <th>S.N</th>
+          <th>Workspace</th>
           {/* <th>Available Space</th> */}
           <th>Created by</th>
           <th>Created on</th>
@@ -61,14 +69,9 @@ function Company(props) {
           {/* {userMode === "company" && <th>Actions</th>} */}
         </thead>
         <tbody>
-          {companies?.map((company) => (
-            <tr
-              key={company._id}
-              onClick={() => {
-                props.onSelectCompany(company);
-                navigate(`${ROUTES.COMPANY_INFO}`);
-              }}
-            >
+          {companies?.map((company, _idx) => (
+            <tr key={company._id}>
+              <td>{_idx + 1}</td>
               <td>{company?.companyName || ""}</td>
               {/* <td>0/5</td> */}
               <td>
@@ -95,6 +98,39 @@ function Company(props) {
                   </td>
                 </>
               )} */}
+
+              <td>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    as={CustomToggle}
+                    id="dropdown-custom-components"
+                  >
+                    <MdMoreVert />
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu as={CustomMenu}>
+                    <Dropdown.Item
+                      as="button"
+                      eventKey="1"
+                      onClick={() => {
+                        props.onSelectCompany(company);
+                        navigate(`${ROUTES.COMPANY_INFO}`);
+                      }}
+                    >
+                      View Details
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button" eventKey="2">
+                      Manage Floor
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item as="button" eventKey="3">
+                      <div className="d-flex align-items-center">
+                        <MdDelete className="mr-2" /> Delete
+                      </div>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </td>
             </tr>
           ))}
         </tbody>
