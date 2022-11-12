@@ -113,92 +113,94 @@ function Manage(props) {
 
   return (
     <div className="dashboard__manage__company">
-      {companies?.length > 0
-        ? companies?.map((c) => {
-            return (
-              <Container key={c?._id} fluid className="manage__hotel">
-                <Row>
-                  <Col>
-                    <h6 className="text-center">{c.companyName}</h6>
-                    <ListGroup>
-                      <ListGroup.Item action variant="light">
-                        <AiOutlineUser /> Owner: {c.companyOwner.fname}{" "}
-                        {c.companyOwner.lname}
-                      </ListGroup.Item>
-                      <ListGroup.Item action variant="light">
-                        <AiOutlinePhone /> Contact: {c.contactNumber}
-                      </ListGroup.Item>
-                      <ListGroup.Item action variant="light">
-                        <AiOutlineMail /> Email:{" "}
-                        <a href={`mailto:${c.workEmail}`}>{c.workEmail}</a>
-                      </ListGroup.Item>
-                      <ListGroup.Item action variant="light">
-                        <MdOutlineLocationOn /> Address: {c.address.street},{" "}
-                        {c.address.state}
-                      </ListGroup.Item>
-                    </ListGroup>
-                  </Col>
-                </Row>
-                <div className="manage__actions__buttons">
-                  <div>
-                    <Button variant="success" onClick={() => handleAddFloor(c)}>
-                      <SiGoogleclassroom /> Add Floor
-                    </Button>
-                    <Button
-                      variant="success"
-                      onClick={() => {
-                        handleAddRoom(c);
-                      }}
-                    >
-                      <MdMeetingRoom /> Add Room
-                    </Button>
-                    <Button
-                      variant="success"
-                      onClick={() => {
-                        handleAddDesk(c);
-                      }}
-                    >
-                      <GiDesk /> Add Desk
-                    </Button>
-                  </div>
-                  <div>
-                    <Button
-                      variant="danger"
-                      onClick={() => handledeleteCompany(c?._id)}
-                    >
-                      <BsFillTrashFill /> Delete
-                    </Button>
-                    <Button
-                      variant="info"
-                      onClick={() => handleEditCompany(c?._id, c)}
-                    >
-                      <BsPencilSquare /> Edit
-                    </Button>
-                  </div>
+      {companies?.length > 0 ? (
+        companies?.map((c) => {
+          return (
+            <Container key={c?._id} fluid className="manage__hotel">
+              <Row>
+                <Col>
+                  <h6 className="text-center">{c.companyName}</h6>
+                  <ListGroup>
+                    <ListGroup.Item action variant="light">
+                      <AiOutlineUser /> Owner: {c.companyOwner.fname}{" "}
+                      {c.companyOwner.lname}
+                    </ListGroup.Item>
+                    <ListGroup.Item action variant="light">
+                      <AiOutlinePhone /> Contact: {c.contactNumber}
+                    </ListGroup.Item>
+                    <ListGroup.Item action variant="light">
+                      <AiOutlineMail /> Email:{" "}
+                      <a href={`mailto:${c.workEmail}`}>{c.workEmail}</a>
+                    </ListGroup.Item>
+                    <ListGroup.Item action variant="light">
+                      <MdOutlineLocationOn /> Address: {c.address.street},{" "}
+                      {c.address.state}
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Col>
+              </Row>
+              <div className="manage__actions__buttons">
+                <div>
+                  <Button variant="success" onClick={() => handleAddFloor(c)}>
+                    <SiGoogleclassroom /> Add Floor
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={() => {
+                      handleAddRoom(c);
+                    }}
+                  >
+                    <MdMeetingRoom /> Add Room
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={() => {
+                      handleAddDesk(c);
+                    }}
+                  >
+                    <GiDesk /> Add Desk
+                  </Button>
                 </div>
-                {modal === "floorModal" ? (
-                  <Modal
-                    Show={showModal}
-                    handleClose={closeModal}
-                    companyId={c?._id}
-                  />
-                ) : modal === "roomModal" ? (
-                  <RoomModal
-                    Show={showModal}
-                    handleClose={closeModal}
-                    companyId={c?._id}
-                  />
-                ) : (
-                  <DeskModal
-                    Show={showModal}
-                    handleClose={closeModal}
-                    companyId={c?._id}
-                  />
-                )}
-              </Container>
-            );
-          })
-        : navigate(`/${ROUTES.COMPANY}`)}
+                <div>
+                  <Button
+                    variant="danger"
+                    onClick={() => handledeleteCompany(c?._id)}
+                  >
+                    <BsFillTrashFill /> Delete
+                  </Button>
+                  <Button
+                    variant="info"
+                    onClick={() => handleEditCompany(c?._id, c)}
+                  >
+                    <BsPencilSquare /> Edit
+                  </Button>
+                </div>
+              </div>
+              {modal === "floorModal" ? (
+                <Modal
+                  Show={showModal}
+                  handleClose={closeModal}
+                  companyId={props.selectCompany?._id}
+                />
+              ) : modal === "roomModal" ? (
+                <RoomModal
+                  Show={showModal}
+                  handleClose={closeModal}
+                  companyId={props.selectCompany?._id}
+                />
+              ) : (
+                <DeskModal
+                  Show={showModal}
+                  handleClose={closeModal}
+                  companyId={props.selectCompany?._id}
+                />
+              )}
+            </Container>
+          );
+        })
+      ) : (
+        <h5 className="text-center">No Workspace created yet create one.</h5>
+      )}
 
       {/* <Form onSubmit={formik.handleSubmit}>
         <Form.Group className="mb-3">
@@ -231,6 +233,12 @@ function Manage(props) {
   );
 }
 
+const mapStateToProps = (state) => {
+  return {
+    selectCompany: state.selectCompany,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     onInitEditing: () => dispatch(actions.editCompany()),
@@ -238,4 +246,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Manage);
+export default connect(mapStateToProps, mapDispatchToProps)(Manage);

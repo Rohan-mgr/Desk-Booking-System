@@ -3,28 +3,34 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { getCompanyFloors, handleAddRoom } from "../../../../services/company";
 import { connect } from "react-redux";
 
 function RoomModal(props) {
-  console.log(props.selectedCompany._id);
-
+  console.log(props.selectedCompany?._id);
+  const navigate = useNavigate();
   const [floors, setFloors] = useState([]);
 
   const fetchCompanyFloors = async () => {
     try {
       const response = await getCompanyFloors(props.selectedCompany?._id);
-      setFloors((prevState) => {
-        return [...prevState, ...response?.results];
-      });
+      // setFloors((prevState) => {
+      //   return [...prevState, ...response?.results];
+      // });
+      setFloors(response?.results);
     } catch (e) {
       toast.error(e);
       throw new Error(e);
     }
   };
   useEffect(() => {
+    navigate("/manage");
     fetchCompanyFloors();
+    // return () => {
+    //   setFloors([]);
+    // };
   }, []);
 
   const formik = useFormik({

@@ -13,6 +13,7 @@ export const getAllCompanies = async () => {
 };
 
 export const getCompanyFloors = async (cId) => {
+  console.log(cId, "getfloors");
   const URL = COMPANY_ENDPOINTS.addRoom + "/" + cId;
   getUserToken();
   const response = await http.get(URL);
