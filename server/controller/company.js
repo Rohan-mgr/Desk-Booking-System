@@ -32,6 +32,7 @@ exports.getCompanies = async (req, res, next) => {
 
 exports.getCompanyFloors = async (req, res, next) => {
   const companyId = req.params.cId;
+  console.log(companyId);
   try {
     const company = await Company.findById(companyId);
     if (!company) {
