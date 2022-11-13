@@ -171,6 +171,7 @@ exports.postCompanyUser = async (req, res, next) => {
 exports.postCompanyLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  console.log(email, password, "companyuser");
 
   try {
     const user = await CompanyUser.findOne({ email: email });

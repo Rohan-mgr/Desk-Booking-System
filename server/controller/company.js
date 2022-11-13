@@ -78,14 +78,12 @@ exports.getFloorRooms = async (req, res, next) => {
 
 exports.postCompanyInfo = async (req, res, next) => {
   const companyName = req.body.companyName;
-  const ownerFirstName = req.body.ownerFirstName;
-  const ownerLastName = req.body.ownerLastName;
   const contactNumber = req.body.contactNumber;
   const street = req.body.street;
   const city = req.body.city;
   const state = req.body.state;
   const country = req.body.country;
-  const workEmail = req.body.email;
+  // const workEmail = req.body.email;
   // console.log(
   //   companyName,
   //   ownerFirstName,
@@ -99,8 +97,10 @@ exports.postCompanyInfo = async (req, res, next) => {
   // );
   let dupCompany;
   try {
+    const companyuser = await CompanyUser.findById(req.userId);
+    console.log(companyuser);
     dupCompany = await Company.findOne({
-      workEmail: workEmail,
+      workEmail: companyuser?.email,
       companyName: companyName,
     });
     if (dupCompany) {
@@ -111,8 +111,8 @@ exports.postCompanyInfo = async (req, res, next) => {
     const company = new Company({
       companyName: companyName,
       companyOwner: {
-        fname: ownerFirstName,
-        lname: ownerLastName,
+        fname: companyuser?.ownerFname,
+        lname: companyuser?.ownerLname,
       },
       contactNumber: contactNumber,
       address: {
@@ -121,12 +121,11 @@ exports.postCompanyInfo = async (req, res, next) => {
         state: state,
         country: country,
       },
-      workEmail: workEmail,
+      workEmail: companyuser?.email,
       owner: req.userId,
       // floorPlan: { floors: [] },
     });
     const result = await company.save();
-    const companyuser = await CompanyUser.findById(req.userId);
     companyuser.companies.push(company);
     await companyuser.save();
     res.status(200).json({
