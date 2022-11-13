@@ -51,7 +51,7 @@ export const deleteCompany = async (cid) => {
 export const handleAddFloor = async (cid, floorInfo) => {
   const URL = COMPANY_ENDPOINTS.addFloor + "/" + cid;
   getUserToken();
-  console.log(URL);
+  console.log(URL, floorInfo, "add floor js");
   const response = await http.post(URL, JSON.stringify(floorInfo));
   return response;
 };

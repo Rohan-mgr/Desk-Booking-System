@@ -7,6 +7,12 @@ import { getCompanyFloors, getFloorRooms } from "../../../services/company";
 import { toast } from "react-toastify";
 
 function CompanyInfo(props) {
+  const [floorsInfo, setFloorsInfo] = useState({
+    floors: [],
+    rooms: [],
+    desks: 0,
+    floorId: null,
+  });
   const [floors, setFloors] = useState([]);
   const [rooms, setRooms] = useState([]);
   console.log(props.selectedCompany);
@@ -15,6 +21,12 @@ function CompanyInfo(props) {
     try {
       const response = await getCompanyFloors(props.selectedCompany?._id);
       setFloors(response?.results);
+      setFloorsInfo((prevState) => {
+        return {
+          ...prevState,
+          floors: response?.results,
+        };
+      });
     } catch (e) {
       toast.error(e);
       throw new Error(e);
@@ -24,6 +36,29 @@ function CompanyInfo(props) {
     fetchCompanyFloors();
   }, []);
   console.log(floors);
+
+  const handleChange = async (e) => {
+    setFloorsInfo((prevState) => {
+      return {
+        ...prevState,
+        floorId: e.target.value,
+      };
+    });
+    try {
+      const response = await getFloorRooms(e.target.value);
+      //   setRooms(response?.results);
+      setFloorsInfo((prevState) => {
+        return {
+          ...prevState,
+          rooms: response?.results,
+        };
+      });
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+  console.log(floorsInfo.floorId);
 
   return (
     <Container fluid>
@@ -62,40 +97,80 @@ function CompanyInfo(props) {
           </p>
           <p>
             Floors:{" "}
-            <Form.Select className="w-75 ">
+            <Form.Select
+              className="w-75"
+              //   value={floorsInfo.floorId}
+              onChange={(e) => handleChange(e)}
+            >
               <option>All Floors</option>
-              {floors?.map((f) => {
-                return <option key={f?._id}>Floor {f.floorName}</option>;
+              {floorsInfo.floors?.map((f) => {
+                return (
+                  <option key={f?._id} value={f._id}>
+                    Floor {f.floorNumber}
+                  </option>
+                );
               })}
             </Form.Select>
           </p>
           <p>
             Rooms:{" "}
             <Form.Select className="w-75">
-              <option>Room 1</option>
-              <option>Room 2</option>
-              <option>Room 3</option>
-              <option>Room 4</option>
+              <option>All Rooms</option>
+              {floorsInfo.rooms?.map((r) => {
+                return (
+                  <option key={r?._id} value={r._id}>
+                    Room {r.roomNo}
+                  </option>
+                );
+              })}
             </Form.Select>
           </p>
           <p>
             Desks:{" "}
             <Form.Select className="w-75">
-              <option>Desk 1</option>
-              <option>Desk 2</option>
-              <option>Desk 3</option>
-              <option>Desk 4</option>
+              <option>All Desks</option>
+              {floorsInfo.rooms[0]?.desks.map((d) => {
+                return (
+                  <option key={d?._id} value={d._id}>
+                    Desk {d.deskNo}
+                  </option>
+                );
+              })}
             </Form.Select>
           </p>
         </Col>
         <Col className="my-3 col-12 d-flex justify-content-between flex-column flex-lg-row flex-md-row">
-          <p>Total Floor: 10</p>
-          <p>Total Rooms: 10</p>
-          <p>Total Desks: 10</p>
+          <p>Total Floor: {floorsInfo.floors.length}</p>
+          <p>
+            Total Rooms:{" "}
+            {floorsInfo.floors
+              .map((f) => f.rooms.length)
+              .reduce(
+                (previousValue, currentValue) => previousValue + currentValue,
+                0
+              )}
+          </p>
+          <p>
+            Total Desks:{" "}
+            {floorsInfo.floors
+              .map((f) =>
+                f.rooms
+                  .map((d) => d.desks.length)
+                  .reduce(
+                    (previousValue, currentValue) =>
+                      previousValue + currentValue,
+                    0
+                  )
+              )
+              .reduce(
+                (previousValue, currentValue) => previousValue + currentValue,
+                0
+              )}
+          </p>
         </Col>
-        <Col className="col-12 text-center">
+        {/* <Col className="col-12 text-center">
           <Button variant="primary">Manage</Button>
-        </Col>
+        </Col> */}
       </Row>
     </Container>
   );

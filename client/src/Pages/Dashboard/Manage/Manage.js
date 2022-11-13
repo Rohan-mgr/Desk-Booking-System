@@ -27,7 +27,6 @@ function Manage(props) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [companies, setCompanies] = useState([]);
-  const [modal, setModal] = useState("");
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -46,50 +45,6 @@ function Manage(props) {
     setShowModal(false);
   };
 
-  const handledeleteCompany = async (cid) => {
-    try {
-      const data = await deleteCompany(cid);
-      if (!data) {
-        const error = new Error("failed to delete company");
-        throw error;
-      }
-      const updatedCompanies = companies?.filter(
-        (c) => c._id.toString() !== cid.toString()
-      );
-      setCompanies(updatedCompanies);
-    } catch (e) {
-      toast.error(e);
-      throw new Error(e);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (queryRegisterId !== registerId) {
-  //     navigate(`${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`);
-  //   }
-  // }, [queryRegisterId, registerId, navigate]);
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     floorName: "",
-  //     bookStatus: "false",
-  //   },
-  //   onSubmit: async (values) => {
-  //     try {
-  //       const data = await handleRegisterCompany(values, registerId);
-  //       if (!data) {
-  //         return;
-  //       }
-  //       console.log(data);
-  //       toast("Company registered successfully");
-  //       navigate(`/${ROUTES.COMPANY}`);
-  //     } catch (e) {
-  //       toast.error(e);
-  //       console.log("error", e);
-  //     }
-  //   },
-  // });
-
   const handleEditCompany = (cid, company) => {
     props.onInitEditing();
     props.onEditing(company);
@@ -97,19 +52,18 @@ function Manage(props) {
   };
   const handleAddFloor = (company) => {
     props.onEditing(company);
-    setModal("floorModal");
     setShowModal(true);
   };
-  const handleAddRoom = (company) => {
-    props.onEditing(company);
-    setModal("roomModal");
-    setShowModal(true);
-  };
-  const handleAddDesk = (company) => {
-    props.onEditing(company);
-    setModal("deskModal");
-    setShowModal(true);
-  };
+  // const handleAddRoom = (company) => {
+  //   props.onEditing(company);
+  //   setModal("roomModal");
+  //   setShowModal(true);
+  // };
+  // const handleAddDesk = (company) => {
+  //   props.onEditing(company);
+  //   setModal("deskModal");
+  //   setShowModal(true);
+  // };
 
   return (
     <div className="dashboard__manage__company">
@@ -144,30 +98,8 @@ function Manage(props) {
                   <Button variant="success" onClick={() => handleAddFloor(c)}>
                     <SiGoogleclassroom /> Add Floor
                   </Button>
-                  <Button
-                    variant="success"
-                    onClick={() => {
-                      handleAddRoom(c);
-                    }}
-                  >
-                    <MdMeetingRoom /> Add Room
-                  </Button>
-                  <Button
-                    variant="success"
-                    onClick={() => {
-                      handleAddDesk(c);
-                    }}
-                  >
-                    <GiDesk /> Add Desk
-                  </Button>
                 </div>
                 <div>
-                  <Button
-                    variant="danger"
-                    onClick={() => handledeleteCompany(c?._id)}
-                  >
-                    <BsFillTrashFill /> Delete
-                  </Button>
                   <Button
                     variant="info"
                     onClick={() => handleEditCompany(c?._id, c)}
@@ -176,25 +108,11 @@ function Manage(props) {
                   </Button>
                 </div>
               </div>
-              {modal === "floorModal" ? (
-                <Modal
-                  Show={showModal}
-                  handleClose={closeModal}
-                  companyId={props.selectCompany?._id}
-                />
-              ) : modal === "roomModal" ? (
-                <RoomModal
-                  Show={showModal}
-                  handleClose={closeModal}
-                  companyId={props.selectCompany?._id}
-                />
-              ) : (
-                <DeskModal
-                  Show={showModal}
-                  handleClose={closeModal}
-                  companyId={props.selectCompany?._id}
-                />
-              )}
+              <Modal
+                Show={showModal}
+                handleClose={closeModal}
+                companyId={props.selectCompany?._id}
+              />
             </Container>
           );
         })

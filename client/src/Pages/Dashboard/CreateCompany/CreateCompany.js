@@ -60,10 +60,13 @@ function CreateCompany(props) {
           return;
         }
         console.log(data);
+        // {
+        //   props.isEditing
+        //     ? (window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${props.selectedCompany?._id}`)
+        //     :
+        //   }
+        navigate(`/${ROUTES.COMPANY}`);
         props.onFinishEditing();
-        props.isEditing
-          ? (window.location.href = `/${ROUTES.MANAGE}`)
-          : navigate(`/${ROUTES.COMPANY}`);
         toast(
           `Company ${props.isEditing ? "updated" : "registered"} successfully`
         );

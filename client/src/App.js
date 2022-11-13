@@ -36,7 +36,7 @@ function App() {
           <Route path={ROUTES.DASHBOARD} element={<DashboardHome />} />
           <Route path={ROUTES.COMPANY} element={<Company />} />
           <Route
-            path={`${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}`}
+            path={`${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/:cid`}
             element={<CompanyInfo />}
           />
           <Route

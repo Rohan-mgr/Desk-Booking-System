@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-import { MdDelete, MdMoreVert } from "react-icons/md";
+import { MdDelete, MdMoreVert, MdEdit } from "react-icons/md";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
-import { getAllCompanies } from "../../../services/company";
+import { getAllCompanies, deleteCompany } from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
 import { toast } from "react-toastify";
+import Modal from "../../../Components/UI/Modal/AddFloor/AddModal";
 
 import nameInitials from "name-initials";
 import Avatar from "../../../Components/UI/avatar/avatar";
@@ -22,7 +23,7 @@ function Company(props) {
   const navigate = useNavigate();
   const [userMode, setUserMode] = useState("");
   const [companies, setCompanies] = useState([]);
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const fetchCompanies = async () => {
     try {
@@ -39,8 +40,39 @@ function Company(props) {
     const userType = _getSecureLs("auth")?.mode;
     setUserMode(userType);
   }, []);
-
   console.log(companies);
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const handledeleteCompany = async (cid) => {
+    try {
+      const data = await deleteCompany(cid);
+      if (!data) {
+        const error = new Error("failed to delete company");
+        throw error;
+      }
+      const updatedCompanies = companies?.filter(
+        (c) => c._id.toString() !== cid.toString()
+      );
+      setCompanies(updatedCompanies);
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+
+  const handleEditCompany = (cid, company) => {
+    props.onInitEditing();
+    props.onEditing(company);
+    navigate(`/${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`);
+  };
+
+  const handleAddFloor = (company) => {
+    props.onEditing(company);
+    setShowModal(true);
+  };
 
   return (
     <div>
@@ -114,18 +146,35 @@ function Company(props) {
                       eventKey="1"
                       onClick={() => {
                         props.onSelectCompany(company);
-                        navigate(`${ROUTES.COMPANY_INFO}`);
+                        navigate(`${ROUTES.COMPANY_INFO}/${company?._id}`);
                       }}
                     >
                       View Details
                     </Dropdown.Item>
-                    <Dropdown.Item as="button" eventKey="2">
+                    <Dropdown.Item
+                      as="button"
+                      eventKey="2"
+                      onClick={() => handleAddFloor(company)}
+                    >
                       Manage Floor
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item as="button" eventKey="3">
-                      <div className="d-flex align-items-center">
-                        <MdDelete className="mr-2" /> Delete
+                      <div
+                        className="d-flex align-items-center text-info"
+                        onClick={() => handleEditCompany(company?._id, company)}
+                      >
+                        <MdEdit className="mr-2" />{" "}
+                        <span style={{ marginTop: "2px" }}>Edit</span>
+                      </div>
+                    </Dropdown.Item>
+                    <Dropdown.Item as="button" eventKey="3">
+                      <div
+                        className="d-flex align-items-center text-danger"
+                        onClick={() => handledeleteCompany(company?._id)}
+                      >
+                        <MdDelete className="mr-2" />{" "}
+                        <span style={{ marginTop: "2px" }}>Delete</span>
                       </div>
                     </Dropdown.Item>
                   </Dropdown.Menu>
@@ -135,14 +184,27 @@ function Company(props) {
           ))}
         </tbody>
       </table>
+      <Modal
+        Show={showModal}
+        handleClose={closeModal}
+        companyId={props.selectCompany?._id}
+      />
     </div>
   );
 }
 
+const mapStateToProps = (state) => {
+  return {
+    selectedCompany: state.selectedCompany,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
+    onInitEditing: () => dispatch(actions.editCompany()),
+    onEditing: (company) => dispatch(actions.selectCompany(company)),
     onSelectCompany: (company) => dispatch(actions.selectCompany(company)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(Company);
+export default connect(mapStateToProps, mapDispatchToProps)(Company);
