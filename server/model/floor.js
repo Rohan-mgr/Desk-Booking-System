@@ -3,12 +3,16 @@ const Schema = mongoose.Schema;
 
 const floorSchema = new Schema(
   {
-    floorName: {
-      type: String,
+    floorNumber: {
+      type: Number,
       required: true,
     },
     roomCapacity: {
-      type: String,
+      type: Number,
+      required: true,
+    },
+    deskCapacity: {
+      type: Number,
       required: true,
     },
     company: {
@@ -18,8 +22,18 @@ const floorSchema = new Schema(
     },
     rooms: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Room",
+        roomNo: {
+          type: Number,
+          required: true,
+        },
+        desks: [
+          {
+            deskNo: {
+              type: Number,
+              required: true,
+            },
+          },
+        ],
       },
     ],
   },

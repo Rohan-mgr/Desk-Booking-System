@@ -179,8 +179,8 @@ exports.deleteCompany = async (req, res, next) => {
     }
     await Company.findByIdAndRemove(companyId);
     await Floor.deleteMany({ company: companyId });
-    await Room.deleteMany({ company: companyId });
-    await Desk.deleteMany({ company: companyId });
+    // await Room.deleteMany({ company: companyId });
+    // await Desk.deleteMany({ company: companyId });
     const companyUser = await CompanyUser.findById(req.userId);
     companyUser.companies.pull(companyId);
     await companyUser.save();
@@ -195,25 +195,12 @@ exports.deleteCompany = async (req, res, next) => {
 exports.updateCompany = async (req, res, next) => {
   const companyId = req.params.cid;
   const companyName = req.body.companyName;
-  const ownerFirstName = req.body.ownerFirstName;
-  const ownerLastName = req.body.ownerLastName;
   const contactNumber = req.body.contactNumber;
   const street = req.body.street;
   const city = req.body.city;
   const state = req.body.state;
   const country = req.body.country;
-  const workEmail = req.body.email;
-  console.log(
-    companyName,
-    ownerFirstName,
-    ownerLastName,
-    contactNumber,
-    street,
-    city,
-    state,
-    country,
-    workEmail
-  );
+  console.log(companyName, contactNumber, street, city, state, country);
   try {
     const company = await Company.findById(companyId);
     console.log(company.owner, req.userId);
@@ -228,14 +215,11 @@ exports.updateCompany = async (req, res, next) => {
       throw error;
     }
     company.companyName = companyName;
-    company.companyOwner.fname = ownerFirstName;
-    company.companyOwner.lname = ownerLastName;
     company.contactNumber = contactNumber;
     company.address.street = street;
     company.address.city = city;
     company.address.state = state;
     company.address.country = country;
-    company.workEmail = workEmail;
 
     const result = await company.save();
     res.status(200).json({
@@ -251,23 +235,38 @@ exports.updateCompany = async (req, res, next) => {
 
 exports.postAddFloor = async (req, res, next) => {
   const companyId = req.params.cid;
-  const floorName = req.body.floorName;
-  const capacity = req.body.roomCapacity;
+  const floorNumber = req.body.floorNo;
+  const roomCapacity = req.body.roomCapacity;
+  const deskCapacity = req.body.deskCapacity;
+  console.log(companyId, floorNumber, roomCapacity, deskCapacity, "add floor");
   let dupFloor;
   try {
     dupFloor = await Floor.findOne({
-      floorName: floorName,
+      floorNumber: floorNumber,
     });
     if (dupFloor) {
-      const error = new Error("Floor Name Already Exists!");
+      const error = new Error("Floor Number Already Exists!");
       error.statusCode = 409;
       throw error;
     }
     const floor = new Floor({
-      floorName: floorName,
-      roomCapacity: capacity,
+      floorNumber: floorNumber,
+      roomCapacity: roomCapacity,
+      deskCapacity: deskCapacity,
       company: mongoose.Types.ObjectId(companyId),
     });
+    for (let i = 0; i < roomCapacity; i++) {
+      floor.rooms.push({
+        roomNo: +i + 1,
+      });
+    }
+    for (let i = 0; i < deskCapacity; i++) {
+      floor.rooms.map((d) =>
+        d.desks.push({
+          deskNo: +i + 1,
+        })
+      );
+    }
     await floor.save();
     const company = await Company.findById(companyId);
     company.floors.push(floor);
@@ -291,9 +290,9 @@ exports.postCompanyRooms = async (req, res, next) => {
 
   let dupRoom;
   try {
-    dupRoom = await Room.findOne({
-      roomName: roomName,
-    });
+    // dupRoom = await Room.findOne({
+    //   roomName: roomName,
+    // });
     if (dupRoom) {
       const error = new Error("Room Name Already Exists!");
       error.statusCode = 409;
@@ -335,9 +334,9 @@ exports.postAddDesk = async (req, res, next) => {
   console.log(floorId, roomId, deskName);
   let dupDesk;
   try {
-    dupDesk = await Desk.findOne({
-      deskName: deskName,
-    });
+    // dupDesk = await Desk.findOne({
+    //   deskName: deskName,
+    // });
     if (dupDesk) {
       const error = new Error("Desk Name Already Exists!");
       error.statusCode = 409;
