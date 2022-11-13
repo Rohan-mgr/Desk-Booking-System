@@ -12,16 +12,13 @@ import { useFormik } from "formik";
 import Navbar from "../../Components/UI/navbar/navbar";
 
 import loginImage from "../../Assets/Images/login-vector.jpg";
+import { handleCompanySignup } from "../../services/company";
 
 function SignUp(props) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [userCredentials, setUserCredentials] = useState({
-    fname: "",
-    lname: "",
-    email: "",
-    password: "",
-  });
+  const [loginMode, setLoginMode] = useState(false);
+
   const [errors, setErrors] = useState({});
 
   const formik = useFormik({
@@ -33,7 +30,12 @@ function SignUp(props) {
     },
     onSubmit: async (values) => {
       try {
-        const data = await handleUserSignup(values);
+        let data;
+        if (loginMode) {
+          data = await handleCompanySignup(values);
+        } else {
+          data = await handleUserSignup(values);
+        }
         if (!data) {
           console.log(data);
           return;
@@ -48,6 +50,9 @@ function SignUp(props) {
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
+  };
+  const handleLoginMode = () => {
+    setLoginMode(!loginMode);
   };
 
   return (
@@ -131,6 +136,13 @@ function SignUp(props) {
                   type="checkbox"
                   onClick={togglePassword}
                   label="Show Password"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check
+                  type="checkbox"
+                  onClick={handleLoginMode}
+                  label="Sign Up as company"
                 />
               </Form.Group>
               <div className="d-grid">

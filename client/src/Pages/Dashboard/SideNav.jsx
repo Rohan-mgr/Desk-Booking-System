@@ -77,9 +77,7 @@ function SideNav() {
           <button
             onClick={() => {
               _removeAllLs();
-              navigate(
-                userMode === "company" ? ROUTES.COMPANY_LOGIN : ROUTES.LOGIN
-              );
+              navigate(ROUTES.LOGIN);
             }}
             class="mt-2 btn btn-secondary hide-on-collapse pos-right"
           >

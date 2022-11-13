@@ -7,6 +7,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Loader from "../../Components/UI/Loader/Loader";
 import { handleUserLogin } from "../../services/auth";
+import { handleCompanyLogin } from "../../services/company";
+
 import { _getSecureLs, _setSecureLs } from "../../helper/storage";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../helper/routes";
@@ -19,6 +21,7 @@ import loginImage from "../../Assets/Images/login-vector.jpg";
 function Login(props) {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loginMode, setLoginMode] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -27,7 +30,12 @@ function Login(props) {
     },
     onSubmit: async (values) => {
       try {
-        const data = await handleUserLogin(values);
+        let data;
+        if (loginMode) {
+          data = await handleCompanyLogin(values);
+        } else {
+          data = await handleUserLogin(values);
+        }
         if (!data.userId) {
           console.log(data);
           return;
@@ -37,7 +45,7 @@ function Login(props) {
           isLoggedIn: true,
           token: data.token,
           user: data.userId,
-          mode: "user",
+          mode: loginMode ? "company" : "user",
         });
 
         navigate(`${ROUTES.DASHBOARD}`);
@@ -50,6 +58,9 @@ function Login(props) {
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
+  };
+  const handleLoginMode = () => {
+    setLoginMode(!loginMode);
   };
 
   return (
@@ -93,6 +104,13 @@ function Login(props) {
                   type="checkbox"
                   onClick={togglePassword}
                   label="Show Password"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                <Form.Check
+                  type="checkbox"
+                  onClick={handleLoginMode}
+                  label="Sign In as company"
                 />
               </Form.Group>
               <div className="row">

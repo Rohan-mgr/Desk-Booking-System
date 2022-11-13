@@ -62,14 +62,6 @@ export default function Navbar() {
                 Login
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className="nav-link custom-btn btn d-none d-lg-block"
-                href={ROUTES.COMPANY_LOGIN}
-              >
-                Company Login
-              </a>
-            </li>
           </ul>
         </div>
       </div>

@@ -62,14 +62,22 @@ function Company(props) {
         </thead>
         <tbody>
           {companies?.map((company) => (
-            <tr
-              key={company._id}
-              onClick={() => {
-                props.onSelectCompany(company);
-                navigate(`${ROUTES.COMPANY_INFO}`);
-              }}
-            >
-              <td>{company?.companyName || ""}</td>
+            <tr key={company._id}>
+              <td>
+                <p
+                  style={{
+                    color: "blue",
+                    cursor: "pointer",
+                    width: "fit-content",
+                  }}
+                  onClick={() => {
+                    props.onSelectCompany(company);
+                    navigate(`${ROUTES.COMPANY_INFO}`);
+                  }}
+                >
+                  {company?.companyName || ""}
+                </p>
+              </td>
               {/* <td>0/5</td> */}
               <td>
                 <Avatar
