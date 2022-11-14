@@ -2,6 +2,14 @@ import { COMPANY_ENDPOINTS } from "../helper/endpoints";
 import { http, httpAuth } from "../helper/http";
 import { getUserToken, _getSecureLs } from "../helper/storage";
 
+export const getCompany = async (cid) => {
+  const URL = COMPANY_ENDPOINTS.companyInfo + "/" + cid;
+  const Token = getUserToken();
+  console.log(Token);
+
+  const response = await http.get(URL);
+  return response;
+};
 export const getAllCompanies = async () => {
   const URL = COMPANY_ENDPOINTS.company;
   const userMode = _getSecureLs("auth")?.mode;

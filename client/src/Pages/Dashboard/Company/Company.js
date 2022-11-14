@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { MdDelete, MdMoreVert, MdEdit } from "react-icons/md";
+import { MdDelete, MdMoreVert, MdEdit, MdEventAvailable } from "react-icons/md";
+import { TbListDetails } from "react-icons/tb";
+import { AiFillSetting } from "react-icons/ai";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
@@ -21,9 +23,9 @@ import {
 
 function Company(props) {
   const navigate = useNavigate();
-  const [userMode, setUserMode] = useState("");
   const [companies, setCompanies] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const userMode = _getSecureLs("auth")?.mode;
 
   const fetchCompanies = async () => {
     try {
@@ -31,21 +33,18 @@ function Company(props) {
       setCompanies(response?.result);
     } catch (e) {
       toast.error(e);
-      console.log(e);
+      throw new Error(e);
     }
   };
 
   useEffect(() => {
     fetchCompanies();
-    const userType = _getSecureLs("auth")?.mode;
-    setUserMode(userType);
   }, []);
-  console.log(companies);
 
   const closeModal = () => {
     setShowModal(false);
   };
-
+  console.log(userMode);
   const handledeleteCompany = async (cid) => {
     try {
       const data = await deleteCompany(cid);
@@ -140,43 +139,74 @@ function Company(props) {
                     <MdMoreVert />
                   </Dropdown.Toggle>
 
-                  <Dropdown.Menu as={CustomMenu}>
-                    <Dropdown.Item
-                      as="button"
-                      eventKey="1"
-                      onClick={() => {
-                        props.onSelectCompany(company);
-                        navigate(`${ROUTES.COMPANY_INFO}/${company?._id}`);
-                      }}
-                    >
-                      View Details
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      as="button"
-                      eventKey="2"
-                      onClick={() => handleAddFloor(company)}
-                    >
-                      Manage Floor
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item as="button" eventKey="3">
-                      <div
-                        className="d-flex align-items-center text-info"
-                        onClick={() => handleEditCompany(company?._id, company)}
-                      >
-                        <MdEdit className="mr-2" />{" "}
-                        <span style={{ marginTop: "2px" }}>Edit</span>
-                      </div>
-                    </Dropdown.Item>
-                    <Dropdown.Item as="button" eventKey="3">
-                      <div
-                        className="d-flex align-items-center text-danger"
-                        onClick={() => handledeleteCompany(company?._id)}
-                      >
-                        <MdDelete className="mr-2" />{" "}
-                        <span style={{ marginTop: "2px" }}>Delete</span>
-                      </div>
-                    </Dropdown.Item>
+                  <Dropdown.Menu style={{ marginBottom: "0 !important" }}>
+                    {userMode === "company" ? (
+                      <>
+                        <Dropdown.Item
+                          as="button"
+                          eventKey="1"
+                          onClick={() => {
+                            props.onSelectCompany(company);
+                            navigate(`${ROUTES.COMPANY_INFO}/${company?._id}`);
+                          }}
+                        >
+                          <div className="d-flex align-items-center text-primary">
+                            <TbListDetails className="mr-2" />{" "}
+                            <span style={{ marginTop: "1px" }}>
+                              View Details
+                            </span>
+                          </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          as="button"
+                          eventKey="2"
+                          onClick={() => handleAddFloor(company)}
+                        >
+                          <div className="d-flex align-items-center text-primary">
+                            <AiFillSetting className="mr-2" />{" "}
+                            <span style={{ marginTop: "1px" }}>
+                              Manage Floor
+                            </span>
+                          </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item as="button" eventKey="3">
+                          <div
+                            className="d-flex align-items-center text-primary"
+                            onClick={() =>
+                              handleEditCompany(company?._id, company)
+                            }
+                          >
+                            <MdEdit className="mr-2" />{" "}
+                            <span style={{ marginTop: "2px" }}>Edit</span>
+                          </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item as="button" eventKey="3">
+                          <div
+                            className="d-flex align-items-center text-danger"
+                            onClick={() => handledeleteCompany(company?._id)}
+                          >
+                            <MdDelete className="mr-2" />{" "}
+                            <span style={{ marginTop: "2px" }}>Delete</span>
+                          </div>
+                        </Dropdown.Item>
+                      </>
+                    ) : (
+                      <>
+                        <Dropdown.Item
+                          as="button"
+                          eventKey="1"
+                          onClick={() => {
+                            props.onSelectCompany(company);
+                            navigate(`${ROUTES.COMPANY_INFO}/${company?._id}`);
+                          }}
+                        >
+                          <div className="d-flex align-items-center text-primary">
+                            <MdEventAvailable className="mr-2" />{" "}
+                            <span>See Availability</span>
+                          </div>
+                        </Dropdown.Item>
+                      </>
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
               </td>

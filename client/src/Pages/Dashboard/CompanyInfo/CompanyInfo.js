@@ -2,12 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { getCompanyFloors, getFloorRooms } from "../../../services/company";
+// import Button from "react-bootstrap/Button";
+import { Navigate, useParams } from "react-router-dom";
+import {
+  getCompanyFloors,
+  getFloorRooms,
+  getCompany,
+} from "../../../services/company";
 import { toast } from "react-toastify";
+import { BsArrowLeft } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 function CompanyInfo(props) {
+  const navigate = useNavigate();
+  const { cid } = useParams();
   const [floorsInfo, setFloorsInfo] = useState({
+    company: null,
     floors: [],
     rooms: [],
     desks: 0,
@@ -15,11 +25,26 @@ function CompanyInfo(props) {
   });
   const [floors, setFloors] = useState([]);
   const [rooms, setRooms] = useState([]);
-  console.log(props.selectedCompany);
+
+  const fetchCompany = async () => {
+    try {
+      const response = await getCompany(cid);
+      console.log(response);
+      setFloorsInfo((prevState) => {
+        return {
+          ...prevState,
+          company: response?.result,
+        };
+      });
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
 
   const fetchCompanyFloors = async () => {
     try {
-      const response = await getCompanyFloors(props.selectedCompany?._id);
+      const response = await getCompanyFloors(cid);
       setFloors(response?.results);
       setFloorsInfo((prevState) => {
         return {
@@ -33,9 +58,9 @@ function CompanyInfo(props) {
     }
   };
   useEffect(() => {
+    fetchCompany();
     fetchCompanyFloors();
   }, []);
-  console.log(floors);
 
   const handleChange = async (e) => {
     setFloorsInfo((prevState) => {
@@ -58,41 +83,47 @@ function CompanyInfo(props) {
       throw new Error(e);
     }
   };
-  console.log(floorsInfo.floorId);
 
   return (
     <Container fluid>
       <Row>
         <Col className="text-center col-12 my-3">
-          <h4>{props.selectedCompany?.companyName}</h4>
+          <div className="text-left">
+            <p
+              style={{ width: "fit-content", cursor: "pointer" }}
+              onClick={() => navigate("/company")}
+            >
+              <BsArrowLeft /> Back
+            </p>
+          </div>
+          <h4>{floorsInfo.company?.companyName}</h4>
           <p>
             <span style={{ marginRight: ".3rem" }}>Created on:</span>
-            {new Date(props.selectedCompany?.createdAt).toLocaleDateString(
+            {new Date(floorsInfo.company?.createdAt).toLocaleDateString(
               "en-US"
             )}
           </p>
         </Col>
         <Col className="col-lg-6 col-md-6 col-12">
           <p>
-            Owner: {props.selectedCompany?.companyOwner?.fname}{" "}
-            {props.selectedCompany?.companyOwner?.lname}
+            Owner: {floorsInfo.company?.companyOwner?.fname}{" "}
+            {floorsInfo.company?.companyOwner?.lname}
           </p>
           <p>
-            Contant Number:{" "}
-            <strong>{props.selectedCompany?.contactNumber}</strong>
+            Contant Number: <strong>{floorsInfo.company?.contactNumber}</strong>
           </p>
           <p>
-            Address: {props.selectedCompany?.address?.street},{" "}
-            {props.selectedCompany?.address?.state}
+            Address: {floorsInfo.company?.address?.street},{" "}
+            {floorsInfo.company?.address?.state}
           </p>
-          <p>State: {props.selectedCompany?.address?.state}</p>
-          <p>Country: {props.selectedCompany?.address?.country}</p>
+          <p>State: {floorsInfo.company?.address?.state}</p>
+          <p>Country: {floorsInfo.company?.address?.country}</p>
         </Col>
         <Col className="col-lg-6 col-md-6 col-12">
           <p>
             E-mail:{" "}
-            <a href={`mailto:${props.selectedCompany?.workEmail}`}>
-              {props.selectedCompany?.workEmail}
+            <a href={`mailto:${floorsInfo.company?.workEmail}`}>
+              {floorsInfo.company?.workEmail}
             </a>
           </p>
           <p>
