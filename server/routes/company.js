@@ -6,6 +6,7 @@ const isAuth = require("../middleware/isAuth");
 router.get("/manage/addroom/:cId", isAuth, companyController.getCompanyFloors);
 router.get("/manage/adddesk/:fId", isAuth, companyController.getFloorRooms);
 router.get("/registercompany/:mode", isAuth, companyController.getCompanies);
+router.get("/company/companyinfo/:cid", isAuth, companyController.getCompany);
 
 router.post("/manage/addroom/:cId", isAuth, companyController.postCompanyRooms);
 router.post("/registercompany", isAuth, companyController.postCompanyInfo);

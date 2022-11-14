@@ -5,6 +5,26 @@ const Floor = require("../model/floor");
 const Room = require("../model/room");
 const Desk = require("../model/desk");
 
+exports.getCompany = async (req, res, next) => {
+  const companyId = req.params.cid;
+  try {
+    const company = await Company.findById(companyId);
+    if (!company) {
+      const error = new Error("company does not exists");
+      error.statusCode = 404;
+      throw error;
+    }
+    res
+      .status(200)
+      .json({ message: "company fetched successfully", result: company });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
 exports.getCompanies = async (req, res, next) => {
   const userMode = req.params.mode;
   // console.log(userMode, req.userId, "backend");
