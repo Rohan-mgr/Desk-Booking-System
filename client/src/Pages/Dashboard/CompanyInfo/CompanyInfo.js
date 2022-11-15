@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
-// import Button from "react-bootstrap/Button";
-import { Navigate, useParams } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import { useParams } from "react-router-dom";
 import {
   getCompanyFloors,
   getFloorRooms,
@@ -13,7 +12,7 @@ import { toast } from "react-toastify";
 import { BsArrowLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 
-function CompanyInfo(props) {
+function CompanyInfo() {
   const navigate = useNavigate();
   const { cid } = useParams();
   const [floorsInfo, setFloorsInfo] = useState({
@@ -45,7 +44,6 @@ function CompanyInfo(props) {
   const fetchCompanyFloors = async () => {
     try {
       const response = await getCompanyFloors(cid);
-      setFloors(response?.results);
       setFloorsInfo((prevState) => {
         return {
           ...prevState,
@@ -88,13 +86,14 @@ function CompanyInfo(props) {
     <Container fluid>
       <Row>
         <Col className="text-center col-12 my-3">
-          <div className="text-left">
+          <div className="text-left d-flex justify-content-between">
             <p
               style={{ width: "fit-content", cursor: "pointer" }}
               onClick={() => navigate("/company")}
             >
               <BsArrowLeft /> Back
             </p>
+            <Button variant="primary">Book Now</Button>
           </div>
           <h4>{floorsInfo.company?.companyName}</h4>
           <p>
@@ -207,10 +206,4 @@ function CompanyInfo(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    selectedCompany: state.selectedCompany,
-  };
-};
-
-export default connect(mapStateToProps)(CompanyInfo);
+export default CompanyInfo;
