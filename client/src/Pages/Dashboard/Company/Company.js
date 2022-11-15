@@ -103,7 +103,14 @@ function Company(props) {
           {companies?.map((company, _idx) => (
             <tr key={company._id}>
               <td>{_idx + 1}</td>
-              <td>{company?.companyName || ""}</td>
+              <td>
+                {" "}
+                <a
+                  href={`${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${company?._id}`}
+                >
+                  {company?.companyName || ""}
+                </a>{" "}
+              </td>
               {/* <td>0/5</td> */}
               <td>
                 <Avatar
