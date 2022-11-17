@@ -31,6 +31,11 @@ const floorSchema = new Schema(
           default: false,
           required: true,
         },
+        bookedBy: {
+          type: String,
+          default: " ",
+          required: true,
+        },
         desks: [
           {
             deskNo: {
@@ -40,6 +45,11 @@ const floorSchema = new Schema(
             bookStatus: {
               type: Boolean,
               default: false,
+              required: true,
+            },
+            bookedBy: {
+              type: String,
+              default: " ",
               required: true,
             },
           },

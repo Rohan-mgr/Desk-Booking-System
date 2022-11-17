@@ -278,12 +278,14 @@ exports.postAddFloor = async (req, res, next) => {
     for (let i = 0; i < roomCapacity; i++) {
       floor.rooms.push({
         roomNo: +i + 1,
+        // bookedBy: null,
       });
     }
     for (let i = 0; i < deskCapacity; i++) {
       floor.rooms.map((d) =>
         d.desks.push({
           deskNo: +i + 1,
+          // bookedBy: null,
         })
       );
     }
@@ -388,7 +390,7 @@ exports.postAddDesk = async (req, res, next) => {
   }
 };
 
-exports.postBookings = async (req, res, next) => {
+exports.postDeskBooking = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
   const deskId = req.body.deskId;
@@ -398,6 +400,7 @@ exports.postBookings = async (req, res, next) => {
       {
         $set: {
           "rooms.$[room].desks.$[desk].bookStatus": true,
+          "rooms.$[room].desks.$[desk].bookedBy": req.userId.toString(),
         },
       },
       {
@@ -405,6 +408,40 @@ exports.postBookings = async (req, res, next) => {
       }
     );
     res.status(200).json({ message: "desk booked successfully" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+exports.postDeskBookingCancel = async (req, res, next) => {
+  const fId = req.body.fId;
+  const roomId = req.body.roomId;
+  const deskId = req.body.deskId;
+  console.log(fId, roomId, deskId, "cancel booking");
+  try {
+    // const bookedDesk = await Floor.findOne({
+    //   rooms: { $all: [1] },
+    // });
+    // console.log(
+    //   bookedDesk,
+    //   // .rooms.map((d) => d._id),
+    //   "booked desk"
+    // );
+    await Floor.updateOne(
+      { _id: fId },
+      {
+        $set: {
+          "rooms.$[room].desks.$[desk].bookStatus": false,
+          "rooms.$[room].desks.$[desk].bookedBy": "",
+        },
+      },
+      {
+        arrayFilters: [{ "room._id": roomId }, { "desk._id": deskId }],
+      }
+    );
+    res.status(200).json({ message: "booking cancel successfully" });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
