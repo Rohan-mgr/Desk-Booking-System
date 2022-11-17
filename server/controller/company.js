@@ -387,3 +387,28 @@ exports.postAddDesk = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.postBookings = async (req, res, next) => {
+  const fId = req.body.fId;
+  const roomId = req.body.roomId;
+  const deskId = req.body.deskId;
+  try {
+    await Floor.updateOne(
+      { _id: fId },
+      {
+        $set: {
+          "rooms.$[room].desks.$[desk].bookStatus": true,
+        },
+      },
+      {
+        arrayFilters: [{ "room._id": roomId }, { "desk._id": deskId }],
+      }
+    );
+    res.status(200).json({ message: "desk booked successfully" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};

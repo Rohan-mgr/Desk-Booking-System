@@ -12,6 +12,7 @@ router.post("/manage/addroom/:cId", isAuth, companyController.postCompanyRooms);
 router.post("/registercompany", isAuth, companyController.postCompanyInfo);
 router.post("/manage/addfloor/:cid", isAuth, companyController.postAddFloor);
 router.post("/manage/adddesk/:cId", isAuth, companyController.postAddDesk);
+router.post("/bookings", isAuth, companyController.postBookings);
 
 router.put("/edit/:cid", isAuth, companyController.updateCompany);
 // router.post("/registercompany/:id", companyController.postCompanyFloorPlan);

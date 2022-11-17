@@ -26,10 +26,20 @@ const floorSchema = new Schema(
           type: Number,
           required: true,
         },
+        bookStatus: {
+          type: Boolean,
+          default: false,
+          required: true,
+        },
         desks: [
           {
             deskNo: {
               type: Number,
+              required: true,
+            },
+            bookStatus: {
+              type: Boolean,
+              default: false,
               required: true,
             },
           },
