@@ -142,7 +142,7 @@ function CompanyInfo() {
 
                   {isFetchingFloors && (
                     <div className="d-flex justify-content-center mt-3">
-                      <Spinner animation="border" />;
+                      <Spinner animation="border" />
                     </div>
                   )}
                 </div>
