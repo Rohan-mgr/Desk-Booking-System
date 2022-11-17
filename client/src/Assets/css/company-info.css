@@ -59,6 +59,7 @@
   grid-template-columns: repeat(4, 1fr);
   row-gap: 10px;
   column-gap: 20px;
+  cursor: pointer;
 }
 
 .desk-active {

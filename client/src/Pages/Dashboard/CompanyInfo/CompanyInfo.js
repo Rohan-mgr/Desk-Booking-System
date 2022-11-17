@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { ROUTES } from "../../../helper/routes";
 import { useParams } from "react-router-dom";
 import {
   getCompanyFloors,
   getFloorRooms,
   getCompany,
+  bookDesk,
+  cancelDesk,
 } from "../../../services/company";
 import { toast } from "react-toastify";
 import { BsArrowLeft } from "react-icons/bs";
@@ -14,10 +17,12 @@ import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { isEmptyArray } from "formik";
 import { MdKeyboardBackspace } from "react-icons/md";
-import Loader from "../../../Components/UI/Loader/Loader";
+import { _getSecureLs } from "../../../helper/storage";
+import ReactTooltip from "react-tooltip";
 
 function CompanyInfo() {
   const navigate = useNavigate();
+  const userMode = _getSecureLs("auth")?.mode;
   const [isFetchingCompanyInfo, setIsFetchingCompanyInfo] = useState(true);
   const [isFetchingFloors, setIsFetchingFloors] = useState(true);
   const { cid } = useParams();
@@ -85,6 +90,36 @@ function CompanyInfo() {
           rooms: response?.results,
         };
       });
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+  const handleDeskBooking = async (dId, rId, fId) => {
+    try {
+      const response = await bookDesk(dId, rId, fId);
+      if (!response) {
+        const error = new Error("failed to book the desk");
+        throw error;
+      }
+      console.log(response);
+      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+
+  const handleDeskBookCancel = async (dId, rId, fId) => {
+    console.log("cancel");
+    try {
+      const response = await cancelDesk(dId, rId, fId);
+      if (!response) {
+        const error = new Error("failed to cancel the booking");
+        throw error;
+      }
+      console.log(response);
+      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
     } catch (e) {
       toast.error(e);
       throw new Error(e);
@@ -161,11 +196,34 @@ function CompanyInfo() {
                               {room?.desks?.map((desk) => {
                                 return (
                                   <div
+                                    key={desk._id}
+                                    data-background-color={
+                                      !desk?.bookStatus ? "#273053" : "red"
+                                    }
+                                    data-tip={
+                                      !desk?.bookStatus
+                                        ? `click to book desk ${desk.deskNo}`
+                                        : "click to cancel booking"
+                                    }
+                                    onClick={() =>
+                                      userMode === "user" && !desk?.bookStatus
+                                        ? handleDeskBooking(
+                                            desk?._id,
+                                            room?._id,
+                                            currentFloor?._id
+                                          )
+                                        : handleDeskBookCancel(
+                                            desk?._id,
+                                            room?._id,
+                                            currentFloor?._id
+                                          )
+                                    }
                                     className={classNames("desk", {
-                                      "desk-active": desk?.deskNo,
-                                      "desk-inactive": !desk?.deskNo,
+                                      "desk-active": !desk?.bookStatus,
+                                      "desk-inactive": desk?.bookStatus,
                                     })}
                                   >
+                                    <ReactTooltip />
                                     {desk?.deskNo}
                                   </div>
                                 );

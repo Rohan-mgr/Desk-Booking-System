@@ -95,7 +95,8 @@ function Company(props) {
           <th>Workspace</th>
           {/* <th>Available Space</th> */}
           <th>Created by</th>
-          <th>Created on</th>
+          {userMode === "company" && <th>Created on</th>}
+          {userMode === "user" && <th>Available Space</th>}
           <th>Address</th>
           {/* {userMode === "company" && <th>Actions</th>} */}
         </thead>
@@ -120,9 +121,12 @@ function Company(props) {
                   name={`${company?.companyOwner?.fname} ${company?.companyOwner?.lname}`}
                 />
               </td>
-              <td>
-                {new Date(company?.createdAt).toLocaleDateString("en-US")}
-              </td>
+              {userMode === "company" && (
+                <td>
+                  {new Date(company?.createdAt).toLocaleDateString("en-US")}
+                </td>
+              )}
+              {userMode === "user" && <td className="text-center">0/5</td>}
               <td>{`${company?.address?.street}, ${company?.address?.state}`}</td>
               {/* {userMode === "company" && (
                 <>

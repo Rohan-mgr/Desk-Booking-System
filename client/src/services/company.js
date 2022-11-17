@@ -63,6 +63,27 @@ export const handleAddFloor = async (cid, floorInfo) => {
   const response = await http.post(URL, JSON.stringify(floorInfo));
   return response;
 };
+
+export const bookDesk = async (did, rid, fid) => {
+  const URL = COMPANY_ENDPOINTS.bookDesk;
+  getUserToken();
+  const response = await http.post(
+    URL,
+    JSON.stringify({ fId: fid, roomId: rid, deskId: did })
+  );
+  return response;
+};
+
+export const cancelDesk = async (did, rid, fid) => {
+  const URL = COMPANY_ENDPOINTS.cancelDesk;
+  getUserToken();
+  const response = await http.post(
+    URL,
+    JSON.stringify({ fId: fid, roomId: rid, deskId: did })
+  );
+  return response;
+};
+
 export const handleAddRoom = async (cid, roomInfo) => {
   const URL = COMPANY_ENDPOINTS.addRoom + "/" + cid;
   getUserToken();
