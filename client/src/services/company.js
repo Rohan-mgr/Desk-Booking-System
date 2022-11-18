@@ -84,6 +84,26 @@ export const cancelDesk = async (did, rid, fid) => {
   return response;
 };
 
+export const bookRoom = async (rid, fid) => {
+  const URL = COMPANY_ENDPOINTS.bookRoom;
+  getUserToken();
+  const response = await http.post(
+    URL,
+    JSON.stringify({ fId: fid, roomId: rid })
+  );
+  return response;
+};
+
+export const cancelRoom = async (rid, fid) => {
+  const URL = COMPANY_ENDPOINTS.cancelRoom;
+  getUserToken();
+  const response = await http.post(
+    URL,
+    JSON.stringify({ fId: fid, roomId: rid })
+  );
+  return response;
+};
+
 export const handleAddRoom = async (cid, roomInfo) => {
   const URL = COMPANY_ENDPOINTS.addRoom + "/" + cid;
   getUserToken();

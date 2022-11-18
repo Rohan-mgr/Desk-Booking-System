@@ -9,7 +9,9 @@ import {
   getFloorRooms,
   getCompany,
   bookDesk,
+  bookRoom,
   cancelDesk,
+  cancelRoom,
 } from "../../../services/company";
 import { toast } from "react-toastify";
 import { BsArrowLeft } from "react-icons/bs";
@@ -17,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { isEmptyArray } from "formik";
 import { MdKeyboardBackspace } from "react-icons/md";
+import { SlCalender } from "react-icons/sl";
 import { _getSecureLs } from "../../../helper/storage";
 import ReactTooltip from "react-tooltip";
 
@@ -33,6 +36,7 @@ function CompanyInfo() {
     desks: 0,
     floorId: null,
   });
+  console.log(userMode);
   const [currentFloor, setCurrentFloor] = useState({});
 
   const fetchCompany = async () => {
@@ -75,26 +79,6 @@ function CompanyInfo() {
     fetchCompanyFloors();
   }, []);
 
-  const handleChange = async (e) => {
-    setWorkspace((prevState) => {
-      return {
-        ...prevState,
-        floorId: e.target.value,
-      };
-    });
-    try {
-      const response = await getFloorRooms(e.target.value);
-      setWorkspace((prevState) => {
-        return {
-          ...prevState,
-          rooms: response?.results,
-        };
-      });
-    } catch (e) {
-      toast.error(e);
-      throw new Error(e);
-    }
-  };
   const handleDeskBooking = async (dId, rId, fId) => {
     try {
       const response = await bookDesk(dId, rId, fId);
@@ -109,11 +93,40 @@ function CompanyInfo() {
       throw new Error(e);
     }
   };
+  const handleRoomBooking = async (rId, fId) => {
+    try {
+      const response = await bookRoom(rId, fId);
+      if (!response) {
+        const error = new Error("failed to book the room");
+        throw error;
+      }
+      console.log(response);
+      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
 
   const handleDeskBookCancel = async (dId, rId, fId) => {
     console.log("cancel");
     try {
       const response = await cancelDesk(dId, rId, fId);
+      if (!response) {
+        const error = new Error("failed to cancel the booking");
+        throw error;
+      }
+      console.log(response);
+      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+  const handleRoomBookCancel = async (rId, fId) => {
+    console.log("cancel");
+    try {
+      const response = await cancelRoom(rId, fId);
       if (!response) {
         const error = new Error("failed to cancel the booking");
         throw error;
@@ -189,9 +202,59 @@ function CompanyInfo() {
                   {currentFloor?._id ? (
                     <div className="floor-viewer-container">
                       {currentFloor?.rooms?.map((room) => {
+                        console.log(room.bookStatus, "stat");
                         return (
-                          <div className="room-container">
-                            <div className="mb-2">Room : {room?.roomNo}</div>
+                          <div
+                            className="room-container"
+                            style={{
+                              backgroundColor:
+                                room?.bookStatus &&
+                                room.desks.filter((d) => d.bookStatus === false)
+                                  .length === 0
+                                  ? "#e56161"
+                                  : "#d7e3ed",
+                            }}
+                          >
+                            <div className="mb-2 d-flex align-items-center justify-content-between">
+                              <p>Room : {room?.roomNo}</p>
+                              <p
+                                data-background-color={
+                                  !room?.bookStatus ? "#273053" : "red"
+                                }
+                                data-tip={
+                                  userMode === "user"
+                                    ? !room?.bookStatus
+                                      ? `click to book room ${room.roomNo}`
+                                      : "click to cancel booking"
+                                    : null
+                                }
+                              >
+                                {userMode === "user" && (
+                                  <>
+                                    <SlCalender
+                                      onClick={() =>
+                                        userMode === "user"
+                                          ? !room?.bookStatus
+                                            ? handleRoomBooking(
+                                                room?._id,
+                                                currentFloor?._id
+                                              )
+                                            : handleRoomBookCancel(
+                                                room?._id,
+                                                currentFloor?._id
+                                              )
+                                          : null
+                                      }
+                                      style={{
+                                        color: "green",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                    <ReactTooltip />
+                                  </>
+                                )}
+                              </p>
+                            </div>
                             <div className="desk-container">
                               {room?.desks?.map((desk) => {
                                 return (
@@ -201,22 +264,26 @@ function CompanyInfo() {
                                       !desk?.bookStatus ? "#273053" : "red"
                                     }
                                     data-tip={
-                                      !desk?.bookStatus
-                                        ? `click to book desk ${desk.deskNo}`
-                                        : "click to cancel booking"
+                                      userMode === "user"
+                                        ? !desk?.bookStatus
+                                          ? `click to book desk ${desk.deskNo}`
+                                          : "click to cancel booking"
+                                        : null
                                     }
                                     onClick={() =>
-                                      userMode === "user" && !desk?.bookStatus
-                                        ? handleDeskBooking(
-                                            desk?._id,
-                                            room?._id,
-                                            currentFloor?._id
-                                          )
-                                        : handleDeskBookCancel(
-                                            desk?._id,
-                                            room?._id,
-                                            currentFloor?._id
-                                          )
+                                      userMode === "user"
+                                        ? !desk?.bookStatus
+                                          ? handleDeskBooking(
+                                              desk?._id,
+                                              room?._id,
+                                              currentFloor?._id
+                                            )
+                                          : handleDeskBookCancel(
+                                              desk?._id,
+                                              room?._id,
+                                              currentFloor?._id
+                                            )
+                                        : null
                                     }
                                     className={classNames("desk", {
                                       "desk-active": !desk?.bookStatus,
@@ -252,131 +319,6 @@ function CompanyInfo() {
    * This is not in use anymore
    * @returns
    */
-  const renderOlderView = () => {
-    return (
-      <Container fluid>
-        <Row>
-          <Col className="text-center col-12 my-3">
-            <div className="text-left d-flex justify-content-between">
-              <p
-                style={{ width: "fit-content", cursor: "pointer" }}
-                onClick={() => navigate("/company")}
-              >
-                <BsArrowLeft /> Back
-              </p>
-              <Button variant="primary">Book Now</Button>
-            </div>
-            <h4>{workspace.company?.companyName}</h4>
-            <p>
-              <span style={{ marginRight: ".3rem" }}>Created on:</span>
-              {new Date(workspace.company?.createdAt).toLocaleDateString(
-                "en-US"
-              )}
-            </p>
-          </Col>
-          <Col className="col-lg-6 col-md-6 col-12">
-            <p>
-              Owner: {workspace.company?.companyOwner?.fname}{" "}
-              {workspace.company?.companyOwner?.lname}
-            </p>
-            <p>
-              Contant Number:{" "}
-              <strong>{workspace.company?.contactNumber}</strong>
-            </p>
-            <p>
-              Address: {workspace.company?.address?.street},{" "}
-              {workspace.company?.address?.state}
-            </p>
-            <p>State: {workspace.company?.address?.state}</p>
-            <p>Country: {workspace.company?.address?.country}</p>
-          </Col>
-          <Col className="col-lg-6 col-md-6 col-12">
-            <p>
-              E-mail:{" "}
-              <a href={`mailto:${workspace.company?.workEmail}`}>
-                {workspace.company?.workEmail}
-              </a>
-            </p>
-            <p>
-              Floors:{" "}
-              <Form.Select
-                className="w-75"
-                //   value={workspace.floorId}
-                onChange={(e) => handleChange(e)}
-              >
-                <option>All Floors</option>
-                {workspace.floors?.map((f) => {
-                  return (
-                    <option key={f?._id} value={f._id}>
-                      Floor {f.floorNumber}
-                    </option>
-                  );
-                })}
-              </Form.Select>
-            </p>
-            <p>
-              Rooms:{" "}
-              <Form.Select className="w-75">
-                <option>All Rooms</option>
-                {workspace.rooms?.map((r) => {
-                  return (
-                    <option key={r?._id} value={r._id}>
-                      Room {r.roomNo}
-                    </option>
-                  );
-                })}
-              </Form.Select>
-            </p>
-            <p>
-              Desks:{" "}
-              <Form.Select className="w-75">
-                <option>All Desks</option>
-                {workspace.rooms[0]?.desks.map((d) => {
-                  return (
-                    <option key={d?._id} value={d._id}>
-                      Desk {d.deskNo}
-                    </option>
-                  );
-                })}
-              </Form.Select>
-            </p>
-          </Col>
-          <Col className="my-3 col-12 d-flex justify-content-between flex-column flex-lg-row flex-md-row">
-            <p>Total Floor: {workspace.floors.length}</p>
-            <p>
-              Total Rooms:{" "}
-              {workspace.floors
-                .map((f) => f.rooms.length)
-                .reduce(
-                  (previousValue, currentValue) => previousValue + currentValue,
-                  0
-                )}
-            </p>
-            <p>
-              Total Desks:{" "}
-              {workspace.floors
-                .map((f) =>
-                  f.rooms
-                    .map((d) => d.desks.length)
-                    .reduce(
-                      (previousValue, currentValue) =>
-                        previousValue + currentValue,
-                      0
-                    )
-                )
-                .reduce(
-                  (previousValue, currentValue) => previousValue + currentValue,
-                  0
-                )}
-            </p>
-          </Col>
-          {/* <Col className="col-12 text-center">
-        <Button variant="primary">Manage</Button>
-      </Col> */}
-        </Row>
-      </Container>
-    );
-  };
 
   return renderCompanyDetails();
 }

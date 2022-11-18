@@ -16,10 +16,7 @@ import Avatar from "../../../Components/UI/avatar/avatar";
 import { _getSecureLs } from "../../../helper/storage";
 import * as actions from "../../../store/action/index";
 import { connect } from "react-redux";
-import {
-  CustomMenu,
-  CustomToggle,
-} from "../../../Components/UI/Dropdown/DropdownMenu";
+import { CustomToggle } from "../../../Components/UI/Dropdown/DropdownMenu";
 
 function Company(props) {
   const navigate = useNavigate();
@@ -36,6 +33,7 @@ function Company(props) {
       throw new Error(e);
     }
   };
+  console.log(companies);
 
   useEffect(() => {
     fetchCompanies();
@@ -44,7 +42,6 @@ function Company(props) {
   const closeModal = () => {
     setShowModal(false);
   };
-  console.log(userMode);
   const handledeleteCompany = async (cid) => {
     try {
       const data = await deleteCompany(cid);
@@ -126,7 +123,44 @@ function Company(props) {
                   {new Date(company?.createdAt).toLocaleDateString("en-US")}
                 </td>
               )}
-              {userMode === "user" && <td className="text-center">0/5</td>}
+              {userMode === "user" && (
+                <td>
+                  {company.floors
+                    .map((f) =>
+                      f.rooms
+                        .map(
+                          (r) =>
+                            r.desks.filter((d) => d.bookStatus === false).length
+                        )
+                        .reduce(
+                          (previousValue, currentValue) =>
+                            previousValue + currentValue,
+                          0
+                        )
+                    )
+                    .reduce(
+                      (previousValue, currentValue) =>
+                        previousValue + currentValue,
+                      0
+                    )}
+                  /
+                  {company.floors
+                    .map((f) =>
+                      f.rooms
+                        .map((d) => d.desks.length)
+                        .reduce(
+                          (previousValue, currentValue) =>
+                            previousValue + currentValue,
+                          0
+                        )
+                    )
+                    .reduce(
+                      (previousValue, currentValue) =>
+                        previousValue + currentValue,
+                      0
+                    )}
+                </td>
+              )}
               <td>{`${company?.address?.street}, ${company?.address?.state}`}</td>
               {/* {userMode === "company" && (
                 <>

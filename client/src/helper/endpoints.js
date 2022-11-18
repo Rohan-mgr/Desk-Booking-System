@@ -18,4 +18,6 @@ export const COMPANY_ENDPOINTS = {
   addDesk: `${config.baseURL}/manage/adddesk`,
   bookDesk: `${config.baseURL}/bookdesk`,
   cancelDesk: `${config.baseURL}/canceldesk`,
+  bookRoom: `${config.baseURL}/bookroom`,
+  cancelRoom: `${config.baseURL}/cancelroom`,
 };
