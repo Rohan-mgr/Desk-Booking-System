@@ -409,6 +409,30 @@ exports.postDeskBooking = async (req, res, next) => {
         arrayFilters: [{ "room._id": roomId }, { "desk._id": deskId }],
       }
     );
+    const bookedDesk = await Floor.findOne({
+      _id: fId,
+    });
+    const room = bookedDesk?.rooms.filter(
+      (r) => r._id.toString() === roomId.toString()
+    );
+    if (
+      +room[0].desks.filter(
+        (d) => d.bookedBy.toString() === req.userId.toString()
+      ).length === +room[0].desks.length
+    ) {
+      await Floor.updateOne(
+        { _id: fId },
+        {
+          $set: {
+            "rooms.$[room].bookStatus": true,
+            "rooms.$[room].bookedBy": req.userId.toString(),
+          },
+        },
+        {
+          arrayFilters: [{ "room._id": roomId }],
+        }
+      );
+    }
     res.status(200).json({ message: "desk booked successfully" });
   } catch (error) {
     if (!error.statusCode) {
@@ -452,6 +476,24 @@ exports.postDeskBookingCancel = async (req, res, next) => {
         arrayFilters: [{ "room._id": roomId }, { "desk._id": deskId }],
       }
     );
+    if (
+      +room[0].desks.filter(
+        (d) => d.bookedBy.toString() === req.userId.toString()
+      ).length <= +room[0].desks.length
+    ) {
+      await Floor.updateOne(
+        { _id: fId },
+        {
+          $set: {
+            "rooms.$[room].bookStatus": false,
+            "rooms.$[room].bookedBy": "",
+          },
+        },
+        {
+          arrayFilters: [{ "room._id": roomId }],
+        }
+      );
+    }
     res.status(200).json({ message: "booking cancel successfully" });
   } catch (error) {
     if (!error.statusCode) {
@@ -465,12 +507,6 @@ exports.postRoomBooking = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
   try {
-    const bookedDesk = await Floor.findOne({
-      _id: fId,
-    });
-    const room = bookedDesk?.rooms.filter(
-      (r) => r._id.toString() === roomId.toString()
-    );
     await Floor.updateOne(
       { _id: fId },
       {
@@ -513,20 +549,20 @@ exports.postRoomBookingCancel = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-    // await Floor.updateOne(
-    //   { _id: fId },
-    //   {
-    //     $set: {
-    //       "rooms.$[room].bookStatus": false,
-    //       "rooms.$[room].bookedBy": "",
-    //       "rooms.$[room].desks.$[].bookStatus": false,
-    //       "rooms.$[room].desks.$[].bookedBy": "",
-    //     },
-    //   },
-    //   {
-    //     arrayFilters: [{ "room._id": roomId }],
-    //   }
-    // );
+    await Floor.updateOne(
+      { _id: fId },
+      {
+        $set: {
+          "rooms.$[room].bookStatus": false,
+          "rooms.$[room].bookedBy": "",
+          "rooms.$[room].desks.$[].bookStatus": false,
+          "rooms.$[room].desks.$[].bookedBy": "",
+        },
+      },
+      {
+        arrayFilters: [{ "room._id": roomId }],
+      }
+    );
     res.status(200).json({ message: "booking cancel successfully" });
   } catch (error) {
     if (!error.statusCode) {
