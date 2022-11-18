@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Company = require("../model/company");
+const User = require("../model/user");
 const CompanyUser = require("../model/companyUser");
 const Floor = require("../model/floor");
 const Room = require("../model/room");
@@ -31,7 +32,7 @@ exports.getCompanies = async (req, res, next) => {
   let companies;
   try {
     if (userMode === "user") {
-      companies = await Company.find();
+      companies = await Company.find().populate("floors");
     } else {
       companies = await Company.find({ owner: req.userId });
     }
@@ -39,9 +40,10 @@ exports.getCompanies = async (req, res, next) => {
       const error = new Error("No companies is created");
       throw error;
     }
-    res
-      .status(200)
-      .json({ message: "companies fetched successfully", result: companies });
+    res.status(200).json({
+      message: "companies fetched successfully",
+      result: companies,
+    });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -415,20 +417,29 @@ exports.postDeskBooking = async (req, res, next) => {
     next(error);
   }
 };
+
 exports.postDeskBookingCancel = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
   const deskId = req.body.deskId;
-  console.log(fId, roomId, deskId, "cancel booking");
   try {
-    // const bookedDesk = await Floor.findOne({
-    //   rooms: { $all: [1] },
-    // });
-    // console.log(
-    //   bookedDesk,
-    //   // .rooms.map((d) => d._id),
-    //   "booked desk"
-    // );
+    const bookedDesk = await Floor.findOne({
+      _id: fId,
+    });
+    const room = bookedDesk?.rooms.filter(
+      (r) => r._id.toString() === roomId.toString()
+    );
+    const desk = room[0].desks.filter(
+      (d) => d._id.toString() === deskId.toString()
+    );
+    const authUser = await User.findById(desk[0]?.bookedBy);
+    if (desk[0].bookedBy.toString() !== req.userId.toString()) {
+      const error = new Error(
+        `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
+      );
+      error.statusCode = 401;
+      throw error;
+    }
     await Floor.updateOne(
       { _id: fId },
       {
@@ -441,6 +452,81 @@ exports.postDeskBookingCancel = async (req, res, next) => {
         arrayFilters: [{ "room._id": roomId }, { "desk._id": deskId }],
       }
     );
+    res.status(200).json({ message: "booking cancel successfully" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.postRoomBooking = async (req, res, next) => {
+  const fId = req.body.fId;
+  const roomId = req.body.roomId;
+  try {
+    const bookedDesk = await Floor.findOne({
+      _id: fId,
+    });
+    const room = bookedDesk?.rooms.filter(
+      (r) => r._id.toString() === roomId.toString()
+    );
+    await Floor.updateOne(
+      { _id: fId },
+      {
+        $set: {
+          "rooms.$[room].bookStatus": true,
+          "rooms.$[room].bookedBy": req.userId.toString(),
+          "rooms.$[room].desks.$[].bookStatus": true,
+          "rooms.$[room].desks.$[].bookedBy": req.userId.toString(),
+        },
+      },
+      {
+        arrayFilters: [{ "room._id": roomId }],
+      }
+    );
+    res.status(200).json({ message: "Room booked successfully" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.postRoomBookingCancel = async (req, res, next) => {
+  const fId = req.body.fId;
+  const roomId = req.body.roomId;
+  try {
+    const bookedDesk = await Floor.findOne({
+      _id: fId,
+    });
+    const room = bookedDesk?.rooms.filter(
+      (r) => r._id.toString() === roomId.toString()
+    );
+    console.log(room, "cancel room");
+    const authUser = await User.findById(room[0]?.bookedBy);
+    if (room[0].bookedBy.toString() !== req.userId.toString()) {
+      const error = new Error(
+        `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
+      );
+      error.statusCode = 401;
+      throw error;
+    }
+    // await Floor.updateOne(
+    //   { _id: fId },
+    //   {
+    //     $set: {
+    //       "rooms.$[room].bookStatus": false,
+    //       "rooms.$[room].bookedBy": "",
+    //       "rooms.$[room].desks.$[].bookStatus": false,
+    //       "rooms.$[room].desks.$[].bookedBy": "",
+    //     },
+    //   },
+    //   {
+    //     arrayFilters: [{ "room._id": roomId }],
+    //   }
+    // );
     res.status(200).json({ message: "booking cancel successfully" });
   } catch (error) {
     if (!error.statusCode) {
