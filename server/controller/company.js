@@ -5,6 +5,16 @@ const CompanyUser = require("../model/companyUser");
 const Floor = require("../model/floor");
 const Room = require("../model/room");
 const Desk = require("../model/desk");
+const nodemailer = require("nodemailer");
+const sgTransport = require("nodemailer-sendgrid-transport");
+
+const mailer = nodemailer.createTransport(
+  sgTransport({
+    auth: {
+      api_key: process.env.SENDGRID_API_KEY,
+    },
+  })
+);
 
 exports.getCompany = async (req, res, next) => {
   const companyId = req.params.cid;
@@ -433,6 +443,27 @@ exports.postDeskBooking = async (req, res, next) => {
         }
       );
     }
+    const user = await User.findById(req.userId);
+    mailer.sendMail(
+      {
+        to: user?.email,
+        from: "bookyourdesk2022@gmail.com",
+        fromname: "Desk Booking System",
+        subject: "Booking Succeeded!",
+        html: `<div style="text-align: center;">
+          <h2>Welcome ${user?.fname} ${user?.lname}</h2>
+          <p><span style="color:green;">Congratulations!!! </span>You have successfully book your desk.</p>
+          <p>View Your Booking here http://localhost:3000/company/companyinfo/${req.body.cId}
+          <p>Want To Know More About Our Company, Visit http://localhost:3000/landing</p>
+        </div>`,
+      },
+      function (err, res) {
+        if (err) {
+          throw err;
+        }
+        console.log(res);
+      }
+    );
     res.status(200).json({ message: "desk booked successfully" });
   } catch (error) {
     if (!error.statusCode) {
@@ -519,6 +550,27 @@ exports.postRoomBooking = async (req, res, next) => {
       },
       {
         arrayFilters: [{ "room._id": roomId }],
+      }
+    );
+    const user = await User.findById(req.userId);
+    mailer.sendMail(
+      {
+        to: user?.email,
+        from: "bookyourdesk2022@gmail.com",
+        fromname: "Desk Booking System",
+        subject: "Booking Succeeded!",
+        html: `<div style="text-align: center;">
+          <h2>Welcome ${user?.fname} ${user?.lname}</h2>
+          <p><span style="color:green;">Congratulations!!! </span>You have successfully book your room.</p>
+          <p>View Your Booking here http://localhost:3000/company/companyinfo/${req.body.cId}
+          <p>Want To Know More About Our Company, Visit http://localhost:3000/landing</p>
+        </div>`,
+      },
+      function (err, res) {
+        if (err) {
+          throw err;
+        }
+        console.log(res);
       }
     );
     res.status(200).json({ message: "Room booked successfully" });
