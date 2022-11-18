@@ -208,9 +208,12 @@ function CompanyInfo() {
                             className="room-container"
                             style={{
                               backgroundColor:
-                                room?.bookStatus &&
-                                room.desks.filter((d) => d.bookStatus === false)
-                                  .length === 0
+                                room?.bookStatus ||
+                                (room.desks.filter((d) => d.bookStatus === true)
+                                  .length > 0 &&
+                                  room.desks.filter(
+                                    (d) => d.bookStatus === false
+                                  ).length === 0)
                                   ? "#e56161"
                                   : "#d7e3ed",
                             }}
