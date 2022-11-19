@@ -18,3 +18,8 @@ export const getUserToken = () => {
   const userData = ls.get("auth");
   return userData?.token;
 };
+
+export const getCurrentUserId = () => {
+  const userData = ls.get("auth");
+  return userData?.user;
+};

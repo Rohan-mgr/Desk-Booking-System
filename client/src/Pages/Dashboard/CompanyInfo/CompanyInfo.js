@@ -20,11 +20,13 @@ import classNames from "classnames";
 import { isEmptyArray } from "formik";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
-import { _getSecureLs } from "../../../helper/storage";
+import { getCurrentUserId, _getSecureLs } from "../../../helper/storage";
 import ReactTooltip from "react-tooltip";
 
 function CompanyInfo() {
   const navigate = useNavigate();
+  const userId = getCurrentUserId();
+  console.log(userId);
   const { pathname } = useLocation();
   const userMode = _getSecureLs("auth")?.mode;
   const [showModal, setShowModal] = useState(false);
@@ -163,6 +165,12 @@ function CompanyInfo() {
     }
   };
 
+  const getRoomBookStatus = (room) => {
+    if (room?.bookStatus && room?.bookedBy === userId) return "Cancel Booking";
+    if (room?.bookStatus && room?.bookedBy !== userId) return "Room Reserved";
+    if (!room?.bookStatus) return "Book Room";
+  };
+
   // useEffect(() => {
   //   if (floor && !currentFloor?._id && workspace?.floors?.length > 0) {
   //     selectFloorFromUrl(floor);
@@ -282,7 +290,8 @@ function CompanyInfo() {
                                           cid,
                                           userMode
                                         )
-                                      : handleRoomBookCancel(
+                                      : room?.bookedBy === userId &&
+                                        handleRoomBookCancel(
                                           room?._id,
                                           currentFloor?._id,
                                           userMode
@@ -290,15 +299,14 @@ function CompanyInfo() {
                                   }
                                 >
                                   {" "}
-                                  {room?.bookStatus
-                                    ? "Cancel Booking"
-                                    : "Book Room"}
+                                  {getRoomBookStatus(room)}
                                   <ReactTooltip />
                                 </button>
                               </p>
                             </div>
                             <div className="desk-container">
                               {room?.desks?.map((desk) => {
+                                console.log(typeof desk?.bookedBy);
                                 return (
                                   <div
                                     key={desk._id}
@@ -330,7 +338,12 @@ function CompanyInfo() {
                                     }
                                     className={classNames("desk", {
                                       "desk-active": !desk?.bookStatus,
-                                      "desk-inactive": desk?.bookStatus,
+                                      "desk-inactive":
+                                        desk?.bookStatus &&
+                                        desk?.bookedBy === userId,
+                                      "desk-disabled":
+                                        desk?.bookStatus &&
+                                        desk?.bookedBy !== userId,
                                     })}
                                   >
                                     <ReactTooltip />
