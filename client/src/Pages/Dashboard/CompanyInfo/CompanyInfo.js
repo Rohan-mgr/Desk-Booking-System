@@ -193,7 +193,7 @@ function CompanyInfo() {
           <Col>
             <Row>
               <Col md={3}>
-                <div className="mb-2">Floors </div>
+                <div className="mb-2">Available floors </div>
                 <div className="info-sidebar-wrapper">
                   {!isFetchingFloors &&
                     workspace?.floors?.map((item) => {
@@ -244,12 +244,18 @@ function CompanyInfo() {
                                   room.desks.filter(
                                     (d) => d.bookStatus === false
                                   ).length === 0)
-                                  ? "#e56161"
+                                  ? "#5D5D5D"
                                   : "#d7e3ed",
                             }}
                           >
                             <div className="mb-2 d-flex align-items-center justify-content-between">
-                              <p>Room : {room?.roomNo}</p>
+                              <p
+                                style={{
+                                  color: room?.bookStatus ? "white" : "black",
+                                }}
+                              >
+                                Room : {room?.roomNo}
+                              </p>
                               <p
                                 data-background-color={
                                   !room?.bookStatus ? "#273053" : "red"
@@ -262,28 +268,32 @@ function CompanyInfo() {
                                     : null
                                 }
                               >
-                                <>
-                                  <SlCalender
-                                    onClick={() =>
-                                      !room?.bookStatus
-                                        ? handleRoomBooking(
-                                            room?._id,
-                                            currentFloor?._id,
-                                            cid
-                                          )
-                                        : handleRoomBookCancel(
-                                            room?._id,
-                                            currentFloor?._id,
-                                            userMode
-                                          )
-                                    }
-                                    style={{
-                                      color: "green",
-                                      cursor: "pointer",
-                                    }}
-                                  />
+                                <button
+                                  className={classNames("btn", {
+                                    "btn-success": !room?.bookStatus,
+                                    "btn-danger": room?.bookStatus,
+                                  })}
+                                  type="sm"
+                                  onClick={() =>
+                                    !room?.bookStatus
+                                      ? handleRoomBooking(
+                                          room?._id,
+                                          currentFloor?._id,
+                                          cid
+                                        )
+                                      : handleRoomBookCancel(
+                                          room?._id,
+                                          currentFloor?._id,
+                                          userMode
+                                        )
+                                  }
+                                >
+                                  {" "}
+                                  {room?.bookStatus
+                                    ? "Cancel Booking"
+                                    : "Book Room"}
                                   <ReactTooltip />
-                                </>
+                                </button>
                               </p>
                             </div>
                             <div className="desk-container">
