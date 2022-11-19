@@ -41,11 +41,16 @@ function Login(props) {
           return;
         }
 
+        const remainingMilliseconds = 60 * 60 * 1000;
+        const expiryDate = new Date(
+          new Date().getTime() + remainingMilliseconds
+        );
         _setSecureLs("auth", {
           isLoggedIn: true,
           token: data.token,
           user: data.userId,
           mode: loginMode ? "company" : "user",
+          expiryDate: expiryDate.toISOString(),
         });
 
         navigate(`${ROUTES.DASHBOARD}`);
