@@ -95,10 +95,10 @@ function CompanyInfo() {
     fetchCompanyFloors();
   }, []);
 
-  const handleDeskBooking = async (dId, rId, fId, cid) => {
+  const handleDeskBooking = async (dId, rId, fId, cid, userMode) => {
     setShowModal(true);
     try {
-      const response = await bookDesk(dId, rId, fId, cid);
+      const response = await bookDesk(dId, rId, fId, cid, userMode);
       if (!response) {
         const error = new Error("failed to book the desk");
         throw error;
@@ -110,9 +110,9 @@ function CompanyInfo() {
       throw new Error(e);
     }
   };
-  const handleRoomBooking = async (rId, fId, cid) => {
+  const handleRoomBooking = async (rId, fId, cid, userMode) => {
     try {
-      const response = await bookRoom(rId, fId, cid);
+      const response = await bookRoom(rId, fId, cid, userMode);
 
       if (!response) {
         const error = new Error("failed to book the room");
@@ -279,7 +279,8 @@ function CompanyInfo() {
                                       ? handleRoomBooking(
                                           room?._id,
                                           currentFloor?._id,
-                                          cid
+                                          cid,
+                                          userMode
                                         )
                                       : handleRoomBookCancel(
                                           room?._id,
@@ -317,7 +318,8 @@ function CompanyInfo() {
                                             desk?._id,
                                             room?._id,
                                             currentFloor?._id,
-                                            cid
+                                            cid,
+                                            userMode
                                           )
                                         : handleDeskBookCancel(
                                             desk?._id,
