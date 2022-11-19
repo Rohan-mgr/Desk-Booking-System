@@ -43,6 +43,15 @@ function CompanyInfo() {
   });
 
   const [currentFloor, setCurrentFloor] = useState({});
+  const [bookingPayload, setBookingPayload] = useState({
+    floorId: "",
+    companyId: "",
+    deskId: "",
+    roomId: "",
+    userMode: "",
+    isCancel: false,
+    isRoom: false,
+  });
 
   const closeModal = () => {
     setShowModal(false);
@@ -97,35 +106,9 @@ function CompanyInfo() {
     fetchCompanyFloors();
   }, []);
 
-  const handleDeskBooking = async (dId, rId, fId, cid, userMode) => {
-    setShowModal(true);
-    try {
-      const response = await bookDesk(dId, rId, fId, cid, userMode);
-      if (!response) {
-        const error = new Error("failed to book the desk");
-        throw error;
-      }
-
-      fetchCompanyFloors();
-    } catch (e) {
-      toast.error(e);
-      throw new Error(e);
-    }
-  };
-  const handleRoomBooking = async (rId, fId, cid, userMode) => {
-    try {
-      const response = await bookRoom(rId, fId, cid, userMode);
-
-      if (!response) {
-        const error = new Error("failed to book the room");
-        throw error;
-      }
-
-      fetchCompanyFloors();
-    } catch (e) {
-      toast.error(e);
-      throw new Error(e);
-    }
+  const toggleBookingModal = (data) => {
+    setBookingPayload(data);
+    setShowModal(!showModal);
   };
 
   const handleDeskBookCancel = async (dId, rId, fId, userMode) => {
@@ -170,12 +153,6 @@ function CompanyInfo() {
     if (room?.bookStatus && room?.bookedBy !== userId) return "Room Reserved";
     if (!room?.bookStatus) return "Book Room";
   };
-
-  // useEffect(() => {
-  //   if (floor && !currentFloor?._id && workspace?.floors?.length > 0) {
-  //     selectFloorFromUrl(floor);
-  //   }
-  // }, [workspace?.floors, floor, currentFloor, selectFloorFromUrl]);
 
   /**
    * Render the details of the company
@@ -283,19 +260,29 @@ function CompanyInfo() {
                                   })}
                                   type="sm"
                                   onClick={() =>
-                                    !room?.bookStatus
-                                      ? handleRoomBooking(
-                                          room?._id,
-                                          currentFloor?._id,
-                                          cid,
-                                          userMode
-                                        )
-                                      : room?.bookedBy === userId &&
-                                        handleRoomBookCancel(
-                                          room?._id,
-                                          currentFloor?._id,
-                                          userMode
-                                        )
+                                    // !room?.bookStatus
+                                    //   ? handleRoomBooking(
+                                    //       room?._id,
+                                    //       currentFloor?._id,
+                                    //       cid,
+                                    //       userMode
+                                    //     )
+                                    //   : room?.bookedBy === userId &&
+                                    //     handleRoomBookCancel(
+                                    //       room?._id,
+                                    //       currentFloor?._id,
+                                    //       userMode
+                                    //     )
+                                    {
+                                      toggleBookingModal({
+                                        roomId: room?._id,
+                                        floorId: currentFloor?._id,
+                                        companyId: cid,
+                                        userMode,
+                                        isCancel: room?.bookStatus,
+                                        isRoom: true,
+                                      });
+                                    }
                                   }
                                 >
                                   {" "}
@@ -320,22 +307,17 @@ function CompanyInfo() {
                                           : "click to cancel booking"
                                         : null
                                     }
-                                    onClick={() =>
-                                      !desk?.bookStatus
-                                        ? handleDeskBooking(
-                                            desk?._id,
-                                            room?._id,
-                                            currentFloor?._id,
-                                            cid,
-                                            userMode
-                                          )
-                                        : handleDeskBookCancel(
-                                            desk?._id,
-                                            room?._id,
-                                            currentFloor?._id,
-                                            userMode
-                                          )
-                                    }
+                                    onClick={() => {
+                                      toggleBookingModal({
+                                        deskId: desk?._id,
+                                        roomId: room?._id,
+                                        floorId: currentFloor?._id,
+                                        companyId: cid,
+                                        userMode,
+                                        isCancel: desk?.bookStatus,
+                                        isRoom: false,
+                                      });
+                                    }}
                                     className={classNames("desk", {
                                       "desk-active": !desk?.bookStatus,
                                       "desk-inactive":
@@ -366,7 +348,12 @@ function CompanyInfo() {
             </Row>
           </Col>
         </Row>
-        {/* <BookingModal Show={showModal} handleClose={closeModal} /> */}
+        <BookingModal
+          Show={showModal}
+          handleClose={closeModal}
+          data={bookingPayload}
+          refetchFloors={fetchCompanyFloors}
+        />
       </Container>
     );
   };

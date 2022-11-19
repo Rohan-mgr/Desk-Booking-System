@@ -57,7 +57,7 @@ export const handleAddFloor = async (cid, floorInfo) => {
   return response;
 };
 
-export const bookDesk = async (did, rid, fid, cid, userMode) => {
+export const bookDesk = async (did, rid, fid, cid, date, userMode) => {
   const URL = COMPANY_ENDPOINTS.bookDesk;
   getUserToken();
   const response = await http.post(
@@ -68,6 +68,8 @@ export const bookDesk = async (did, rid, fid, cid, userMode) => {
       deskId: did,
       cId: cid,
       userMode: userMode,
+      startDate: date?.startDate,
+      endDate: date?.endDate,
     })
   );
   return response;
@@ -83,12 +85,19 @@ export const cancelDesk = async (did, rid, fid, userMode) => {
   return response;
 };
 
-export const bookRoom = async (rid, fid, cid, userMode) => {
+export const bookRoom = async (rid, fid, cid, selectionRange, userMode) => {
   const URL = COMPANY_ENDPOINTS.bookRoom;
   getUserToken();
   const response = await http.post(
     URL,
-    JSON.stringify({ fId: fid, roomId: rid, cId: cid, userMode: userMode })
+    JSON.stringify({
+      fId: fid,
+      roomId: rid,
+      cId: cid,
+      startDate: selectionRange?.startDate,
+      endDate: selectionRange?.endDate,
+      userMode: userMode,
+    })
   );
   return response;
 };
