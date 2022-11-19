@@ -4,7 +4,7 @@ import BookingModal from "../../../Components/UI/Modal/BookModal/BookModal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { ROUTES } from "../../../helper/routes";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import {
   getCompanyFloors,
   getCompany,
@@ -25,11 +25,13 @@ import ReactTooltip from "react-tooltip";
 
 function CompanyInfo() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const userMode = _getSecureLs("auth")?.mode;
   const [showModal, setShowModal] = useState(false);
   const [isFetchingCompanyInfo, setIsFetchingCompanyInfo] = useState(true);
   const [isFetchingFloors, setIsFetchingFloors] = useState(true);
   const { cid } = useParams();
+  const [searchParams] = useSearchParams();
   const [workspace, setWorkspace] = useState({
     company: null,
     floors: [],
@@ -37,7 +39,7 @@ function CompanyInfo() {
     desks: 0,
     floorId: null,
   });
-  console.log(userMode);
+
   const [currentFloor, setCurrentFloor] = useState({});
 
   const closeModal = () => {
@@ -72,6 +74,15 @@ function CompanyInfo() {
           floors: response?.results,
         };
       });
+
+      // if floor is not set in URL, select the first floor available
+      if (!searchParams.get("floor")) {
+        const [firstFloor] = response?.results;
+        setCurrentFloor(firstFloor);
+        navigate("?floor=" + firstFloor._id);
+      } else {
+        selectFloorFromUrl(searchParams.get("floor"), response?.results);
+      }
     } catch (e) {
       toast.error(e);
       throw new Error(e);
@@ -92,8 +103,8 @@ function CompanyInfo() {
         const error = new Error("failed to book the desk");
         throw error;
       }
-      console.log(response);
-      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+
+      fetchCompanyFloors();
     } catch (e) {
       toast.error(e);
       throw new Error(e);
@@ -102,12 +113,13 @@ function CompanyInfo() {
   const handleRoomBooking = async (rId, fId, cid) => {
     try {
       const response = await bookRoom(rId, fId, cid);
+
       if (!response) {
         const error = new Error("failed to book the room");
         throw error;
       }
-      console.log(response);
-      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+
+      fetchCompanyFloors();
     } catch (e) {
       toast.error(e);
       throw new Error(e);
@@ -122,8 +134,7 @@ function CompanyInfo() {
         const error = new Error("failed to cancel the booking");
         throw error;
       }
-      console.log(response);
-      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+      fetchCompanyFloors();
     } catch (e) {
       toast.error(e);
       throw new Error(e);
@@ -137,13 +148,26 @@ function CompanyInfo() {
         const error = new Error("failed to cancel the booking");
         throw error;
       }
-      console.log(response);
-      window.location.href = `/${ROUTES.COMPANY}/${ROUTES.COMPANY_INFO}/${cid}`;
+      fetchCompanyFloors();
     } catch (e) {
       toast.error(e);
       throw new Error(e);
     }
   };
+
+  const selectFloorFromUrl = (id, floors) => {
+    const selectedFloor = floors?.find((item) => item?._id === id);
+
+    if (selectedFloor) {
+      setCurrentFloor(selectedFloor);
+    }
+  };
+
+  // useEffect(() => {
+  //   if (floor && !currentFloor?._id && workspace?.floors?.length > 0) {
+  //     selectFloorFromUrl(floor);
+  //   }
+  // }, [workspace?.floors, floor, currentFloor, selectFloorFromUrl]);
 
   /**
    * Render the details of the company
@@ -181,6 +205,8 @@ function CompanyInfo() {
                           })}
                           role={"button"}
                           onClick={() => {
+                            navigate("?floor=" + item._id);
+
                             setCurrentFloor(item);
                           }}
                         >
@@ -201,14 +227,12 @@ function CompanyInfo() {
                   )}
                 </div>
               </Col>
-              {console.log("current floor info>>", currentFloor)}
 
               <Col>
                 <div className="contain-wrapper">
                   {currentFloor?._id ? (
                     <div className="floor-viewer-container">
                       {currentFloor?.rooms?.map((room) => {
-                        console.log(room.bookStatus, "stat");
                         return (
                           <div
                             className="room-container"

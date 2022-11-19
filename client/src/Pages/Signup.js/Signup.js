@@ -37,13 +37,11 @@ function SignUp(props) {
           data = await handleUserSignup(values);
         }
         if (!data) {
-          console.log(data);
           return;
         }
         navigate(ROUTES.LOGIN);
       } catch (e) {
         toast.error(e);
-        console.log("error", e);
       }
     },
   });

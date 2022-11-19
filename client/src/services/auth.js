@@ -17,16 +17,13 @@ export const handleUserSignup = async (userData) => {
 
 export const handleCreateCompany = async (companyInfo) => {
   const URL = COMPANY_ENDPOINTS.company;
-  console.log(URL);
   const Token = getUserToken();
-  console.log(Token);
   const response = await http.post(URL, JSON.stringify(companyInfo));
   return response;
 };
 
 export const handleEditCompany = async (cid, editedInfo) => {
   const URL = COMPANY_ENDPOINTS.editCompany + "/" + cid;
-  console.log(cid, URL, "edit company");
   getUserToken();
   const response = await http.put(URL, JSON.stringify(editedInfo));
   return response;
@@ -52,7 +49,6 @@ export const handleUserMessage = async (visitorInfo) => {
 export const getCurrentUser = async () => {
   const userId = _getSecureLs("auth")?.user;
   const userMode = _getSecureLs("auth")?.mode;
-  console.log(userId, userMode);
   if (userId) {
     try {
       const response = await http.get(
