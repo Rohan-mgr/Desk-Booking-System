@@ -2,17 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import Avatar from "../../../Components/UI/avatar/avatar";
 import { getAllCompanies } from "../../../services/company";
-import { _getSecureLs } from "../../../helper/storage";
+import { getCurrentUserId, _getSecureLs } from "../../../helper/storage";
 import { toast } from "react-toastify";
 
+import { Calendar } from "react-date-range";
+
 import nameInitials from "name-initials";
+import { getTotalRoomsBookedByUser } from "../../../helper/misc";
+import { Card, Table } from "react-bootstrap";
 
 export default function DashboardHome() {
   const userMode = _getSecureLs("auth")?.mode;
+  const userId = getCurrentUserId();
   const [currentUser] = useOutletContext();
   const [totalWorkspace, setTotalWorkspace] = useState(0);
   const [totalFloors, setTotalFloors] = useState(0);
   const [totalDesks, setTotalDesks] = useState(0);
+  const [userBookInfo, setUserBookInfo] = useState({});
 
   const fetchCompanies = async () => {
     try {
@@ -49,6 +55,13 @@ export default function DashboardHome() {
             0
           )
       );
+
+      const data = getTotalRoomsBookedByUser({
+        userId,
+        companies: response?.result,
+      });
+
+      setUserBookInfo(data);
     } catch (e) {
       toast.error(e);
       console.log(e);
@@ -59,11 +72,13 @@ export default function DashboardHome() {
     fetchCompanies();
   }, []);
 
+  console.log(userBookInfo);
+
   return (
-    <div>
+    <>
       <div>
         <div>
-          <div>
+          <div className="mb-3">
             Welcome,{" "}
             <div className="d-flex align-items-center">
               <Avatar
@@ -108,33 +123,35 @@ export default function DashboardHome() {
             </div>
           </div>
         </div>
-        {/* <div className="card">
-          <div className="card-header">Notification history</div>
-          <div className="card-body">
-            <div className="timeline">
-              <div className="time-label">
-                <span className="bg-green">23 Aug. 2019</span>
-              </div>
-              <div>
-                <i className="fas fa-envelope bg-blue"></i>
-                <div className="timeline-item">
-                  <span className="time">
-                    <i className="fas fa-clock"></i> 12:05
-                  </span>
-                  <h3 className="timeline-header">
-                    <a href="#">Support Team</a> sent you an email
-                  </h3>
-                  <div className="timeline-body">
-                    Etsy doostang zoodles disqus groupon greplin oooj voxy
-                    zoodles, weebly ning heekya handango imeem plugg dopplr
-                    jibjab, movity
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
+        <div className="d-flex align-items-start gap-2">
+          <Card className="w-100">
+            <Card.Body>
+              <h6>Your active booking</h6>
+              <Table bordered hover>
+                <thead>
+                  <th>Company</th>
+                  <th>Room no</th>
+                </thead>
+                <tbody>
+                  {userBookInfo?.totalRoomBooked === 0 && (
+                    <div>You don't any active booking</div>
+                  )}
+                  {userBookInfo?.roomsBookedByUser?.map((item) => {
+                    return (
+                      <tr>
+                        <td>{item?.companyName}</td>
+                        <td>{item?.roomNo}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+
+          <Calendar />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

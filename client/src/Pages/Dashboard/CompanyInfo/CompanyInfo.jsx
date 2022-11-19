@@ -1,25 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
 import BookingModal from "../../../Components/UI/Modal/BookModal/BookModal";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { ROUTES } from "../../../helper/routes";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
-import {
-  getCompanyFloors,
-  getCompany,
-  bookDesk,
-  bookRoom,
-  cancelDesk,
-  cancelRoom,
-} from "../../../services/company";
+import { useParams, useSearchParams } from "react-router-dom";
+import { getCompanyFloors, getCompany } from "../../../services/company";
 import { toast } from "react-toastify";
-import { BsArrowLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { isEmptyArray } from "formik";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { SlCalender } from "react-icons/sl";
 import { getCurrentUserId, _getSecureLs } from "../../../helper/storage";
 import ReactTooltip from "react-tooltip";
 
@@ -27,7 +15,6 @@ function CompanyInfo() {
   const navigate = useNavigate();
   const userId = getCurrentUserId();
   console.log(userId);
-  const { pathname } = useLocation();
   const userMode = _getSecureLs("auth")?.mode;
   const [showModal, setShowModal] = useState(false);
   const [isFetchingCompanyInfo, setIsFetchingCompanyInfo] = useState(true);
@@ -109,35 +96,6 @@ function CompanyInfo() {
   const toggleBookingModal = (data) => {
     setBookingPayload(data);
     setShowModal(!showModal);
-  };
-
-  const handleDeskBookCancel = async (dId, rId, fId, userMode) => {
-    console.log("cancel");
-    try {
-      const response = await cancelDesk(dId, rId, fId, userMode);
-      if (!response) {
-        const error = new Error("failed to cancel the booking");
-        throw error;
-      }
-      fetchCompanyFloors();
-    } catch (e) {
-      toast.error(e);
-      throw new Error(e);
-    }
-  };
-  const handleRoomBookCancel = async (rId, fId, userMode) => {
-    console.log("cancel");
-    try {
-      const response = await cancelRoom(rId, fId, userMode);
-      if (!response) {
-        const error = new Error("failed to cancel the booking");
-        throw error;
-      }
-      fetchCompanyFloors();
-    } catch (e) {
-      toast.error(e);
-      throw new Error(e);
-    }
   };
 
   const selectFloorFromUrl = (id, floors) => {
