@@ -6,11 +6,15 @@ import { AiFillSetting } from "react-icons/ai";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useNavigate } from "react-router-dom";
-import { getAllCompanies, deleteCompany } from "../../../services/company";
+import {
+  getAllCompanies,
+  deleteCompany,
+  searchWorkspace,
+} from "../../../services/company";
 import { ROUTES } from "../../../helper/routes";
 import { toast } from "react-toastify";
 import Modal from "../../../Components/UI/Modal/AddFloor/AddModal";
-
+import Form from "react-bootstrap/Form";
 import nameInitials from "name-initials";
 import Avatar from "../../../Components/UI/avatar/avatar";
 import { _getSecureLs } from "../../../helper/storage";
@@ -23,6 +27,7 @@ function Company(props) {
   const [companies, setCompanies] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const userMode = _getSecureLs("auth")?.mode;
+  const [query, setQuery] = useState("");
 
   const fetchCompanies = async () => {
     try {
@@ -42,6 +47,27 @@ function Company(props) {
   const closeModal = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    if (query.trim() === "" || query.length === 0) {
+      setCompanies(companies);
+    }
+    const data = companies?.filter((c) => {
+      return c.address.country.toLowerCase().includes(query);
+    });
+    setCompanies(data);
+  }, [query]);
+
+  // const handleChange = (e) => {
+  //   console.log(e.target.value);
+  //   if (e.target.value.trim() !== "") {
+  //   const data = companies?.filter((c) => {
+  //     return c.address.country.toLowerCase().includes(e.target.value);
+  //   });
+  //   setCompanies(data);
+  //   }
+  // };
+
   const handledeleteCompany = async (cid) => {
     try {
       const data = await deleteCompany(cid);
@@ -83,6 +109,20 @@ function Company(props) {
             <i className="fa fa-plus"></i>
             {""} Create your own workspace
           </Button>
+        )}
+        {userMode === "user" && (
+          <div>
+            <Form.Group controlId="formBasicSearch">
+              <Form.Label>Search Workspace:</Form.Label>
+              <Form.Control
+                className="col-7"
+                style={{ display: "inline-block" }}
+                type="text"
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Searcy by country location"
+              />
+            </Form.Group>
+          </div>
         )}
       </div>
 
