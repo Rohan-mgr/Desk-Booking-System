@@ -44,7 +44,7 @@ exports.getCompanies = async (req, res, next) => {
     if (userMode === "user") {
       companies = await Company.find().populate("floors");
     } else {
-      companies = await Company.find({ owner: req.userId });
+      companies = await Company.find({ owner: req.userId }).populate("floors");
     }
     if (!companies) {
       const error = new Error("No companies is created");
@@ -171,29 +171,6 @@ exports.postCompanyInfo = async (req, res, next) => {
     next(error);
   }
 };
-
-// exports.postCompanyFloorPlan = async (req, res, next) => {
-//   const floorName = req.body.floorName;
-//   const bookStatus = req.body.bookStatus;
-//   const registerId = req.params.id;
-//   // console.log(floorName, bookStatus, registerId);
-
-//   try {
-//     const company = await Company.findById(registerId);
-//     if (!company) {
-//       const err = new Error("Company not found");
-//       err.statusCode = 404;
-//       throw err;
-//     }
-//     await company.addFloorPlan(floorName, bookStatus);
-//     res.status(200).json({ message: "company details added successfully" });
-//   } catch (error) {
-//     if (!error.statusCode) {
-//       error.statusCode = 500;
-//     }
-//     next(error);
-//   }
-// };
 
 exports.deleteCompany = async (req, res, next) => {
   const companyId = req.params.cid;
@@ -477,6 +454,8 @@ exports.postDeskBookingCancel = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
   const deskId = req.body.deskId;
+  const userMode = req.body.userMode;
+  console.log(userMode);
   try {
     const bookedDesk = await Floor.findOne({
       _id: fId,
@@ -487,13 +466,15 @@ exports.postDeskBookingCancel = async (req, res, next) => {
     const desk = room[0].desks.filter(
       (d) => d._id.toString() === deskId.toString()
     );
-    const authUser = await User.findById(desk[0]?.bookedBy);
-    if (desk[0].bookedBy.toString() !== req.userId.toString()) {
-      const error = new Error(
-        `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
-      );
-      error.statusCode = 401;
-      throw error;
+    if (userMode === "user") {
+      const authUser = await User.findById(desk[0]?.bookedBy);
+      if (desk[0].bookedBy.toString() !== req.userId.toString()) {
+        const error = new Error(
+          `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
+        );
+        error.statusCode = 401;
+        throw error;
+      }
     }
     await Floor.updateOne(
       { _id: fId },
@@ -585,6 +566,7 @@ exports.postRoomBooking = async (req, res, next) => {
 exports.postRoomBookingCancel = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
+  const userMode = req.body.userMode;
   try {
     const bookedDesk = await Floor.findOne({
       _id: fId,
@@ -593,13 +575,15 @@ exports.postRoomBookingCancel = async (req, res, next) => {
       (r) => r._id.toString() === roomId.toString()
     );
     console.log(room, "cancel room");
-    const authUser = await User.findById(room[0]?.bookedBy);
-    if (room[0].bookedBy.toString() !== req.userId.toString()) {
-      const error = new Error(
-        `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
-      );
-      error.statusCode = 401;
-      throw error;
+    if (userMode === "user") {
+      const authUser = await User.findById(room[0]?.bookedBy);
+      if (room[0].bookedBy.toString() !== req.userId.toString()) {
+        const error = new Error(
+          `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
+        );
+        error.statusCode = 401;
+        throw error;
+      }
     }
     await Floor.updateOne(
       { _id: fId },
