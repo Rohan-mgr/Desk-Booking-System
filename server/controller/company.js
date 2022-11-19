@@ -384,6 +384,10 @@ exports.postDeskBooking = async (req, res, next) => {
   const roomId = req.body.roomId;
   const deskId = req.body.deskId;
   const userMode = req.body.userMode;
+
+  const startDate = req.body.startDate;
+  const endDate = req.body.endDate;
+  console.log(userMode, startDate, endDate);
   try {
     await Floor.updateOne(
       { _id: fId },
@@ -391,6 +395,8 @@ exports.postDeskBooking = async (req, res, next) => {
         $set: {
           "rooms.$[room].desks.$[desk].bookStatus": true,
           "rooms.$[room].desks.$[desk].bookedBy": req.userId.toString(),
+          "rooms.$[room].desks.$[desk].startDate": startDate.toString(),
+          "rooms.$[room].desks.$[desk].endDate": endDate.toString(),
         },
       },
       {
@@ -414,6 +420,8 @@ exports.postDeskBooking = async (req, res, next) => {
           $set: {
             "rooms.$[room].bookStatus": true,
             "rooms.$[room].bookedBy": req.userId.toString(),
+            "rooms.$[room].startDate": startDate.toString(),
+            "rooms.$[room].endDate": endDate.toString(),
           },
         },
         {
@@ -462,7 +470,7 @@ exports.postDeskBookingCancel = async (req, res, next) => {
   const roomId = req.body.roomId;
   const deskId = req.body.deskId;
   const userMode = req.body.userMode;
-  console.log(userMode);
+
   try {
     const bookedDesk = await Floor.findOne({
       _id: fId,
@@ -489,6 +497,8 @@ exports.postDeskBookingCancel = async (req, res, next) => {
         $set: {
           "rooms.$[room].desks.$[desk].bookStatus": false,
           "rooms.$[room].desks.$[desk].bookedBy": "",
+          "rooms.$[room].desks.$[desk].startDate": "",
+          "rooms.$[room].desks.$[desk].endDate": "",
         },
       },
       {
@@ -506,6 +516,8 @@ exports.postDeskBookingCancel = async (req, res, next) => {
           $set: {
             "rooms.$[room].bookStatus": false,
             "rooms.$[room].bookedBy": "",
+            "rooms.$[room].startDate": "",
+            "rooms.$[room].endDate": "",
           },
         },
         {
@@ -526,6 +538,8 @@ exports.postRoomBooking = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
   const userMode = req.body.userMode;
+  const startDate = req.body.startDate;
+  const endDate = req.body.endDate;
   try {
     await Floor.updateOne(
       { _id: fId },
@@ -533,8 +547,12 @@ exports.postRoomBooking = async (req, res, next) => {
         $set: {
           "rooms.$[room].bookStatus": true,
           "rooms.$[room].bookedBy": req.userId.toString(),
+          "rooms.$[room].startDate": startDate.toString(),
+          "rooms.$[room].endDate": startDate.toString(),
           "rooms.$[room].desks.$[].bookStatus": true,
           "rooms.$[room].desks.$[].bookedBy": req.userId.toString(),
+          "rooms.$[room].desks.$[].startDate": startDate.toString(),
+          "rooms.$[room].desks.$[].endDate": endDate.toString(),
         },
       },
       {
@@ -604,8 +622,12 @@ exports.postRoomBookingCancel = async (req, res, next) => {
         $set: {
           "rooms.$[room].bookStatus": false,
           "rooms.$[room].bookedBy": "",
+          "rooms.$[room].startDate": "",
+          "rooms.$[room].endDate": "",
           "rooms.$[room].desks.$[].bookStatus": false,
           "rooms.$[room].desks.$[].bookedBy": "",
+          "rooms.$[room].desks.$[].startDate": "",
+          "rooms.$[room].desks.$[].endDate": "",
         },
       },
       {

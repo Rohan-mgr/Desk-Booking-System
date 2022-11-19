@@ -36,6 +36,16 @@ const floorSchema = new Schema(
           default: " ",
           required: true,
         },
+        startDate: {
+          type: String,
+          default: " ",
+          required: true,
+        },
+        endDate: {
+          type: String,
+          default: " ",
+          required: true,
+        },
         desks: [
           {
             deskNo: {
@@ -48,6 +58,16 @@ const floorSchema = new Schema(
               required: true,
             },
             bookedBy: {
+              type: String,
+              default: " ",
+              required: true,
+            },
+            startDate: {
+              type: String,
+              default: " ",
+              required: true,
+            },
+            endDate: {
               type: String,
               default: " ",
               required: true,
