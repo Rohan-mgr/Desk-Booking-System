@@ -8,15 +8,16 @@ import { toast } from "react-toastify";
 import nameInitials from "name-initials";
 
 export default function DashboardHome() {
+  const userMode = _getSecureLs("auth")?.mode;
   const [currentUser] = useOutletContext();
-  const [userMode, setUserMode] = useState("");
   const [totalWorkspace, setTotalWorkspace] = useState(0);
   const [totalFloors, setTotalFloors] = useState(0);
+  const [totalDesks, setTotalDesks] = useState(0);
 
   const fetchCompanies = async () => {
     try {
       const response = await getAllCompanies();
-      console.log(response);
+      console.log(response?.result);
       setTotalWorkspace(response?.result.length);
       const total = response?.result
         .map((f) => f.floors.length)
@@ -25,6 +26,29 @@ export default function DashboardHome() {
           0
         );
       setTotalFloors(total);
+      setTotalDesks(
+        response?.result
+          .map((c) =>
+            c.floors
+              .map((f) =>
+                f.rooms
+                  .map((d) => d.desks.length)
+                  .reduce(
+                    (previousValue, currentValue) =>
+                      previousValue + currentValue,
+                    0
+                  )
+              )
+              .reduce(
+                (previousValue, currentValue) => previousValue + currentValue,
+                0
+              )
+          )
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0
+          )
+      );
     } catch (e) {
       toast.error(e);
       console.log(e);
@@ -33,8 +57,6 @@ export default function DashboardHome() {
 
   useEffect(() => {
     fetchCompanies();
-    const userType = _getSecureLs("auth")?.mode;
-    setUserMode(userType);
   }, []);
 
   return (
@@ -69,17 +91,19 @@ export default function DashboardHome() {
                 <i class="fas fa-building"></i>
               </span>
               <div className="info-box-content">
-                <span className="info-box-text">Your workspace</span>
+                <span className="info-box-text">
+                  {userMode === "user" ? "Total Workspace" : "Your Workspace"}
+                </span>
                 <span className="info-box-number">{totalWorkspace}</span>
               </div>
             </div>
             <div className="info-box ">
               <span className="info-box-icon bg-success">
-                <i className="far fa-envelope"></i>
+                <i class="fa fa-desktop"></i>
               </span>
               <div className="info-box-content">
-                <span className="info-box-text">Messages</span>
-                <span className="info-box-number">1,410</span>
+                <span className="info-box-text">Total Desk</span>
+                <span className="info-box-number">{totalDesks}</span>
               </div>
             </div>
           </div>

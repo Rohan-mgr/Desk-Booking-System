@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
+import BookingModal from "../../../Components/UI/Modal/BookModal/BookModal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { ROUTES } from "../../../helper/routes";
 import { useParams } from "react-router-dom";
 import {
   getCompanyFloors,
-  getFloorRooms,
   getCompany,
   bookDesk,
   bookRoom,
@@ -26,6 +26,7 @@ import ReactTooltip from "react-tooltip";
 function CompanyInfo() {
   const navigate = useNavigate();
   const userMode = _getSecureLs("auth")?.mode;
+  const [showModal, setShowModal] = useState(false);
   const [isFetchingCompanyInfo, setIsFetchingCompanyInfo] = useState(true);
   const [isFetchingFloors, setIsFetchingFloors] = useState(true);
   const { cid } = useParams();
@@ -38,6 +39,10 @@ function CompanyInfo() {
   });
   console.log(userMode);
   const [currentFloor, setCurrentFloor] = useState({});
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const fetchCompany = async () => {
     setIsFetchingCompanyInfo(true);
@@ -80,6 +85,7 @@ function CompanyInfo() {
   }, []);
 
   const handleDeskBooking = async (dId, rId, fId, cid) => {
+    setShowModal(true);
     try {
       const response = await bookDesk(dId, rId, fId, cid);
       if (!response) {
@@ -108,10 +114,10 @@ function CompanyInfo() {
     }
   };
 
-  const handleDeskBookCancel = async (dId, rId, fId) => {
+  const handleDeskBookCancel = async (dId, rId, fId, userMode) => {
     console.log("cancel");
     try {
-      const response = await cancelDesk(dId, rId, fId);
+      const response = await cancelDesk(dId, rId, fId, userMode);
       if (!response) {
         const error = new Error("failed to cancel the booking");
         throw error;
@@ -123,10 +129,10 @@ function CompanyInfo() {
       throw new Error(e);
     }
   };
-  const handleRoomBookCancel = async (rId, fId) => {
+  const handleRoomBookCancel = async (rId, fId, userMode) => {
     console.log("cancel");
     try {
-      const response = await cancelRoom(rId, fId);
+      const response = await cancelRoom(rId, fId, userMode);
       if (!response) {
         const error = new Error("failed to cancel the booking");
         throw error;
@@ -232,31 +238,28 @@ function CompanyInfo() {
                                     : null
                                 }
                               >
-                                {userMode === "user" && (
-                                  <>
-                                    <SlCalender
-                                      onClick={() =>
-                                        userMode === "user"
-                                          ? !room?.bookStatus
-                                            ? handleRoomBooking(
-                                                room?._id,
-                                                currentFloor?._id,
-                                                cid
-                                              )
-                                            : handleRoomBookCancel(
-                                                room?._id,
-                                                currentFloor?._id
-                                              )
-                                          : null
-                                      }
-                                      style={{
-                                        color: "green",
-                                        cursor: "pointer",
-                                      }}
-                                    />
-                                    <ReactTooltip />
-                                  </>
-                                )}
+                                <>
+                                  <SlCalender
+                                    onClick={() =>
+                                      !room?.bookStatus
+                                        ? handleRoomBooking(
+                                            room?._id,
+                                            currentFloor?._id,
+                                            cid
+                                          )
+                                        : handleRoomBookCancel(
+                                            room?._id,
+                                            currentFloor?._id,
+                                            userMode
+                                          )
+                                    }
+                                    style={{
+                                      color: "green",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                  <ReactTooltip />
+                                </>
                               </p>
                             </div>
                             <div className="desk-container">
@@ -275,20 +278,19 @@ function CompanyInfo() {
                                         : null
                                     }
                                     onClick={() =>
-                                      userMode === "user"
-                                        ? !desk?.bookStatus
-                                          ? handleDeskBooking(
-                                              desk?._id,
-                                              room?._id,
-                                              currentFloor?._id,
-                                              cid
-                                            )
-                                          : handleDeskBookCancel(
-                                              desk?._id,
-                                              room?._id,
-                                              currentFloor?._id
-                                            )
-                                        : null
+                                      !desk?.bookStatus
+                                        ? handleDeskBooking(
+                                            desk?._id,
+                                            room?._id,
+                                            currentFloor?._id,
+                                            cid
+                                          )
+                                        : handleDeskBookCancel(
+                                            desk?._id,
+                                            room?._id,
+                                            currentFloor?._id,
+                                            userMode
+                                          )
                                     }
                                     className={classNames("desk", {
                                       "desk-active": !desk?.bookStatus,
@@ -315,6 +317,7 @@ function CompanyInfo() {
             </Row>
           </Col>
         </Row>
+        {/* <BookingModal Show={showModal} handleClose={closeModal} /> */}
       </Container>
     );
   };

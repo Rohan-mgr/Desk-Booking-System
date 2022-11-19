@@ -74,12 +74,12 @@ export const bookDesk = async (did, rid, fid, cid) => {
   return response;
 };
 
-export const cancelDesk = async (did, rid, fid) => {
+export const cancelDesk = async (did, rid, fid, userMode) => {
   const URL = COMPANY_ENDPOINTS.cancelDesk;
   getUserToken();
   const response = await http.post(
     URL,
-    JSON.stringify({ fId: fid, roomId: rid, deskId: did })
+    JSON.stringify({ fId: fid, roomId: rid, deskId: did, userMode: userMode })
   );
   return response;
 };
@@ -94,12 +94,12 @@ export const bookRoom = async (rid, fid, cid) => {
   return response;
 };
 
-export const cancelRoom = async (rid, fid) => {
+export const cancelRoom = async (rid, fid, userMode) => {
   const URL = COMPANY_ENDPOINTS.cancelRoom;
   getUserToken();
   const response = await http.post(
     URL,
-    JSON.stringify({ fId: fid, roomId: rid })
+    JSON.stringify({ fId: fid, roomId: rid, userMode: userMode })
   );
   return response;
 };
