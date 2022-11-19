@@ -383,6 +383,7 @@ exports.postDeskBooking = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
   const deskId = req.body.deskId;
+  const userMode = req.body.userMode;
   try {
     await Floor.updateOne(
       { _id: fId },
@@ -420,7 +421,13 @@ exports.postDeskBooking = async (req, res, next) => {
         }
       );
     }
-    const user = await User.findById(req.userId);
+    let user;
+    if (userMode === "user") {
+      user = await User.findById(req.userId);
+    } else {
+      user = await CompanyUser.findById(req.userId);
+    }
+
     mailer.sendMail(
       {
         to: user?.email,
@@ -518,6 +525,7 @@ exports.postDeskBookingCancel = async (req, res, next) => {
 exports.postRoomBooking = async (req, res, next) => {
   const fId = req.body.fId;
   const roomId = req.body.roomId;
+  const userMode = req.body.userMode;
   try {
     await Floor.updateOne(
       { _id: fId },
@@ -533,7 +541,12 @@ exports.postRoomBooking = async (req, res, next) => {
         arrayFilters: [{ "room._id": roomId }],
       }
     );
-    const user = await User.findById(req.userId);
+    let user;
+    if (userMode === "user") {
+      user = await User.findById(req.userId);
+    } else {
+      user = await CompanyUser.findById(req.userId);
+    }
     mailer.sendMail(
       {
         to: user?.email,
