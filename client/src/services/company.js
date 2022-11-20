@@ -50,10 +50,11 @@ export const deleteCompany = async (cid) => {
   return response;
 };
 
-export const handleAddFloor = async (cid, floorInfo) => {
+export const handleAddFloor = async (cid, floorInfo, amenities) => {
   const URL = COMPANY_ENDPOINTS.addFloor + "/" + cid;
   getUserToken();
-  const response = await http.post(URL, JSON.stringify(floorInfo));
+  const data = { ...floorInfo, Amenities: amenities };
+  const response = await http.post(URL, JSON.stringify(data));
   return response;
 };
 

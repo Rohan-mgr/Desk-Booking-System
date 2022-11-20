@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 function BookModal(props) {
   const navigate = useNavigate();
+  const [amenities, setAmenities] = useState([]);
   const formik = useFormik({
     initialValues: {
       floorNo: "",
@@ -20,7 +21,11 @@ function BookModal(props) {
     },
     onSubmit: async (values, { resetForm }) => {
       try {
-        const data = await handleAddFloor(props.selectedCompany?._id, values);
+        const data = await handleAddFloor(
+          props.selectedCompany?._id,
+          values,
+          amenities
+        );
         if (!data) {
           throw new Error("Failed to add the floor");
         }
@@ -37,6 +42,18 @@ function BookModal(props) {
       }
     },
   });
+
+  const handleAmenitiesChange = (e) => {
+    const value = e.target.value;
+    const checked = e.target.checked;
+    if (checked) {
+      setAmenities([...amenities, value]);
+    } else {
+      setAmenities(amenities.filter((a) => a !== value));
+    }
+  };
+  console.log(amenities);
+
   return (
     <>
       <Modal show={props.Show} onHide={props.handleClose} className="addModal">
@@ -74,6 +91,37 @@ function BookModal(props) {
                 name="deskCapacity"
                 value={formik.values.deskCapacity}
                 onChange={formik.handleChange}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3 text-left">
+              <Form.Label>Room Amenities:</Form.Label>
+              <Form.Check
+                type="checkbox"
+                name="amenities"
+                onChange={handleAmenitiesChange}
+                value="Portable Projector"
+                label="Portable Projector"
+              />
+              <Form.Check
+                type="checkbox"
+                name="amenities"
+                onChange={handleAmenitiesChange}
+                value="Wi-Fi"
+                label="Wi-Fi"
+              />
+              <Form.Check
+                type="checkbox"
+                name="amenities"
+                onChange={handleAmenitiesChange}
+                value="Air Conditioner"
+                label="Air Conditioner"
+              />
+              <Form.Check
+                type="checkbox"
+                name="amenities"
+                onChange={handleAmenitiesChange}
+                value="Television with Satellite Channels"
+                label="Television with Satellite Channels"
               />
             </Form.Group>
             <Button variant="success" type="submit" className="text-right">
