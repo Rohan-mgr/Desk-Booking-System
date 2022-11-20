@@ -3,8 +3,6 @@ const Company = require("../model/company");
 const User = require("../model/user");
 const CompanyUser = require("../model/companyUser");
 const Floor = require("../model/floor");
-const Room = require("../model/room");
-const Desk = require("../model/desk");
 const nodemailer = require("nodemailer");
 const sgTransport = require("nodemailer-sendgrid-transport");
 
@@ -115,18 +113,6 @@ exports.postCompanyInfo = async (req, res, next) => {
   const city = req.body.city;
   const state = req.body.state;
   const country = req.body.country;
-  // const workEmail = req.body.email;
-  // console.log(
-  //   companyName,
-  //   ownerFirstName,
-  //   ownerLastName,
-  //   contactNumber,
-  //   street,
-  //   city,
-  //   state,
-  //   country,
-  //   workEmail
-  // );
   let dupCompany;
   try {
     const companyuser = await CompanyUser.findById(req.userId);
@@ -188,8 +174,6 @@ exports.deleteCompany = async (req, res, next) => {
     }
     await Company.findByIdAndRemove(companyId);
     await Floor.deleteMany({ company: companyId });
-    // await Room.deleteMany({ company: companyId });
-    // await Desk.deleteMany({ company: companyId });
     const companyUser = await CompanyUser.findById(req.userId);
     companyUser.companies.pull(companyId);
     await companyUser.save();
@@ -283,93 +267,6 @@ exports.postAddFloor = async (req, res, next) => {
     await company.save();
 
     res.status(200).json({ message: "Floor added successfully" });
-  } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
-  }
-};
-
-exports.postCompanyRooms = async (req, res, next) => {
-  const companyId = req.params.cId;
-  const floorId = req.body.floor;
-  const roomName = req.body.roomName;
-  const deskCapacity = req.body.deskCapacity;
-  console.log(floorId, roomName, deskCapacity, "add room");
-
-  let dupRoom;
-  try {
-    // dupRoom = await Room.findOne({
-    //   roomName: roomName,
-    // });
-    if (dupRoom) {
-      const error = new Error("Room Name Already Exists!");
-      error.statusCode = 409;
-      throw error;
-    }
-    const totalRooms = await Room.find({ floor: floorId }).countDocuments();
-    const floor = await Floor.findById(floorId);
-    console.log(totalRooms, floor?.roomCapacity);
-    if (+totalRooms >= +floor?.roomCapacity) {
-      const error = new Error("Room Space not available");
-      error.statusCode = 507;
-      throw error;
-    }
-    const room = new Room({
-      roomName: roomName,
-      roomCapacity: deskCapacity,
-      company: mongoose.Types.ObjectId(companyId),
-      floor: mongoose.Types.ObjectId(floorId),
-    });
-    await room.save();
-
-    floor.rooms.push(room);
-    await floor.save();
-
-    res.status(200).json({ message: "room added successfully" });
-  } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
-  }
-};
-
-exports.postAddDesk = async (req, res, next) => {
-  const companyId = req.params.cId;
-  const floorId = req.body.floor;
-  const roomId = req.body.room;
-  const deskName = req.body.deskName;
-  console.log(floorId, roomId, deskName);
-  let dupDesk;
-  try {
-    // dupDesk = await Desk.findOne({
-    //   deskName: deskName,
-    // });
-    if (dupDesk) {
-      const error = new Error("Desk Name Already Exists!");
-      error.statusCode = 409;
-      throw error;
-    }
-    const totalDesk = await Desk.find({ room: roomId }).countDocuments();
-    const room = await Room.findById(roomId);
-    console.log(+room?.roomCapacity, +totalDesk);
-    if (+totalDesk >= +room?.roomCapacity) {
-      const error = new Error("Desk Space not available");
-      error.statusCode = 507;
-      throw error;
-    }
-    const desk = new Desk({
-      floor: mongoose.Types.ObjectId(floorId),
-      room: mongoose.Types.ObjectId(roomId),
-      company: mongoose.Types.ObjectId(companyId),
-      deskName: deskName,
-    });
-    await desk.save();
-    room.desks.push(desk);
-    await room.save();
-    res.status(200).json({ message: "Desk added successfully" });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

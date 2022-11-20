@@ -60,24 +60,6 @@ exports.createUser = async (req, res, next) => {
       password: hashedPassword,
     });
     const result = await user.save();
-    // mailer.sendMail(
-    //   {
-    //     to: email,
-    //     from: "rohan.magar.415@gmail.com",
-    //     fromname: "Rohan Rana Magar",
-    //     subject: "Signup Succeeded!",
-    //     html: `<div style="text-align: center;">
-    //       <h2>Welcome ${name}</h2>
-    //       <p><span style="color:red;">Congratulations!!! </span>You have successfully signed up to online store.</p>
-    //     </div>`,
-    //   },
-    //   function (err, res) {
-    //     if (err) {
-    //       throw err;
-    //     }
-    //     console.log(res);
-    //   }
-    // );
     res
       .status(200)
       .json({ message: "user created successfully", userId: result._id });

@@ -58,17 +58,4 @@ const companySchema = new Schema(
   { timestamps: true }
 );
 
-// companySchema.methods.addFloorPlan = function (name, status) {
-//   const updatedFloorPlan = [...this.floorPlan.floors];
-//   updatedFloorPlan.push({
-//     floorName: name,
-//     bookStatus: status,
-//   });
-//   const updatedFloor = {
-//     floors: updatedFloorPlan,
-//   };
-//   this.floorPlan = updatedFloor;
-//   return this.save();
-// };
-
 module.exports = mongoose.model("Company", companySchema);
