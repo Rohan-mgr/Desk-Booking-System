@@ -169,6 +169,17 @@ function CompanyInfo() {
                     </div>
                   )}
                 </div>
+                <div className="booking-info-convention">
+                  <div>
+                    <span></span>Available
+                  </div>
+                  <div>
+                    <span></span>Unavailable
+                  </div>
+                  <div>
+                    <span></span>Reserved
+                  </div>
+                </div>
               </Col>
 
               <Col>
