@@ -83,7 +83,7 @@ export default function DashboardHome() {
             <div className="d-flex align-items-center">
               <Avatar
                 initial={nameInitials(
-                  `${currentUser?.fname} ${currentUser?.lname}`
+                  `${currentUser?.fname}${currentUser?.lname}`
                 )}
               />
               <h4 className="ml-2">

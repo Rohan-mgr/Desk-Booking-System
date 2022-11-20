@@ -1,20 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-// import { useNavigate } from "react-router-dom";
 import Navbar from "../../Components/UI/navbar/navbar";
-
 import video from "../../Assets/Images/view.mp4";
 import { useFormik } from "formik";
-import { handleUserMessage } from "../../services/auth";
+import { handleUserMessage, getNewWorkspace } from "../../services/auth";
 import image1 from "../../Assets/Images/schedule/business-woman-making-presentation-office.jpg";
 import image2 from "../../Assets/Images/schedule/clayton-cardinalli-JMoFpdqL3XM-unsplash.jpg";
-
-import avatar1 from "../../Assets/Images/avatar/happy-asian-man-standing-with-arms-crossed-grey-wall.jpg";
-import avatar2 from "../../Assets/Images/avatar/portrait-good-looking-brunette-young-asian-woman.jpg";
+import { GoLocation } from "react-icons/go";
 import { toast } from "react-toastify";
+import Avatar from "../../Components/UI/avatar/avatar";
+import nameInitials from "name-initials";
 
 function LandingPage() {
-  // const navigate = useNavigate();
+  const [companies, setCompanies] = useState([]);
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await getNewWorkspace();
+      setCompanies(response?.result);
+    } catch (e) {
+      toast.error(e);
+      throw new Error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -82,97 +95,72 @@ function LandingPage() {
                     role="tabpanel"
                     aria-labelledby="nav-DayOne-tab"
                   >
-                    <div class="row border-bottom pb-5 mb-5">
-                      <div class="col-lg-4 col-12">
-                        <img
-                          src={image1}
-                          class="schedule-image img-fluid"
-                          alt=""
-                        />
-                      </div>
+                    {companies
+                      ?.reverse()
+                      .splice(0, 2)
+                      .map((c, index) => {
+                        return (
+                          <div key={c._id} class="row border-bottom pb-5 mb-5">
+                            <div class="col-lg-4 col-12">
+                              <img
+                                src={index === 0 ? image1 : image2}
+                                class="schedule-image img-fluid"
+                                alt=""
+                              />
+                            </div>
 
-                      <div class="col-lg-8 col-12 mt-3 mt-lg-0">
-                        <h4 class="mb-2">Startup Development Ideas</h4>
+                            <div class="col-lg-8 col-12 mt-3 mt-lg-0">
+                              <h4 class="mb-2">{c.companyName}</h4>
 
-                        <p>
-                          You are free to download any HTML CSS template from
-                          TemplateMo website. You can use any template for
-                          business purposes. You are not allowed to redistribute
-                          the downloadable ZIP file on any other template
-                          website. Thank you.
-                        </p>
+                              <p>
+                                Activity based working or flexible working are
+                                becoming increasingly popular ways of working in
+                                the modern workplace. Hence the need of bookable
+                                workspaces has skyrocketed. Desk Booking System
+                                enables easy management and scheduling of
+                                physical desks and other workspaces in your
+                                office – either on site or on your phone.
+                              </p>
 
-                        <div class="d-flex align-items-center mt-4">
-                          <div class="avatar-group d-flex">
-                            <img
-                              src={avatar1}
-                              class="img-fluid avatar-image"
-                              alt=""
-                            />
+                              <div class="d-flex align-items-center mt-4">
+                                <div class="avatar-group d-flex">
+                                  <Avatar
+                                    initial={nameInitials(
+                                      `${c.companyOwner?.fname} ${c.companyOwner.lname}`
+                                    )}
+                                  />
 
-                            <div class="ms-3">
-                              Logan Wilson
-                              <p class="speakers-text mb-0">CEO / Founder</p>
+                                  <div class="ms-3">
+                                    {c.companyOwner.fname}{" "}
+                                    {c.companyOwner.lname}
+                                    <p class="speakers-text mb-0">
+                                      CEO / Founder
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <span class="mx-3 mx-lg-5">
+                                  <GoLocation
+                                    style={{
+                                      marginBottom: "3px",
+                                      marginRight: "3px",
+                                    }}
+                                  />
+                                  {c.address.country}
+                                </span>
+
+                                <span class="mx-1 mx-lg-5">
+                                  <i
+                                    class="fa fa-phone me-2"
+                                    aria-hidden="true"
+                                  ></i>
+                                  {c.contactNumber}
+                                </span>
+                              </div>
                             </div>
                           </div>
-
-                          <span class="mx-3 mx-lg-5">
-                            <i class="bi-clock me-2"></i>
-                            9:00 - 9:45 AM
-                          </span>
-
-                          <span class="mx-1 mx-lg-5">
-                            <i class="bi-layout-sidebar me-2"></i>
-                            Conference Hall 3
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row border-bottom pb-5 mb-5">
-                      <div class="col-lg-4 col-12">
-                        <img
-                          src={image2}
-                          class="schedule-image img-fluid"
-                          alt=""
-                        />
-                      </div>
-
-                      <div class="col-lg-8 col-12 mt-3 mt-lg-0">
-                        <h4 class="mb-2">Introduction to Online Businesses</h4>
-
-                        <p>
-                          Quisque mollis, ante non semper ultricies, nulla
-                          sapien sollicitudin augue, id scelerisque nunc turpis
-                          nec urna. Class aptent taciti sociosqu ad litora.
-                        </p>
-
-                        <div class="d-flex align-items-center mt-4">
-                          <div class="avatar-group d-flex">
-                            <img
-                              src={avatar2}
-                              class="img-fluid avatar-image"
-                              alt=""
-                            />
-
-                            <div class="ms-3">
-                              Natalie
-                              <p class="speakers-text mb-0">Event Planner</p>
-                            </div>
-                          </div>
-
-                          <span class="mx-3 mx-lg-5">
-                            <i class="bi-clock me-2"></i>
-                            10:00 - 10:45 AM
-                          </span>
-
-                          <span class="mx-1 mx-lg-5">
-                            <i class="bi-layout-sidebar me-2"></i>
-                            100-D Room
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                        );
+                      })}
                   </div>
                 </div>
               </div>

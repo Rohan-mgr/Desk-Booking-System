@@ -4,6 +4,7 @@ export const AUTH_ENDPOINT = {
   login: config.baseURL + "/login",
   signup: config.baseURL + "/signup",
   getUser: config.baseURL + "/get-user",
+  getNewWorkspace: config.baseURL + "/newworkspace",
 };
 
 export const COMPANY_ENDPOINTS = {

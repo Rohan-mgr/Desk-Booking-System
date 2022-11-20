@@ -3,6 +3,12 @@ import { _getSecureLs, getUserToken } from "../helper/storage";
 const { AUTH_ENDPOINT, COMPANY_ENDPOINTS } = require("../helper/endpoints");
 const { httpAuth, http } = require("../helper/http");
 
+export const getNewWorkspace = async () => {
+  const URL = AUTH_ENDPOINT.getNewWorkspace;
+
+  const response = await httpAuth.get(URL);
+  return response;
+};
 export const handleUserLogin = async (userData) => {
   const URL = AUTH_ENDPOINT.login;
 
