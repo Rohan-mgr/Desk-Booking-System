@@ -22,6 +22,7 @@ const floorSchema = new Schema(
     },
     rooms: [
       {
+        amenities: [String],
         roomNo: {
           type: Number,
           required: true,

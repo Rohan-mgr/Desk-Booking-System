@@ -247,7 +247,7 @@ exports.postAddFloor = async (req, res, next) => {
   const floorNumber = req.body.floorNo;
   const roomCapacity = req.body.roomCapacity;
   const deskCapacity = req.body.deskCapacity;
-  console.log(companyId, floorNumber, roomCapacity, deskCapacity, "add floor");
+  const roomAmenities = req.body.Amenities;
   let dupFloor;
   try {
     dupFloor = await Floor.findOne({
@@ -267,14 +267,13 @@ exports.postAddFloor = async (req, res, next) => {
     for (let i = 0; i < roomCapacity; i++) {
       floor.rooms.push({
         roomNo: +i + 1,
-        // bookedBy: null,
+        amenities: roomAmenities,
       });
     }
     for (let i = 0; i < deskCapacity; i++) {
       floor.rooms.map((d) =>
         d.desks.push({
           deskNo: +i + 1,
-          // bookedBy: null,
         })
       );
     }
