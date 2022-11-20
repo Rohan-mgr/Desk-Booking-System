@@ -177,8 +177,8 @@ function LandingPage() {
                 </h2>
 
                 <p class="text-white">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut dolore
+                  Build your dream office with Us. The perfect booking platform
+                  for your floors, rooms, desks, and more.
                 </p>
               </div>
 
