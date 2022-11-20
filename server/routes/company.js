@@ -3,6 +3,7 @@ const router = express.Router();
 const companyController = require("../controller/company");
 const isAuth = require("../middleware/isAuth");
 
+router.get("/newworkspace", companyController.getNewWorkspace);
 router.get("/manage/addroom/:cId", isAuth, companyController.getCompanyFloors);
 router.get("/manage/adddesk/:fId", isAuth, companyController.getFloorRooms);
 router.get("/registercompany/:mode", isAuth, companyController.getCompanies);

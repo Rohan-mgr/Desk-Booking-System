@@ -14,6 +14,25 @@ const mailer = nodemailer.createTransport(
   })
 );
 
+exports.getNewWorkspace = async (req, res, next) => {
+  try {
+    const companies = await Company.find().populate("floors");
+    if (!companies) {
+      const error = new Error("No companies is created");
+      throw error;
+    }
+    res.status(200).json({
+      message: "companies fetched successfully",
+      result: companies,
+    });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
 exports.getCompany = async (req, res, next) => {
   const companyId = req.params.cid;
   try {
