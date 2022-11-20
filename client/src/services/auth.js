@@ -17,7 +17,7 @@ export const handleUserSignup = async (userData) => {
 
 export const handleCreateCompany = async (companyInfo) => {
   const URL = COMPANY_ENDPOINTS.company;
-  const Token = getUserToken();
+  getUserToken();
   const response = await http.post(URL, JSON.stringify(companyInfo));
   return response;
 };

@@ -51,7 +51,7 @@ function LandingPage() {
                   <p class="text-white mb-4">Work from anywhere </p>
 
                   <a
-                    href="#section_4"
+                    href="#workspace"
                     class="custom-link bi-arrow-down arrow-icon"
                   ></a>
                 </div>
@@ -216,7 +216,7 @@ function LandingPage() {
                 <iframe
                   title="map"
                   class="google-map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1511.091461689997!2d-73.9866630916883!3d40.758001294831736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855a96da09d%3A0x860bf5a5e1a00a68!2sTimes%20Square%2C%20New%20York%2C%20NY%2010036%2C%20USA!5e0!3m2!1sen!2ssg!4v1643035529098!5m2!1sen!2ssg"
+                  src="https://maps.google.com/maps?q=61%20hullrick%20drive,%20Etobicoke,%20Ontario,%20Canada&t=&z=13&ie=UTF8&iwloc=&output=embed"
                   width="100%"
                   height="371.59"
                   allowFullScreen=""
@@ -227,21 +227,19 @@ function LandingPage() {
               <div class="col-lg-6 col-12 mt-5 mt-lg-0">
                 <div class="venue-thumb bg-white shadow-lg">
                   <div class="venue-info-title">
-                    <h2 class="text-white mb-0">Times Square</h2>
+                    <h2 class="text-white mb-0">61 Hillrick Dr</h2>
                   </div>
 
                   <div class="venue-info-body">
                     <h4 class="d-flex">
                       <i class="bi-geo-alt me-2"></i>
-                      <span>
-                        102 South. 7th Street, New York, NY 10036, USA
-                      </span>
+                      <span>61 hullrick drive, Etobicoke, Ontario, Canada</span>
                     </h4>
 
                     <h5 class="mt-4 mb-3">
                       <a href="mailto:hello@yourgmail.com">
                         <i class="bi-envelope me-2"></i>
-                        hi@company.com
+                        bookyourdesk2022@gmail.com
                       </a>
                     </h5>
 

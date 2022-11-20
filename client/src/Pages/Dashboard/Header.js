@@ -1,14 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./Header.css";
-import { BsBell } from "react-icons/bs";
-import Button from "react-bootstrap/esm/Button";
-import { ROUTES } from "../../helper/routes";
-import { _removeAllLs } from "../../helper/storage";
-import { useNavigate } from "react-router-dom";
 
 function Header({ currentUser }) {
-  const navigate = useNavigate();
-
   return (
     <nav className="main-header navbar navbar-expand  mr-1">
       <ul className="navbar-nav">

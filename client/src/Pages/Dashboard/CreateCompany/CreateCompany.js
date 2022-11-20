@@ -35,18 +35,11 @@ function CreateCompany(props) {
   const formik = useFormik({
     initialValues: {
       companyName: props.isEditing ? props.selectedCompany.companyName : "",
-      // ownerFirstName: props.isEditing
-      //   ? props.selectedCompany.companyOwner.fname
-      //   : "",
-      // ownerLastName: props.isEditing
-      //   ? props.selectedCompany.companyOwner.lname
-      //   : "",
       contactNumber: props.isEditing ? props.selectedCompany.contactNumber : "",
       street: props.isEditing ? props.selectedCompany.address.street : "",
       city: props.isEditing ? props.selectedCompany.address.city : "",
       state: props.isEditing ? props.selectedCompany.address.state : "",
       country: props.isEditing ? props.selectedCompany.address.country : "",
-      // email: props.isEditing ? props.selectedCompany.workEmail : "",
     },
     onSubmit: async (values) => {
       try {
@@ -96,25 +89,6 @@ function CreateCompany(props) {
           />
         </Form.Group>
 
-        {/* <Form.Group className="mb-3">
-          <Form.Label>
-            Company Owner<span>*</span>:
-          </Form.Label>
-          <Form.Control
-            type="text"
-            name="ownerFirstName"
-            value={formik.values.ownerFirstName}
-            onChange={formik.handleChange}
-            placeholder="First Name"
-          />
-          <Form.Control
-            type="text"
-            name="ownerLastName"
-            value={formik.values.ownerLastName}
-            onChange={formik.handleChange}
-            placeholder="Last Name"
-          />
-        </Form.Group> */}
         <Form.Group className="mb-3">
           <Form.Label>
             Contact Number<span>*</span>:
@@ -169,17 +143,6 @@ function CreateCompany(props) {
             })}
           </Form.Select>
         </Form.Group>
-        {/* <Form.Group className="mb-3">
-          <Form.Label>
-            Work Email<span>*</span>:
-          </Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-          />
-        </Form.Group> */}
         <Button variant="primary" type="submit">
           {props.isEditing ? "Update Company" : "Register Now"}
         </Button>

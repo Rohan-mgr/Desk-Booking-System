@@ -4,7 +4,7 @@ import { getUserToken, _getSecureLs } from "../helper/storage";
 
 export const getCompany = async (cid) => {
   const URL = COMPANY_ENDPOINTS.companyInfo + "/" + cid;
-  const Token = getUserToken();
+  getUserToken();
 
   const response = await http.get(URL);
   return response;
@@ -12,7 +12,7 @@ export const getCompany = async (cid) => {
 export const getAllCompanies = async () => {
   const URL = COMPANY_ENDPOINTS.company;
   const userMode = _getSecureLs("auth")?.mode;
-  const Token = getUserToken();
+  getUserToken();
 
   const response = await http.get(URL + `/${userMode}`);
   return response;
@@ -45,7 +45,7 @@ export const handleCompanyLogin = async (userData) => {
 
 export const deleteCompany = async (cid) => {
   const URL = COMPANY_ENDPOINTS.deleteCompany + `/${cid}`;
-  const Token = getUserToken();
+  getUserToken();
   const response = await http.delete(URL);
   return response;
 };
@@ -110,18 +110,5 @@ export const cancelRoom = async (rid, fid, userMode) => {
     URL,
     JSON.stringify({ fId: fid, roomId: rid, userMode: userMode })
   );
-  return response;
-};
-
-export const handleAddRoom = async (cid, roomInfo) => {
-  const URL = COMPANY_ENDPOINTS.addRoom + "/" + cid;
-  getUserToken();
-  const response = await http.post(URL, JSON.stringify(roomInfo));
-  return response;
-};
-export const handleAddDesk = async (cid, deskInfo) => {
-  const URL = COMPANY_ENDPOINTS.addDesk + "/" + cid;
-  getUserToken();
-  const response = await http.post(URL, JSON.stringify(deskInfo));
   return response;
 };

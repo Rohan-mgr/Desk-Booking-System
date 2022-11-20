@@ -2,7 +2,7 @@ import React from "react";
 
 import { ToastContainer } from "react-toastify";
 
-import { Routes, Route, redirect } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import SignUp from "./Pages/Signup.js/Signup";
 import Login from "./Pages/LoginPage/LoginPage";
 import Dashboard from "./Pages/Dashboard/Dashboard";
@@ -12,7 +12,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { ROUTES } from "./helper/routes";
 import CreateCompany from "./Pages/Dashboard/CreateCompany/CreateCompany";
-import Manage from "./Pages/Dashboard/Manage/Manage";
 import Company from "./Pages/Dashboard/Company/Company";
 import DashboardHome from "./Pages/Dashboard/dashboard/dashboard";
 import CompanyInfo from "./Pages/Dashboard/CompanyInfo/CompanyInfo";
@@ -43,9 +42,11 @@ function App() {
             path={`${ROUTES.COMPANY}/${ROUTES.CREATE_COMPANY}`}
             element={<CreateCompany />}
           />
-          <Route path={ROUTES.MANAGE} element={<Manage />} />
         </Route>
-        <Route path="*" element={<p>404!</p>} />
+        <Route
+          path="*"
+          element={<p className="text-center">404! Page Not Found</p>}
+        />
       </Routes>
 
       <ToastContainer
