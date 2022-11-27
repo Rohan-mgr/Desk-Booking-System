@@ -22,7 +22,7 @@ const sendEmail = ({
       subject: title,
       html: `<div style="text-align: center;">
       <img style="width: 200px; " src="cid:greeting_image"/>
-        <h2>Dear, ${user?.fname} ${user?.lname}</h2>
+        <h2>Greeting, ${user?.fname || ""} ${user?.lname || ""}</h2>
         <h4>${description}</h4>
 
 

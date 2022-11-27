@@ -3,17 +3,7 @@ const Company = require("../model/company");
 const User = require("../model/user");
 const CompanyUser = require("../model/companyUser");
 const Floor = require("../model/floor");
-const nodemailer = require("nodemailer");
-const sgTransport = require("nodemailer-sendgrid-transport");
 const { sendEmail } = require("../utils/mailer");
-
-const mailer = nodemailer.createTransport(
-  sgTransport({
-    auth: {
-      api_key: process.env.SENDGRID_API_KEY,
-    },
-  })
-);
 
 exports.getNewWorkspace = async (req, res, next) => {
   try {
@@ -504,8 +494,8 @@ exports.postRoomBookingCancel = async (req, res, next) => {
       (r) => r._id.toString() === roomId.toString()
     );
     console.log(room, "cancel room");
+    const authUser = await User.findById(room[0]?.bookedBy);
     if (userMode === "user") {
-      const authUser = await User.findById(room[0]?.bookedBy);
       if (room[0].bookedBy.toString() !== req.userId.toString()) {
         const error = new Error(
           `Not Authorized! Booked by ${authUser?.fname} ${authUser?.lname}`
@@ -532,6 +522,11 @@ exports.postRoomBookingCancel = async (req, res, next) => {
         arrayFilters: [{ "room._id": roomId }],
       }
     );
+    sendEmail({
+      title: "Room booking canceled verified",
+      description: "You have successfully canceled the booked room.",
+      user: authUser,
+    });
     res.status(200).json({ message: "booking cancel successfully" });
   } catch (error) {
     if (!error.statusCode) {
