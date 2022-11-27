@@ -10,6 +10,7 @@ import { isEmptyArray } from "formik";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { getCurrentUserId, _getSecureLs } from "../../../helper/storage";
 import ReactTooltip from "react-tooltip";
+import { getIconBasedOnName } from "../../../helper/ammenites";
 
 function CompanyInfo() {
   const navigate = useNavigate();
@@ -203,13 +204,25 @@ function CompanyInfo() {
                             }}
                           >
                             <div className="mb-2 d-flex align-items-center justify-content-between">
-                              <p
-                                style={{
-                                  color: room?.bookStatus ? "white" : "black",
-                                }}
-                              >
-                                Room : {room?.roomNo}
-                              </p>
+                              <div>
+                                <p
+                                  style={{
+                                    color: room?.bookStatus ? "white" : "black",
+                                  }}
+                                >
+                                  Room : {room?.roomNo}
+                                </p>
+                                <div className="amenities-wrapper">
+                                  {room?.amenities?.map((item) => (
+                                    <img
+                                      className="amenities"
+                                      alt="amenities"
+                                      src={getIconBasedOnName(item)}
+                                    ></img>
+                                  ))}
+                                </div>
+                              </div>
+
                               <p
                                 data-background-color={
                                   !room?.bookStatus ? "#273053" : "red"
@@ -228,31 +241,16 @@ function CompanyInfo() {
                                     "btn-danger": room?.bookStatus,
                                   })}
                                   type="sm"
-                                  onClick={() =>
-                                    // !room?.bookStatus
-                                    //   ? handleRoomBooking(
-                                    //       room?._id,
-                                    //       currentFloor?._id,
-                                    //       cid,
-                                    //       userMode
-                                    //     )
-                                    //   : room?.bookedBy === userId &&
-                                    //     handleRoomBookCancel(
-                                    //       room?._id,
-                                    //       currentFloor?._id,
-                                    //       userMode
-                                    //     )
-                                    {
-                                      toggleBookingModal({
-                                        roomId: room?._id,
-                                        floorId: currentFloor?._id,
-                                        companyId: cid,
-                                        userMode,
-                                        isCancel: room?.bookStatus,
-                                        isRoom: true,
-                                      });
-                                    }
-                                  }
+                                  onClick={() => {
+                                    toggleBookingModal({
+                                      roomId: room?._id,
+                                      floorId: currentFloor?._id,
+                                      companyId: cid,
+                                      userMode,
+                                      isCancel: room?.bookStatus,
+                                      isRoom: true,
+                                    });
+                                  }}
                                 >
                                   {" "}
                                   {getRoomBookStatus(room)}

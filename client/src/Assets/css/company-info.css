@@ -46,6 +46,15 @@
   border-radius: 15px;
 }
 
+.amenities-wrapper {
+  border-radius: 5px;
+}
+
+.amenities {
+  padding: 4px;
+  width: 35px;
+}
+
 .desk {
   display: flex;
   justify-content: center;
@@ -126,33 +135,33 @@
 .booking-info-convention {
   margin: 2rem 0;
 }
-.booking-info-convention div:nth-child(1) span{
+.booking-info-convention div:nth-child(1) span {
   display: inline-block;
   background: #00bd90;
   border: 2px solid rgb(215, 227, 237);
   border-radius: 50%;
-  height: 18px; 
+  height: 18px;
   width: 18px;
   margin-bottom: -2px;
   margin-right: 7px;
 }
-.booking-info-convention div:nth-child(2) span{
+.booking-info-convention div:nth-child(2) span {
   display: inline-block;
   background: red;
   border: 2px solid rgb(215, 227, 237);
-    border-radius: 50%;
-    height: 18px;
-    width: 18px;
-    margin-bottom: -2px;
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+  margin-bottom: -2px;
   margin-right: 7px;
 }
-.booking-info-convention div:nth-child(3) span{
+.booking-info-convention div:nth-child(3) span {
   display: inline-block;
   background: rgb(6, 47, 117);
   border: 2px solid rgb(215, 227, 237);
-    border-radius: 50%;
-    height: 18px;
-    width: 18px;
-    margin-bottom: -2px;
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+  margin-bottom: -2px;
   margin-right: 7px;
 }
