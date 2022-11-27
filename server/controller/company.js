@@ -5,6 +5,7 @@ const CompanyUser = require("../model/companyUser");
 const Floor = require("../model/floor");
 const nodemailer = require("nodemailer");
 const sgTransport = require("nodemailer-sendgrid-transport");
+const { sendEmail } = require("../utils/mailer");
 
 const mailer = nodemailer.createTransport(
   sgTransport({
@@ -351,26 +352,12 @@ exports.postDeskBooking = async (req, res, next) => {
       user = await CompanyUser.findById(req.userId);
     }
 
-    mailer.sendMail(
-      {
-        to: user?.email,
-        from: "bookyourdesk2022@gmail.com",
-        fromname: "Desk Booking System",
-        subject: "Booking Succeeded!",
-        html: `<div style="text-align: center;">
-          <h2>Welcome ${user?.fname} ${user?.lname}</h2>
-          <p><span style="color:green;">Congratulations!!! </span>You have successfully book your desk.</p>
-          <p>View Your Booking here http://localhost:3000/company/companyinfo/${req.body.cId}
-          <p>Want To Know More About Our Company, Visit http://localhost:3000/landing</p>
-        </div>`,
-      },
-      function (err, res) {
-        if (err) {
-          throw err;
-        }
-        console.log(res);
-      }
-    );
+    sendEmail({
+      title: "Desk Booking Verified",
+      description: "You have successfully book your desk.",
+      user,
+    });
+
     res.status(200).json({ message: "desk booked successfully" });
   } catch (error) {
     if (!error.statusCode) {
@@ -396,6 +383,8 @@ exports.postDeskBookingCancel = async (req, res, next) => {
     const desk = room[0].desks.filter(
       (d) => d._id.toString() === deskId.toString()
     );
+
+    const authUser = await User.findById(desk[0]?.bookedBy);
     if (userMode === "user") {
       const authUser = await User.findById(desk[0]?.bookedBy);
       if (desk[0].bookedBy.toString() !== req.userId.toString()) {
@@ -440,6 +429,13 @@ exports.postDeskBookingCancel = async (req, res, next) => {
         }
       );
     }
+
+    sendEmail({
+      title: "Desk Cancelation Verified",
+      description:
+        "You have successfully canceled book your desk, Sorry for the trouble",
+      user: authUser,
+    });
     res.status(200).json({ message: "booking cancel successfully" });
   } catch (error) {
     if (!error.statusCode) {
@@ -480,26 +476,13 @@ exports.postRoomBooking = async (req, res, next) => {
     } else {
       user = await CompanyUser.findById(req.userId);
     }
-    mailer.sendMail(
-      {
-        to: user?.email,
-        from: "bookyourdesk2022@gmail.com",
-        fromname: "Desk Booking System",
-        subject: "Booking Succeeded!",
-        html: `<div style="text-align: center;">
-          <h2>Welcome ${user?.fname} ${user?.lname}</h2>
-          <p><span style="color:green;">Congratulations!!! </span>You have successfully book your room.</p>
-          <p>View Your Booking here http://localhost:3000/company/companyinfo/${req.body.cId}
-          <p>Want To Know More About Our Company, Visit http://localhost:3000/landing</p>
-        </div>`,
-      },
-      function (err, res) {
-        if (err) {
-          throw err;
-        }
-        console.log(res);
-      }
-    );
+
+    sendEmail({
+      title: "Room booking verified",
+      description: "You have successfully book Room.",
+      user,
+    });
+
     res.status(200).json({ message: "Room booked successfully" });
   } catch (error) {
     if (!error.statusCode) {
